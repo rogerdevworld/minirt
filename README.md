@@ -1153,3 +1153,235 @@ La integración con MiniLibX es la interfaz visual del proyecto, permitiendo la 
 El bonus de optimización con multithreading destaca la naturaleza computacionalmente intensiva del ray tracing y la necesidad de paralelización para mejorar el rendimiento. La aplicación de pthreads y el manejo de consideraciones como el balanceo de carga y las condiciones de carrera son un paso importante hacia la programación de alto rendimiento.
 
 En síntesis, el proyecto `miniRT` es una experiencia de aprendizaje multifacética que desafía a los estudiantes a integrar conocimientos de matemáticas, física, algoritmos y diseño de software. Su correcta implementación no solo resulta en un renderizador funcional, sino que también cultiva una comprensión profunda de los principios fundamentales que sustentan los gráficos por computadora, preparando a los estudiantes para desafíos más avanzados en el campo.
+
+Para un proyecto de ray tracing como MiniRT, necesitas estructuras de datos que representen los elementos clave de tu escena y el proceso de renderizado. Aquí te detallo las structs esenciales y una explicación de por qué son importantes:
+
+-----
+
+## 1\. Vectores y Puntos (Básicos pero Fundamentales)
+
+Aunque a menudo no son "structs" en sí mismos en C (se pueden representar como arrays de `double` o `float`), es crucial tener funciones y una forma consistente de manejar las operaciones de vectores. Podrías definir algo así:
+
+```c
+typedef struct s_vec3
+{
+    double x;
+    double y;
+    double z;
+} t_vec3;
+```
+
+**Por qué son importantes:**
+
+  * **Posiciones:** Para cámaras, luces, centros de objetos, puntos de intersección.
+  * **Direcciones:** Para los rayos, normales de superficie, direcciones de luz.
+  * **Colores:** Los colores RGB también se pueden representar como vectores de 3 componentes (aunque normalmente de 0 a 1 o de 0 a 255).
+  * **Operaciones:** Necesitarás funciones para suma, resta, producto escalar (dot product), producto vectorial (cross product), normalización, longitud, etc.
+
+-----
+
+## 2\. Rayo
+
+El concepto central del ray tracing. Cada píxel en la pantalla se "dispara" con un rayo.
+
+```c
+typedef struct s_ray
+{
+    t_vec3 origin;    // Punto de origen del rayo (normalmente la cámara o el punto de rebote)
+    t_vec3 direction; // Vector de dirección normalizado del rayo
+} t_ray;
+```
+
+**Por qué es importante:**
+
+  * Es la unidad fundamental para las intersecciones. Con su origen y dirección, puedes calcular cualquier punto a lo largo del rayo y verificar si intersecta con objetos en la escena.
+
+-----
+
+## 3\. Cámara
+
+Define el punto de vista desde el que se renderiza la escena.
+
+```c
+typedef struct s_camera
+{
+    t_vec3 position;        // Posición de la cámara en el espacio 3D
+    t_vec3 orientation;     // Vector de dirección normalizado hacia donde mira la cámara
+    double fov;             // Campo de visión (Field of View) en grados
+    // Puedes añadir más si quieres control avanzado, como 'up_vector'
+} t_camera;
+```
+
+**Por qué es importante:**
+
+  * A partir de la cámara, calculas los rayos primarios que pasan por cada píxel de la "pantalla virtual". El FOV es crucial para determinar la "perspectiva" de la imagen.
+
+-----
+
+## 4\. Luz
+
+Representa las fuentes de luz en la escena.
+
+```c
+typedef struct s_light
+{
+    t_vec3 position;    // Posición de la fuente de luz
+    double brightness;  // Intensidad de la luz (0.0 a 1.0)
+    t_vec3 color;       // Color de la luz (RGB)
+} t_light;
+
+typedef struct s_ambient_light
+{
+    double ratio;       // Ratio de luz ambiental (0.0 a 1.0)
+    t_vec3 color;       // Color de la luz ambiental
+} t_ambient_light;
+```
+
+**Por qué son importantes:**
+
+  * La luz es fundamental para el sombreado y el color final de los píxeles. La luz ambiental (ambient light) proporciona una iluminación base a toda la escena, mientras que las luces puntuales (point lights) simulan fuentes de luz directas.
+
+-----
+
+## 5\. Objetos Geométricos
+
+Necesitas estructuras para cada tipo de objeto que tu MiniRT soportará (esferas, planos, cilindros, etc.). Todos deberían compartir propiedades comunes y tener sus propiedades específicas.
+
+### 5.1 Propiedades Comunes de Objetos
+
+Es útil tener una enumeración para los tipos de objetos y una struct genérica que contenga las propiedades que todos los objetos tienen en común.
+
+```c
+typedef enum e_object_type
+{
+    SPHERE,
+    PLANE,
+    CYLINDER,
+    // ... otros objetos que implementes
+} t_object_type;
+
+typedef struct s_object
+{
+    t_object_type type; // Tipo de objeto
+    t_vec3 color;       // Color base del objeto (RGB)
+    // t_material material; // Si implementas materiales más complejos (difuso, especular, etc.)
+    void *data;         // Puntero a la struct específica del objeto (ej. t_sphere, t_plane)
+} t_object;
+```
+
+**Por qué es importante:**
+
+  * Permite manejar diferentes tipos de objetos de forma polimórfica (a través de un array de `t_object`), facilitando las comprobaciones de intersección y el renderizado.
+
+### 5.2 Estructuras Específicas de Objetos
+
+#### Esfera
+
+```c
+typedef struct s_sphere
+{
+    t_vec3 center;  // Centro de la esfera
+    double radius;  // Radio de la esfera
+} t_sphere;
+```
+
+#### Plano
+
+```c
+typedef struct s_plane
+{
+    t_vec3 position;      // Un punto en el plano
+    t_vec3 normal;        // Vector normal del plano (normalizado)
+} t_plane;
+```
+
+#### Cilindro (Ejemplo más complejo)
+
+```c
+typedef struct s_cylinder
+{
+    t_vec3 position;      // Centro de la base del cilindro
+    t_vec3 axis;          // Vector de dirección del eje (normalizado)
+    double radius;        // Radio del cilindro
+    double height;        // Altura del cilindro
+} t_cylinder;
+```
+
+**Por qué son importantes:**
+
+  * Contienen los parámetros geométricos específicos necesarios para calcular las intersecciones del rayo con ese tipo particular de objeto.
+
+-----
+
+## 6\. Información de Intersección (Hit Record)
+
+Cuando un rayo intersecta un objeto, necesitas almacenar los detalles de esa intersección para calcular el color.
+
+```c
+typedef struct s_hit_record
+{
+    t_vec3 point;         // Punto de intersección en el espacio 3D
+    t_vec3 normal;        // Vector normal de la superficie en el punto de intersección (normalizado)
+    double t;             // Distancia a lo largo del rayo hasta el punto de intersección
+    t_object *object;     // Puntero al objeto que fue intersectado
+    // Puedes añadir más, como las coordenadas UV para texturas si las implementas
+} t_hit_record;
+```
+
+**Por qué es importante:**
+
+  * Esta información es esencial para el sombreado. Con el punto de intersección y la normal de la superficie, puedes calcular cómo la luz interactúa con el objeto, incluyendo sombras, reflejos y refracciones.
+
+-----
+
+## 7\. Escena
+
+Contiene todos los elementos que componen la escena a renderizar.
+
+```c
+typedef struct s_scene
+{
+    t_ambient_light ambient;  // Luz ambiental
+    t_camera camera;          // Cámara principal
+    t_list *lights;           // Lista de fuentes de luz (puedes usar una lista enlazada o un array dinámico)
+    t_list *objects;          // Lista de objetos geométricos en la escena
+    int width;                // Ancho de la imagen de salida
+    int height;               // Alto de la imagen de salida
+} t_scene;
+```
+
+**Por qué es importante:**
+
+  * Es la representación completa del mundo 3D que vas a renderizar. La lectura del archivo `.rt` del MiniRT poblará esta estructura.
+
+-----
+
+## 8\. Materiales (Opcional, para un renderizado más avanzado)
+
+Si quieres ir más allá de un color sólido y tener propiedades como reflectividad, especularidad, o refracción.
+
+```c
+typedef struct s_material
+{
+    t_vec3  albedo;       // Color difuso / base
+    double  fuzz;         // Parámetro para la reflexión difusa (para efectos de "glossy" o borroso)
+    double  ref_idx;      // Índice de refracción (para transparencia/vidrio)
+    double  reflectivity; // Coeficiente de reflexión
+    // ... otros parámetros como emisividad, etc.
+} t_material;
+```
+
+**Por qué es importante:**
+
+  * Permite crear objetos con apariencias mucho más realistas, simulando cómo la luz interactúa con diferentes superficies (mate, brillante, transparente, metálico).
+
+-----
+
+## Ejemplo de cómo se podrían usar:
+
+1.  **Parsing:** Leer el archivo `.rt` y poblar la `t_scene` con las `t_camera`, `t_ambient_light`, y listas de `t_light` y `t_object`. Cada `t_object` tendría su `type` y un puntero a su struct específica (`t_sphere`, `t_plane`, etc.) a través de `data`.
+2.  **Ray Generation:** Para cada píxel de la imagen final, calcular un `t_ray` desde la `t_camera`.
+3.  **Intersection:** Para cada rayo, iterar a través de la lista de `t_object` en la `t_scene` y calcular la intersección. Si hay una intersección, almacenar los detalles en una `t_hit_record`. Siempre te quedas con la intersección más cercana al origen del rayo.
+4.  **Shading:** Usar la `t_hit_record` (punto de intersección, normal de superficie, objeto) y las `t_light` de la `t_scene` para calcular el color final del píxel, aplicando modelos de iluminación como Phong o simplemente difusión y ambiente. Aquí es donde considerarías sombras (disparando "rayos de sombra" hacia las luces) y posiblemente reflejos/refracciones (disparando rayos secundarios).
+
+Estas structs forman la columna vertebral de cualquier ray tracer básico. A medida que tu proyecto crezca y quieras añadir más funcionalidades (texturas, materiales complejos, aceleración espacial como BVH), necesitarás añadir más estructuras o expandir las existentes.
