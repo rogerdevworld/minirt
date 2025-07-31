@@ -23,18 +23,16 @@ INC_DIR = ./include
 # --- Source Files ---
 # List all your .c files here. Adjust paths based on your actual file structure.
 SRCS = \
-	$(SRC_DIR)/main.c \
-	$(SRC_DIR)/render.c \
-	$(SRC_DIR)/utils/init.c $(SRC_DIR)/utils/ft_esc_cal.c $(SRC_DIR)/utils/ft_vec_cal.c \
-	$(SRC_DIR)/windows/window.c \
-	# $(SRC_DIR)/intersections/intersect_sphere.c \
-	# $(SRC_DIR)/intersections/intersect_plane.c \
-	# $(SRC_DIR)/intersections/intersect_cylinder.c \
-	# $(SRC_DIR)/lighting/lighting.c \
-	# $(SRC_DIR)/utils/ft_vec_cal.c \
-	# $(SRC_DIR)/camera/camera.c \
-	# $(SRC_DIR)/parser/parser.c \
-	# $(SRC_DIR)/parser/parser_utils.c \
+    $(SRC_DIR)/main.c \
+    $(SRC_DIR)/render.c \
+    $(SRC_DIR)/utils/init.c \
+    $(SRC_DIR)/utils/ft_esc_cal.c \
+    $(SRC_DIR)/utils/ft_vec_cal.c \
+    $(SRC_DIR)/utils/error.c \
+    $(SRC_DIR)/windows/window.c \
+    $(SRC_DIR)/parser/parser.c \
+    $(SRC_DIR)/parser/parser_utils.c \
+    $(SRC_DIR)/parser/parser_elements.c
 
 # --- Object Files ---
 # Generate object file paths from source file paths

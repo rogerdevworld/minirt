@@ -57,20 +57,14 @@ typedef struct s_ambient_light
 	t_vec3				color;
 }						t_ambient_light;
 
-typedef struct s_light
-{
-	t_vec3				position;
-	double				brightness;
-	t_vec3				color;
-}						t_light;
-
 // --- 5. Geometric Objects ---
-typedef enum e_object_type
-{
-	SPHERE,
-	PLANE,
-	CYLINDER,
-}						t_object_type;
+// In include/minirt.h, somewhere before t_object struct
+typedef enum e_object_type {
+    OBJ_SPHERE,   // <-- Make sure these are exactly as written here
+    OBJ_PLANE,
+    OBJ_CYLINDER,
+    // OBJ_CONE // Add if you implement cones
+} t_object_type;
 
 typedef struct s_sphere
 {
@@ -78,12 +72,13 @@ typedef struct s_sphere
 	double				radius;
 }						t_sphere;
 
-typedef struct s_plane
-{
-	t_vec3				position;
-	t_vec3				normal;
-}						t_plane;
+// In include/minirt.h
 
+// Plano
+typedef struct s_plane {
+    t_vec3 point;    // <--- THIS LINE IS STILL MISSING OR MISSPELLED! Make sure it's here.
+    t_vec3 normal;   // Vector normalizado
+} t_plane;
 typedef struct s_cylinder
 {
 	t_vec3				position;
@@ -92,12 +87,25 @@ typedef struct s_cylinder
 	double				height;
 }						t_cylinder;
 
-typedef struct s_object
-{
-	t_object_type		type;
-	t_vec3				color;
-	void				*data;
-}						t_object;
+
+// Luz Puntual (Light)
+typedef struct s_light {
+    t_vec3 position;
+    double brightness; // 0.0-1.0
+    t_color color;     // 0.0-1.0
+    struct s_light *next; // <--- ADD THIS LINE: For linked list
+} t_light;
+
+// ... (other object types like t_sphere, t_plane, t_cylinder) ...
+
+// Objeto genérico
+typedef struct s_object {
+    t_object_type type;
+    void *data; // Pointer to the specific struct (t_sphere, t_plane, t_cylinder)
+    t_color color; // Object color (0.0-1.0)
+    struct s_object *next; // <--- ADD THIS LINE: For linked list
+} t_object;
+
 
 // --- 6. Intersection Information (Hit Record) ---
 typedef struct s_hit_record
@@ -107,6 +115,8 @@ typedef struct s_hit_record
 	double				t;
 	t_object			*object;
 }						t_hit_record;
+
+// In include/minirt.h
 
 // --- 7. Scene ---
 typedef struct s_scene
@@ -269,11 +279,15 @@ void					parse_plane(char **tokens, t_data *data);
 void					parse_cylinder(char **tokens, t_data *data);
 
 // --- Error Handling & Cleanup Functions ---
-void					ft_error_exit(char *msg);
+void					ft_error_exit(const char *msg);
 void	free_tokens(char **tokens);     
 		// For freeing char** arrays (like from ft_split)
 void	free_scene_data(t_scene *scene);
 		// Function to free linked lists of objects/lights
 int color_to_int(t_color color); // Add this line!
 void put_pixel_to_img(t_img *img, int x, int y, int color);
+void    ft_free_str_array(char **arr);
+void    parse_ambient_light(char **tokens, t_data *data);
+int parse_scene(const char *file_path, t_data *data);
+
 #endif // MINIRT_H

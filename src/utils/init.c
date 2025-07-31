@@ -79,7 +79,7 @@ t_plane plane_init(t_vec3 position, t_vec3 normal)
 {
     t_plane p;
 
-    p.position = position;
+    p.point = position;
     p.normal = vec3_normalize(normal); // Crucial: la normal del plano debe estar normalizada
     return (p);
 }

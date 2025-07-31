@@ -1,0 +1,19 @@
+# Archivo de escena simple para miniRT
+
+# Luz Ambiental
+A 0.2 255,255,255  # Ratio de brillo (0.0-1.0), Color RGB (0-255)
+
+# Cámara
+C 0.0,0.0,5.0 0.0,0.0,-1.0 70 # Posición, Orientación (vector normalizado), FOV (grados)
+
+# Luz
+L -5.0,5.0,0.0 0.7 255,255,255 # Posición, Brillo (0.0-1.0), Color RGB (0-255)
+
+# Esfera
+sp 0.0,0.0,0.0 1.0 255,0,0 # Centro, Diámetro, Color RGB (0-255)
+
+# Plano
+pl 0.0,-1.0,0.0 0.0,1.0,0.0 0,255,0 # Punto en el plano, Vector normal, Color RGB (0-255)
+
+# Cilindro
+cy 1.0,1.0,0.0 0.0,1.0,0.0 0.5 1.5 0,0,255 # Posición, Orientación, Diámetro, Altura, Color RGB (0-255)

@@ -1,8 +1,9 @@
-// src/parser_utils.c
+// src/parser/parser_utils.c
 
-#include "../../include/minirt.h"
+#include "../../include/minirt.h" // Ruta relativa desde src/parser/
+// #include <ctype.h> // Para isdigit si no usas tu propia ft_isdigit
 
-// Simple argument validation
+// Simple argument validation (se llama al inicio en parse_rt_file)
 void    validate_args(int argc, char **argv)
 {
     if (argc != 2)
@@ -11,38 +12,67 @@ void    validate_args(int argc, char **argv)
         ft_error_exit(ERR_INVALID_EXT);
 }
 
+// Counts the number of strings in a NULL-terminated char** array
+int count_tokens(char **tokens)
+{
+    int i = 0;
+    if (!tokens)
+        return (0);
+    while (tokens[i])
+        i++;
+    return (i);
+}
+
+// Function to free token array
+void    free_tokens(char **tokens)
+{
+    int i = 0;
+    if (!tokens)
+        return ;
+    while (tokens[i])
+    {
+        free(tokens[i]);
+        i++;
+    }
+    free(tokens);
+}
+
 // Checks if a string represents a valid float
 int is_valid_float(char *str)
 {
     int i = 0;
     int dot_count = 0;
-    if (!str || (!ft_isdigit(str[0]) && str[0] != '-' && str[0] != '+'))
+    if (!str) return (0); // No nulo
+    if (!ft_isdigit(str[0]) && str[0] != '-' && str[0] != '+') // Primer char no es dígito ni signo
         return (0);
     if (str[0] == '-' || str[0] == '+')
         i++;
+    if (!str[i] && (str[0] == '-' || str[0] == '+')) return (0); // Solo signo no es válido
     while (str[i])
     {
         if (str[i] == '.')
             dot_count++;
         else if (!ft_isdigit(str[i]))
-            return (0);
+            return (0); // Carácter no válido
         i++;
     }
-    return (dot_count <= 1);
+    return (dot_count <= 1); // Máximo un punto decimal
 }
 
 // Checks if a string represents a valid integer
 int is_valid_int(char *str)
 {
     int i = 0;
-    if (!str || (!ft_isdigit(str[0]) && str[0] != '-' && str[0] != '+'))
+    if (!str) return (0); // No nulo
+    if (!ft_isdigit(str[0]) && str[0] != '-' && str[0] != '+') // Primer char no es dígito ni signo
         return (0);
     if (str[0] == '-' || str[0] == '+')
         i++;
+    if (!str[i] && (str[0] == '-' || str[0] == '+')) return (0); // Solo signo no es válido
     while (str[i])
     {
         if (!ft_isdigit(str[i]))
-            return (0);
+            return (0); // Carácter no válido
         i++;
     }
     return (1);
@@ -54,13 +84,22 @@ int is_valid_color_component(char *str)
     long val;
     if (!is_valid_int(str))
         return (0);
-    val = ft_atol(str); // Assuming ft_atol can handle long
+    val = ft_atol(str); // Asumiendo ft_atol puede manejar long
     return (val >= 0 && val <= 255);
 }
 
 // Checks if a vector is normalized (components between -1.0 and 1.0)
+// Idealmente, se debe normalizar el vector si no lo está, o avisar.
+// En este caso, solo comprueba que los componentes estén en el rango, no si la magnitud es 1.
+// Para verificar si la magnitud es 1, necesitarías: sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z) ~= 1.0
 int is_normalized_vector(t_vec3 vec)
 {
+    // Comprobación más rigurosa de normalización:
+    // double magnitude = sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    // return (fabs(magnitude - 1.0) < 0.0001); // Compara con una pequeña tolerancia
+
+    // Por ahora, solo comprobamos el rango (-1.0 a 1.0) como se hace en tu código original
+    // Asegúrate de normalizar explícitamente el vector más tarde si es necesario.
     return (vec.x >= -1.0 && vec.x <= 1.0 &&
             vec.y >= -1.0 && vec.y <= 1.0 &&
             vec.z >= -1.0 && vec.z <= 1.0);
@@ -74,13 +113,13 @@ t_vec3 parse_vector(char *str, char *err_msg)
     t_vec3  vec;
 
     coords = ft_split(str, ',');
-    if (!coords || ft_lstsize(coords) != 3 || // Assuming ft_lstsize works for char**
+    if (!coords || count_tokens(coords) != 3 ||
         !is_valid_float(coords[0]) || !is_valid_float(coords[1]) || !is_valid_float(coords[2]))
     {
         free_tokens(coords);
         ft_error_exit(err_msg);
     }
-    vec.x = ft_atof(coords[0]); // Assuming ft_atof exists in libft
+    vec.x = ft_atof(coords[0]);
     vec.y = ft_atof(coords[1]);
     vec.z = ft_atof(coords[2]);
     free_tokens(coords);
@@ -94,7 +133,7 @@ t_vec3 parse_color(char *str, char *err_msg)
     t_vec3  color;
 
     components = ft_split(str, ',');
-    if (!components || ft_lstsize(components) != 3 ||
+    if (!components || count_tokens(components) != 3 ||
         !is_valid_color_component(components[0]) ||
         !is_valid_color_component(components[1]) ||
         !is_valid_color_component(components[2]))
@@ -112,7 +151,7 @@ t_vec3 parse_color(char *str, char *err_msg)
 // Parses a double from string
 double parse_double(char *str, char *err_msg)
 {
-    if (!is_valid_float(str))
+    if (!is_valid_float(str)) // Usa is_valid_float para doubles
         ft_error_exit(err_msg);
     return (ft_atof(str));
 }
@@ -152,73 +191,38 @@ t_object *create_object(t_object_type type, void *data_ptr, t_vec3 color)
     new_obj->type = type;
     new_obj->color = color;
     new_obj->data = data_ptr;
+    new_obj->next = NULL; // Importante inicializar el next a NULL
     return (new_obj);
 }
 
 // Function to free the entire scene data (call before exiting)
+// Esta función necesita liberar toda la memoria de luces y objetos
 void free_scene_data(t_scene *scene)
 {
-    // ft_lstclear(&scene->objects, your_free_object_data_function);
-    // ft_lstclear(&scene->lights, your_free_light_data_function);
-    // You'll need to implement your_free_object_data_function and your_free_light_data_function
-    // These functions should free the 'data' pointer inside t_object and t_light if they were malloc'd
-}
-// src/parser/parser_utils.c
+    t_light *current_light;
+    t_light *next_light;
+    t_object *current_object;
+    t_object *next_object;
 
-// In parse_vector:
-t_vec3 parse_vector(char *str, char *err_msg)
-{
-    char    **coords;
-    t_vec3  vec;
-
-    coords = ft_split(str, ',');
-    // CHANGE THIS LINE:
-    if (!coords || count_tokens(coords) != 3 || // Use your new count_tokens function
-        !is_valid_float(coords[0]) || !is_valid_float(coords[1]) || !is_valid_float(coords[2]))
+    current_light = scene->lights;
+    while (current_light)
     {
-        free_tokens(coords);
-        ft_error_exit(err_msg);
+        next_light = current_light->next;
+        free(current_light); // No hay datos internos que liberar en t_light en este ejemplo
+        current_light = next_light;
     }
-    vec.x = ft_atof(coords[0]);
-    vec.y = ft_atof(coords[1]);
-    vec.z = ft_atof(coords[2]);
-    free_tokens(coords);
-    return (vec);
-}
+    scene->lights = NULL;
 
-// In parse_color:
-t_vec3 parse_color(char *str, char *err_msg)
-{
-    char    **components;
-    t_vec3  color;
-
-    components = ft_split(str, ',');
-    // CHANGE THIS LINE:
-    if (!components || count_tokens(components) != 3 ||
-        !is_valid_color_component(components[0]) ||
-        !is_valid_color_component(components[1]) ||
-        !is_valid_color_component(components[2]))
+    current_object = scene->objects;
+    while (current_object)
     {
-        free_tokens(components);
-        ft_error_exit(err_msg);
+        next_object = current_object->next;
+        if (current_object->data)
+        {
+            free(current_object->data); // Libera el t_sphere, t_plane, t_cylinder
+        }
+        free(current_object);
+        current_object = next_object;
     }
-    color.x = ft_atol(components[0]) / 255.0;
-    color.y = ft_atol(components[1]) / 255.0;
-    color.z = ft_atol(components[2]) / 255.0;
-    free_tokens(components);
-    return (color);
-}
-// src/parser/parser_utils.c (add this function)
-
-// ... (existing functions like parse_vector, etc.) ...
-
-// Counts the number of strings in a NULL-terminated char** array
-int count_tokens(char **tokens)
-{
-    int i = 0;
-    if (!tokens)
-        return (0);
-    while (tokens[i])
-        i++;
-    return (i);
+    scene->objects = NULL;
 }
