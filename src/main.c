@@ -17,7 +17,7 @@ void	free_scene_data(t_scene *scene)
 	t_object	**objects;
 	int			i;
 	t_light		**lights;
-	int			i;
+
 
 	if (scene->objects)
 	{

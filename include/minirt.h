@@ -13,20 +13,20 @@
 # define MINIRT_H
 
 // --- 0. Includes de Librerías ---
-# include "../minilibx/mlx.h"
-# include "../src/libft/libft.h"
-# include <math.h>
-# include <pthread.h>
-# include <stdlib.h>
-# include <X11/keysym.h>
+# include "../minilibx/mlx.h"    // Minilibx library for window and events
+# include "../src/libft/libft.h" // Your personal library
+# include <math.h>               // For mathematical operations (sin, cos, etc.)
+# include <pthread.h>            // For multithreading functions
+# include <stdlib.h>             // For malloc, free, and exit
+# include <X11/keysym.h>         // For keycode definitions
 
 // --- 1. Constantes y Macros ---
-# define EPSILON 1e-6
-# define KEY_W XK_w
-# define KEY_A XK_a
-# define KEY_S XK_s
-# define KEY_D XK_d
-# define KEY_ESC XK_Escape
+# define EPSILON 1e-6          // Pequeño valor para evitar errores de punto flotante
+# define KEY_W XK_w            // Tecla 'W' para movimiento
+# define KEY_A XK_a            // Tecla 'A' para movimiento
+# define KEY_S XK_s            // Tecla 'S' para movimiento
+# define KEY_D XK_d            // Tecla 'D' para movimiento
+# define KEY_ESC XK_Escape     // Tecla 'Esc' para salir
 
 // --- 2. Macros de Errores ---
 # define ERR_TOO_MANY_ARGS "Error\nToo many arguments.\n"
@@ -66,12 +66,20 @@ typedef struct s_hit_record
     struct s_object     *object;
 }                       t_hit_record;
 
-// Parámetros de especularidad (bonificación)
+// Parámetros de especularidad (modelo de Phong)
 typedef struct s_specular
 {
-    float               intensity;
-    int                 shininess;
+    float               intensity;  // La fuerza del brillo especular (0.0-1.0)
+    int                 shininess;  // La "dureza" del brillo (un valor alto = punto de luz pequeño)
 }                       t_specular;
+
+// Texturas y patrones (bonificación)
+typedef struct s_texture
+{
+    int                 is_checkerboard; // 1 para patrón de tablero, 0 para color sólido.
+    int                 is_bump_map;     // 1 si usa mapa de relieve, 0 si no.
+    char                *file_path;      // Ruta al archivo de textura o mapa de relieve.
+}                       t_texture;
 
 // --- 4. Estructuras de Elementos de la Escena ---
 
@@ -100,12 +108,14 @@ typedef struct s_light
     t_vec3              color;
 }                       t_light;
 
-// Tipos de objetos geométricos
+// Tipos de objetos geométricos (incluye bonificaciones)
 typedef enum e_object_type
 {
     SPHERE,
     PLANE,
     CYLINDER,
+    CONE,
+    HYPERBOLOID
 }                       t_object_type;
 
 // Esfera
@@ -131,14 +141,34 @@ typedef struct s_cylinder
     double              height;
 }                       t_cylinder;
 
+// Cono (bonificación)
+typedef struct s_cone
+{
+    t_vec3              position;
+    t_vec3              axis;
+    double              radius;
+    double              height;
+}                       t_cone;
+
+// Hiperboloide (bonificación)
+typedef struct s_hyperboloid
+{
+    t_vec3              position;
+    t_vec3              axis;
+    double              radius_a;
+    double              radius_b;
+    double              height;
+}                       t_hyperboloid;
+
 // Objeto genérico
 typedef struct s_object
 {
     t_object_type       type;
     t_vec3              color;
     void                *data;
-    t_specular          specular;
-    float               mirror_ratio;
+    t_specular          specular;       // Para el brillo especular del modelo de Phong
+    float               mirror_ratio;   // Para la reflexión de espejo (0.0 a 1.0)
+    t_texture           texture;        // Para patrones de tablero o mapas de relieve
 }                       t_object;
 
 // --- 5. Estructuras de Control del Programa ---
@@ -156,7 +186,7 @@ typedef struct s_scene
     int                 has_ambient;
 }                       t_scene;
 
-// MLX y la imagen
+// Minilibx y la imagen
 typedef struct s_img
 {
     char                *addr;
@@ -184,6 +214,9 @@ typedef struct s_data
     int                 rendered_rows;
     int                 show_progress;
     pthread_mutex_t     progress_mutex;
+    int                 mouse_is_pressed;
+    int                 last_mouse_x;
+    int                 last_mouse_y;
 }                       t_data;
 
 // Datos específicos del hilo
@@ -199,28 +232,37 @@ typedef struct s_thread_data
 void                    mlx_setup(t_data *data);
 int                     close_window(t_data *data);
 int                     key_hook(int keycode, t_data *data);
+int                     mouse_press(int button, int x, int y, t_data *data);
+int                     mouse_release(int button, int x, int y, t_data *data);
+int                     mouse_move(int x, int y, t_data *data);
 void                    render_threaded(t_data *data);
 void                    *thread_render_rows(void *arg);
 void                    put_pixel_to_img(t_img *img, int x, int y, int color);
 
-// --- 7. Funciones de Utilidad del Ray Tracer ---
+// // --- 7. Funciones de Utilidad del Ray Tracer ---
 // t_ray                   generate_ray(int x, int y, t_scene *scene);
 // t_hit_record            find_closest_hit(t_ray *ray, t_scene *scene);
 // t_color                 calculate_light(t_hit_record *rec, t_scene *scene);
-int                     color_to_int(t_color color);
+// int                     color_to_int(t_color color);
+// t_color                 get_texture_color(t_object *obj, t_vec3 point);
+// t_vec3                  apply_bump_map(t_hit_record *rec, t_object *obj);
 
-// --- 8. Funciones de Intersección ---
+// --- 8. Funciones de Intersección (incluye bonificaciones) ---
 // int                     intersect_sphere(t_ray *ray, t_sphere *sp, t_hit_record *rec);
 // int                     intersect_plane(t_ray *ray, t_plane *pl, t_hit_record *rec);
 // int                     intersect_cylinder(t_ray *ray, t_cylinder *cy, t_hit_record *rec);
+// int                     intersect_cone(t_ray *ray, t_cone *co, t_hit_record *rec);
+// int                     intersect_hyperboloid(t_ray *ray, t_hyperboloid *hb, t_hit_record *rec);
 
-// --- 9. Funciones del Parser ---
+// --- 9. Funciones del Parser (incluye bonificaciones) ---
 void                    parse_ambient(t_scene *scene, char **tokens);
 void                    parse_camera(t_scene *scene, char **tokens);
 void                    parse_light(t_scene *scene, char **tokens);
 void                    parse_sphere(t_scene *scene, char **tokens);
 void                    parse_plane(t_scene *scene, char **tokens);
 void                    parse_cylinder(t_scene *scene, char **tokens);
+void                    parse_cone(t_scene *scene, char **tokens);
+void                    parse_hyperboloid(t_scene *scene, char **tokens);
 t_vec3                  parse_vec3(char *str);
 t_vec3                  parse_vec3_color(char *str);
 t_object                *create_object(t_object_type type, void *data, t_vec3 color);
@@ -234,6 +276,8 @@ t_light                 light_init(t_vec3 position, double brightness, t_vec3 co
 t_sphere                sphere_init(t_vec3 center, double radius);
 t_plane                 plane_init(t_vec3 position, t_vec3 normal);
 t_cylinder              cylinder_init(t_vec3 position, t_vec3 axis, double radius, double height);
+t_cone                  cone_init(t_vec3 position, t_vec3 axis, double radius, double height);
+t_hyperboloid           hyperboloid_init(t_vec3 position, t_vec3 axis, double radius_a, double radius_b, double height);
 
 // --- 11. Funciones a Mover a Libft / Utilidades Generales ---
 
@@ -249,6 +293,7 @@ double                  vec3_length(t_vec3 v);
 t_vec3                  vec3_normalize(t_vec3 v);
 t_vec3                  ray_at(t_ray r, double t);
 t_vec3                  vec3_reflect(t_vec3 v, t_vec3 n);
+t_vec3                  rotate_vector(t_vec3 v, t_vec3 axis, double angle);
 
 // Funciones auxiliares y de manejo de errores
 void                    validate_args(int argc, char **argv);
