@@ -59,6 +59,8 @@ void	parse_rt_file(t_scene *scene, const char *file_path)
 			parse_plane(scene, tokens);
 		else if (ft_strcmp(tokens[0], "cy") == 0)
 			parse_cylinder(scene, tokens);
+		else if (ft_strcmp(tokens[0], "cn") == 0)
+			parse_cone(scene, tokens);
 
 		ft_free_str_array(tokens);
 		free(line);

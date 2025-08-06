@@ -32,6 +32,7 @@ SRCS = \
 	$(SRC_DIR)/windows/window.c \
 	$(SRC_DIR)/parser/parser.c \
 	$(SRC_DIR)/parser/parser_utils.c \
+	$(SRC_DIR)/parser/parser_utils_materials.c \
 	$(SRC_DIR)/parser/parser_elements.c 
 # $(SRC_DIR)/assets/ft_generate_ray.c
 # --- Object Files ---
@@ -45,7 +46,7 @@ HEADERS = $(INC_DIR)/minirt.h
 # --- Compiler Flags ---
 # -Wall, -Wextra, -Werror: Standard warnings and errors as mandatory by 42
 # -I$(INC_DIR): Include directory for your project headers
-CFLAGS =  -pthread -fsanitize=address,leak# -Wall -Werror -Wextra -I$(INC_DIR) -g# -g for debugging
+CFLAGS =  -pthread -g -fsanitize=address,leak# -Wall -Werror -Wextra -I$(INC_DIR) -g# -g for debugging
 
 # --- External Libraries ---
 LIBFT_PATH = ./src/libft

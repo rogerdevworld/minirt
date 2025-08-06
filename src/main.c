@@ -15,7 +15,7 @@
 void	free_scene_data(t_scene *scene)
 {
 	t_object	**objects;
-	int			i;
+	//int			i;
 	t_light		**lights;
 	int			i;
 
@@ -25,6 +25,8 @@ void	free_scene_data(t_scene *scene)
 		i = 0;
 		while (objects[i])
 		{
+			if (objects[i]->bump_map_path)
+				free(objects[i]->bump_map_path);
 			free(objects[i]->data);
 			free(objects[i]);
 			i++;
@@ -70,6 +72,8 @@ int	init_data(t_data *data)
 	data->scene.ambient = ambient_light_init(0.1, vec3_init(1, 1, 1));
 	data->scene.lights = NULL;
 	data->scene.objects = NULL;
+	data->scene.has_ambient = 0;
+	data->scene.has_camera = 0;
 	data->num_threads = get_num_processors();
 	data->rendered_rows = 0;
 	if (pthread_mutex_init(&data->progress_mutex, NULL) != 0)
@@ -92,7 +96,7 @@ int	main(int argc, char **argv)
 		return (1);
 
 	// 2. Parsear el archivo .rt y construir la escena
-	// parse_rt_file(&data.scene, argv[1]);
+	parse_rt_file(&data.scene, argv[1]);
 
 	// 2. Initialize Minilibx and create window/image
 	mlx_setup(&data);
