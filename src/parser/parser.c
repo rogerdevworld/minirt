@@ -31,16 +31,58 @@ void	free_tokens(char **tokens)
 	free(tokens);
 }
 
+int	open_filename(const char *filename)
+{
+    int fd;
+
+    fd= open(filename, O_RDONLY);
+    if (fd < 0)
+    {
+        perror("Error: cannot open the file");
+        exit(1);
+    }
+    return (fd);
+}
+
+void	validate_file(int fd, const char *file_name)
+{
+    char    buffer[1];
+    ssize_t b_read;
+
+    b_read = read(fd, buffer, 1);
+    if (b_read < 0)
+    {
+        if (errno == EISDIR)
+		//ft_error_exit("MiniRT: Error: A camera and ambient light are required.");
+            printf("Error: %s is not a file, is a directory\n", file_name);
+        else
+            perror("Error: cannot read the file");
+        close(fd);
+        exit(1);
+    }
+    else if (b_read == 0)
+    {
+        printf("Error: the file %s is empty\n", file_name);
+        close(fd);
+        exit(1);
+    }
+}
+
 void	parse_rt_file(t_scene *scene, const char *file_path)
 {
 	int fd;
 	char *line;
 	char **tokens;
 
-	fd = open(file_path, O_RDONLY);
-	if (fd < 0)
-		ft_error_exit("MiniRT: Error: Cannot open file");
-
+	if (!valid_extension_rt(file_path))
+    {
+        printf("Error: the file must be of type '*.rt'\n");
+        exit(1);
+    }
+	fd = open_filename(file_path);
+	validate_file(fd, file_path);
+	close(fd);
+	fd = open_filename(file_path);
 	while ((line = get_next_line(fd)) != NULL)
 	{
 		tokens = ft_split(line, ' ');

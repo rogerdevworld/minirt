@@ -11,6 +11,18 @@
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
+int	valid_extension_rt(const char *filename)
+{
+	int	len;
+
+	len = 0;
+	while (filename[len] != '\0')
+		len++;
+	return (len > 3 && filename[len - 3] == '.'
+        && filename[len - 2] == 'r'
+		&& filename[len - 1] == 't');
+}
+
 void	parse_specular(char *token, t_specular *spec)
 {
 	char	**parts;
@@ -32,9 +44,9 @@ void	parse_checkboard(char *token, t_object *obj)
 {
 	char	**parts;
 
-    parts = ft_split(token + 4, ';');
+	parts = ft_split(token + 4, ';');
 	if (ft_strarr_len(parts) != 3)
-        ft_error_exit("Error: Invalid checkerboard format");
+		ft_error_exit("Error: Invalid checkerboard format");
 	obj->check_color1 = parse_vec3_color(parts[0]);
 	obj->check_color2 = parse_vec3_color(parts[1]);
 	obj->check_scale = ft_atod(parts[2]);
@@ -42,14 +54,73 @@ void	parse_checkboard(char *token, t_object *obj)
 	ft_free_str_array(parts);
 }
 
+char	*copy_trimmed_token(char *token, int len)
+{
+	char	*trimmed;
+	int		i;
+	trimmed = (char *)malloc(len + 1);
+	if (!trimmed)
+	{
+		perror("Error allocating memory for bmp");
+		exit(1);
+	}
+	i = 0;
+	while (i < len)
+	{
+		trimmed[i] = token[i];
+		i++;
+	}
+	trimmed[i] = '\0';
+	return (trimmed);
+}
+
 char	*parse_bump_map(char *token)
 {
-	return (ft_strdup(token + 4));
+	char	*path;
+	int		len;
+	int		fd;
+
+	token += 4;
+	len = 0;
+	while (token[len] && token[len] != '\n' && token[len] != ' '
+		&& token[len] != '\t')
+		len++;
+	path = copy_trimmed_token(token, len);
+	fd = open_filename(path);
+	validate_file(fd, path);
+	close(fd);
+	return (path);
 }
+
+// char	*parse_bump_map(char *token)
+// {
+// 	char	*path;
+// 	int		fd;
+
+// 	path = ft_strdup(token + 4);
+// 	if (!path)
+// 	{
+// 		printf("Error: Failed to allocate bump map path\n");
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	fd = open(path, O_RDONLY);
+// 	if (fd < 0)
+// 	{
+// 		perror("Error opening bump map file");
+// 		free(path);
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	close(fd);
+// 	return (path);
+// }
+// char	*parse_bump_map(char *token)
+// {
+// 	return (ft_strdup(token + 4));
+// }
 
 void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 {
-	int i;
+	int	i;
 
 	i = start_idx;
 	while (tokens[i])

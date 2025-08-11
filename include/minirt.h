@@ -19,6 +19,7 @@
 # include <math.h>
 # include <pthread.h>
 # include <stdlib.h>
+# include <errno.h>
 
 // --- 1. Constantes y Macros ---
 # define EPSILON 1e-6
@@ -239,6 +240,10 @@ int					get_num_processors(void);
 
 // --- 9. Funciones del Parser ---
 void				apply_object_modifiers(t_object *obj, char **tokens, int start_idx);
+int					open_filename(const char *filename);
+int					valid_extension_rt(const char *file_name);
+void				validate_file(int fd, const char *file_name);
+// void				validate_file(int fd);
 void				parse_rt_file(t_scene *scene, const char *file_path);
 void				parse_ambient(t_scene *scene, char **tokens);
 void				parse_camera(t_scene *scene, char **tokens);
