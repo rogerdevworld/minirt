@@ -123,7 +123,6 @@ void	parse_ambient(t_scene *scene, char **tokens)
 
 void	ft_error_exit(const char *msg)
 {
-	// ft_putendl_fd es de tu libft
 	ft_putendl_fd((char *)msg, 2);
 	exit(EXIT_FAILURE);
 }

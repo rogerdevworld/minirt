@@ -46,12 +46,34 @@ void	parse_checkboard(char *token, t_object *obj)
 
 	parts = ft_split(token + 4, ';');
 	if (ft_strarr_len(parts) != 3)
-		ft_error_exit("Error: Invalid checkerboard format");
+		ft_error_exit("MiniRT: Error: Invalid checkerboard format");
 	obj->check_color1 = parse_vec3_color(parts[0]);
 	obj->check_color2 = parse_vec3_color(parts[1]);
 	obj->check_scale = ft_atod(parts[2]);
 	obj->has_checkerboard = 1;
 	ft_free_str_array(parts);
+}
+
+int	validate_texture_extension(const char *file_name)
+{
+	int len;
+
+	if (!file_name)
+		return (0);
+	len = 0;
+	while (file_name[len])
+		len++;
+	if (len >= 4 && file_name[len - 4] == '.'
+			&& (file_name[len - 3] == 'p') || (file_name[len - 3] == 'P')
+			&& (file_name[len - 2] == 'n') || (file_name[len - 2] == 'N')
+			&& (file_name[len - 1] == 'g') || (file_name[len - 1] == 'G'))
+		return (1);
+	if (len >= 4 && file_name[len - 4] == '.'
+			&& (file_name[len - 3] == 'x') || (file_name[len - 3] == 'X')
+			&& (file_name[len - 2] == 'p') || (file_name[len - 2] == 'P')
+			&& (file_name[len - 1] == 'm') || (file_name[len - 1] == 'M'))
+		return (1);
+	return (0);
 }
 
 char	*copy_trimmed_token(char *token, int len)
@@ -60,10 +82,7 @@ char	*copy_trimmed_token(char *token, int len)
 	int		i;
 	trimmed = (char *)malloc(len + 1);
 	if (!trimmed)
-	{
-		perror("Error allocating memory for bmp");
-		exit(1);
-	}
+		ft_error_exit("MiniRT: Error: allocating memory for bmp");
 	i = 0;
 	while (i < len)
 	{
@@ -80,43 +99,26 @@ char	*parse_bump_map(char *token)
 	int		len;
 	int		fd;
 
+	if (!token)
+		ft_error_exit("MiniRT: Error: bump map token is missing");
 	token += 4;
 	len = 0;
-	while (token[len] && token[len] != '\n' && token[len] != ' '
-		&& token[len] != '\t')
+	while (token[len] && token[len] != '\n' && token[len] != '\r'
+		&& token[len] != ' ' && token[len] != '\t')
 		len++;
+	if (len <= 4)
+		ft_error_exit("MiniRT: Error: bump map path is empty");
 	path = copy_trimmed_token(token, len);
+	if (!validate_texture_extension(path))
+	{
+		free(path);
+		ft_error_exit("MiniRT: Error:  texture file must have .png or .xpm extension");
+	}
 	fd = open_filename(path);
 	validate_file(fd, path);
 	close(fd);
 	return (path);
 }
-
-// char	*parse_bump_map(char *token)
-// {
-// 	char	*path;
-// 	int		fd;
-
-// 	path = ft_strdup(token + 4);
-// 	if (!path)
-// 	{
-// 		printf("Error: Failed to allocate bump map path\n");
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	fd = open(path, O_RDONLY);
-// 	if (fd < 0)
-// 	{
-// 		perror("Error opening bump map file");
-// 		free(path);
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	close(fd);
-// 	return (path);
-// }
-// char	*parse_bump_map(char *token)
-// {
-// 	return (ft_strdup(token + 4));
-// }
 
 void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 {

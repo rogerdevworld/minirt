@@ -33,52 +33,48 @@ void	free_tokens(char **tokens)
 
 int	open_filename(const char *filename)
 {
-    int fd;
+	int	fd;
 
-    fd= open(filename, O_RDONLY);
-    if (fd < 0)
-    {
-        perror("Error: cannot open the file");
-        exit(1);
-    }
-    return (fd);
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+	{
+		perror("Error: cannot open the file");
+		exit(1);
+	}
+	return (fd);
 }
 
 void	validate_file(int fd, const char *file_name)
 {
-    char    buffer[1];
-    ssize_t b_read;
+	char	buffer[1];
+	ssize_t	b_read;
 
-    b_read = read(fd, buffer, 1);
-    if (b_read < 0)
-    {
-        if (errno == EISDIR)
-		//ft_error_exit("MiniRT: Error: A camera and ambient light are required.");
-            printf("Error: %s is not a file, is a directory\n", file_name);
-        else
-            perror("Error: cannot read the file");
-        close(fd);
-        exit(1);
-    }
-    else if (b_read == 0)
-    {
-        printf("Error: the file %s is empty\n", file_name);
-        close(fd);
-        exit(1);
-    }
+	b_read = read(fd, buffer, 1);
+	if (b_read < 0)
+	{
+		if (errno == EISDIR)
+			printf("Error: %s is not a file, is a directory\n", file_name);
+		else
+			perror("Error: cannot read the file");
+		close(fd);
+		exit(1);
+	}
+	else if (b_read == 0)
+	{
+		printf("Error: the file %s is empty\n", file_name);
+		close(fd);
+		exit(1);
+	}
 }
 
 void	parse_rt_file(t_scene *scene, const char *file_path)
 {
-	int fd;
-	char *line;
-	char **tokens;
+	int		fd;
+	char	*line;
+	char	**tokens;
 
 	if (!valid_extension_rt(file_path))
-    {
-        printf("Error: the file must be of type '*.rt'\n");
-        exit(1);
-    }
+		ft_error_exit("MiniRT: Error: the file must be of type '*.rt'");
 	fd = open_filename(file_path);
 	validate_file(fd, file_path);
 	close(fd);
@@ -88,7 +84,6 @@ void	parse_rt_file(t_scene *scene, const char *file_path)
 		tokens = ft_split(line, ' ');
 		if (!tokens)
 			ft_error_exit("MiniRT: Error: ft_split failed");
-
 		if (ft_strcmp(tokens[0], "A") == 0)
 			parse_ambient(scene, tokens);
 		else if (ft_strcmp(tokens[0], "C") == 0)
@@ -103,11 +98,11 @@ void	parse_rt_file(t_scene *scene, const char *file_path)
 			parse_cylinder(scene, tokens);
 		else if (ft_strcmp(tokens[0], "cn") == 0)
 			parse_cone(scene, tokens);
-
 		ft_free_str_array(tokens);
 		free(line);
 	}
 	close(fd);
 	if (!scene->has_camera || !scene->has_ambient)
-		ft_error_exit("MiniRT: Error: A camera and ambient light are required.");
+		ft_error_exit("MiniRT: Error: A camera and \
+			ambient light are required.");
 }
