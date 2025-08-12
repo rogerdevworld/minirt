@@ -19,7 +19,7 @@ int	valid_extension_rt(const char *filename)
 	while (filename[len] != '\0')
 		len++;
 	return (len > 3 && filename[len - 3] == '.'
-        && filename[len - 2] == 'r'
+		&& filename[len - 2] == 'r'
 		&& filename[len - 1] == 't');
 }
 
@@ -56,7 +56,7 @@ void	parse_checkboard(char *token, t_object *obj)
 
 int	validate_texture_extension(const char *file_name)
 {
-	int len;
+	int		len;
 
 	if (!file_name)
 		return (0);
@@ -64,14 +64,14 @@ int	validate_texture_extension(const char *file_name)
 	while (file_name[len])
 		len++;
 	if (len >= 4 && file_name[len - 4] == '.'
-			&& (file_name[len - 3] == 'p') || (file_name[len - 3] == 'P')
-			&& (file_name[len - 2] == 'n') || (file_name[len - 2] == 'N')
-			&& (file_name[len - 1] == 'g') || (file_name[len - 1] == 'G'))
+		&& (file_name[len - 3] == 'p') || (file_name[len - 3] == 'P')
+		&& (file_name[len - 2] == 'n') || (file_name[len - 2] == 'N')
+		&& (file_name[len - 1] == 'g') || (file_name[len - 1] == 'G'))
 		return (1);
 	if (len >= 4 && file_name[len - 4] == '.'
-			&& (file_name[len - 3] == 'x') || (file_name[len - 3] == 'X')
-			&& (file_name[len - 2] == 'p') || (file_name[len - 2] == 'P')
-			&& (file_name[len - 1] == 'm') || (file_name[len - 1] == 'M'))
+		&& (file_name[len - 3] == 'x') || (file_name[len - 3] == 'X')
+		&& (file_name[len - 2] == 'p') || (file_name[len - 2] == 'P')
+		&& (file_name[len - 1] == 'm') || (file_name[len - 1] == 'M'))
 		return (1);
 	return (0);
 }
@@ -80,6 +80,7 @@ char	*copy_trimmed_token(char *token, int len)
 {
 	char	*trimmed;
 	int		i;
+
 	trimmed = (char *)malloc(len + 1);
 	if (!trimmed)
 		ft_error_exit("MiniRT: Error: allocating memory for bmp");
@@ -112,7 +113,8 @@ char	*parse_bump_map(char *token)
 	if (!validate_texture_extension(path))
 	{
 		free(path);
-		ft_error_exit("MiniRT: Error:  texture file must have .png or .xpm extension");
+		ft_error_exit("MiniRT: Error:  texture file \
+			must have .png or .xpm extension");
 	}
 	fd = open_filename(path);
 	validate_file(fd, path);

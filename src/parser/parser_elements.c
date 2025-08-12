@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_elements.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaacosta <jaacosta@student.42barcelon      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/12 22:24:49 by jaacosta          #+#    #+#             */
+/*   Updated: 2025/08/12 22:24:53 by jaacosta         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minirt.h"
 
 // Parser de Esfera (sp)
@@ -14,7 +26,6 @@ void	parse_sphere(t_scene *scene, char **tokens)
 	sp->center = parse_vec3(tokens[1]);
 	sp->radius = ft_atod(tokens[2]);
 	obj = create_object(SPHERE, sp, parse_vec3_color(tokens[3]));
-	//apply bonus
 	apply_object_modifiers(obj, tokens, 4);
 	add_object_to_scene(scene, obj);
 }
@@ -31,9 +42,8 @@ void	parse_plane(t_scene *scene, char **tokens)
 	if (!pl)
 		ft_error_exit("Error: Memory allocation failed");
 	pl->position = parse_vec3(tokens[1]);
-	pl->normal = parse_vec3(tokens[2]);
+	pl->normal = parse_vec3_normalized(tokens[2]);
 	obj = create_object(PLANE, pl, parse_vec3_color(tokens[3]));
-	//apply bonus
 	apply_object_modifiers(obj, tokens, 4);
 	add_object_to_scene(scene, obj);
 }
@@ -50,11 +60,10 @@ void	parse_cylinder(t_scene *scene, char **tokens)
 	if (!cy)
 		ft_error_exit("Error: Memory allocation failed");
 	cy->position = parse_vec3(tokens[1]);
-	cy->axis = parse_vec3(tokens[2]);
+	cy->axis = parse_vec3_normalized(tokens[2]);
 	cy->radius = ft_atod(tokens[3]);
 	cy->height = ft_atod(tokens[4]);
 	obj = create_object(CYLINDER, cy, parse_vec3_color(tokens[5]));
-	//apply bonus
 	apply_object_modifiers(obj, tokens, 6);
 	add_object_to_scene(scene, obj);
 }
@@ -88,8 +97,8 @@ void	parse_camera(t_scene *scene, char **tokens)
 	if (ft_strarr_len(tokens) != 4)
 		ft_error_exit("Error: Camera format invalid");
 	scene->camera.position = parse_vec3(tokens[1]);
-	scene->camera.orientation = parse_vec3(tokens[2]);
-	scene->camera.fov = ft_atod(tokens[3]);
+	scene->camera.orientation = parse_vec3_normalized(tokens[2]);
+	scene->camera.fov = parse_fov(tokens[3]);
 	scene->has_camera = 1;
 }
 
@@ -97,6 +106,8 @@ void	parse_camera(t_scene *scene, char **tokens)
 void	parse_light(t_scene *scene, char **tokens)
 {
 	t_light	*light;
+	t_vec3	color;
+	double	brightness;
 
 	if (ft_strarr_len(tokens) != 4)
 		ft_error_exit("Error: Light format invalid");
@@ -104,20 +115,32 @@ void	parse_light(t_scene *scene, char **tokens)
 	if (!light)
 		ft_error_exit("Error: Memory allocation failed");
 	light->position = parse_vec3(tokens[1]);
-	light->brightness = ft_atod(tokens[2]);
-	light->color = parse_vec3_color(tokens[3]);
+	brightness = ft_atod(tokens[2]);
+	if (brightness < 0.0 || brightness > 1.0)
+		ft_error_exit("Error: brightness must be betwen 0.0 and 1.0");
+	light->brightness = brightness;
+	color = parse_vec3_color(tokens[3]);
+	light->color = color;
 	add_light_to_scene(scene, light);
 }
 
 // Parser de Luz Ambiental (A)
 void	parse_ambient(t_scene *scene, char **tokens)
 {
+	t_vec3 color;
+	double ratio;
+
+
 	if (scene->has_ambient)
 		ft_error_exit("Error: Multiple ambient lights not allowed");
 	if (ft_strarr_len(tokens) != 3)
 		ft_error_exit("Error: Ambient light format invalid");
-	scene->ambient.ratio = ft_atod(tokens[1]);
-	scene->ambient.color = parse_vec3_color(tokens[2]);
+	ratio = ft_atod(tokens[1]);
+	if (ratio < 0.0 || ratio > 1.0)
+		ft_error_exit("Error: Ambient ratio must be betwen 0.0 and 1.0");
+	color = parse_vec3_color(tokens[2]);
+	scene->ambient.ratio = ratio;
+	scene->ambient.color = color;
 	scene->has_ambient = 1;
 }
 

@@ -1,4 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaacosta <jaacosta@student.42barcelon      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/12 22:25:08 by jaacosta          #+#    #+#             */
+/*   Updated: 2025/08/12 22:25:11 by jaacosta         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minirt.h"
+
+// Validacion del valor fov de la camara
+double	parse_fov(char *str)
+{
+	double	fov;
+	char	*trimmed;
+
+	fov = 0.0;
+	if (!str)
+		ft_error_exit("MiniRT: Error: FOV string is NULL");
+	trimmed = ft_strtrim(str, " \r\t\n");
+	if (!trimmed)
+		ft_error_exit("MiniRT: Error: allocating memory failed in parse_fov");
+	fov = ft_atod(trimmed);
+	free(trimmed);
+	if (fov < 0 || fov > 180)
+		ft_error_exit("MiniRT: Error: FOV must be in range (0, 180)");
+	return (fov);
+}
 
 // Convierte un string "x,y,z" a un t_vec3
 t_vec3	parse_vec3(char *str)
@@ -16,18 +47,83 @@ t_vec3	parse_vec3(char *str)
 	return (vec);
 }
 
+// valida que el vector "x,y,z" se encuentre normalizado entre [-1,1]
+t_vec3	parse_vec3_normalized(char *str)
+{
+	t_vec3	vec;
+	char	**coords;
+
+	if (!str)
+		ft_error_exit("MiniRT: Error: color string is NULL");
+	coords = ft_split(str, ',');
+	if (ft_strarr_len(coords) != 3)
+	{
+		ft_free_str_array(coords);
+		ft_error_exit("MiniRT: Error: Invalid vector format");
+	}
+	vec.x = ft_atod(coords[0]);
+	vec.y = ft_atod(coords[1]);
+	vec.z = ft_atod(coords[2]);
+	ft_free_str_array(coords);
+	if (vec.x < -1 || vec.x > 1
+		|| vec.y < -1 || vec.y > 1
+		|| vec.z < -1 || vec.z > 1)
+		ft_error_exit("MiniRT: Error: Vector components normalized must be between -1 and 1");
+	return (vec);
+}
+
+void	validate_is_integer(char *str)
+{
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isdigit((unsigned char)str[i]))
+			ft_error_exit("MiniRT: Error: color components must be integers");
+		i++;
+	}
+}
+
+//valida un string que trae los valores de r,g,b
+double	validate_color_component(char *str)
+{
+	char	*trimmed;
+	int		v;
+
+	trimmed = ft_strtrim(str, " \r\t\n");
+	if (!trimmed)
+		ft_error_exit("MiniRT: Error: allocating memory in color parser");
+	if (trimmed[0] == '\0')
+	{
+		free(trimmed);
+		ft_error_exit("MiniRT: Error: color component is empty");
+	}
+	validate_is_integer(trimmed);
+	v = ft_atoi(trimmed);
+	free(trimmed);
+	if (v < 0 || v > 255)
+		ft_error_exit("MiniRT: Error: Color values must be in range 0–255");
+	return (v / 255.0);
+}
+
 // Convierte un string de color "r,g,b" a un t_vec3
 t_vec3	parse_vec3_color(char *str)
 {
 	t_vec3	color;
 	char	**rgb;
 
+	if (!str)
+		ft_error_exit("MiniRT: Error: color string is NULL");
 	rgb = ft_split(str, ',');
 	if (ft_strarr_len(rgb) != 3)
-		ft_error_exit("Error: Invalid color format");
-	color.x = ft_atod(rgb[0]) / 255.0;
-	color.y = ft_atod(rgb[1]) / 255.0;
-	color.z = ft_atod(rgb[2]) / 255.0;
+	{
+		ft_free_str_array(rgb);
+		ft_error_exit("MiniRT: Error: Invalid color format");
+	}
+	color.x = validate_color_component(rgb[0]);
+	color.y = validate_color_component(rgb[1]);
+	color.z = validate_color_component(rgb[2]);
 	ft_free_str_array(rgb);
 	return (color);
 }
@@ -115,19 +211,16 @@ double	ft_atod(const char *str)
 	result = 0.0;
 	decimal_part = 1.0;
 	sign = 1;
-	// 1. Manejar el signo
 	if (*str == '-')
 	{
 		sign = -1;
 		str++;
 	}
-	// 2. Convertir la parte entera
 	while (*str && *str != '.')
 	{
 		result = result * 10.0 + (*str - '0');
 		str++;
 	}
-	// 3. Convertir la parte decimal
 	if (*str == '.')
 	{
 		str++;
@@ -140,6 +233,7 @@ double	ft_atod(const char *str)
 	}
 	return (result * sign);
 }
+
 t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 {
 	t_object	*obj;
