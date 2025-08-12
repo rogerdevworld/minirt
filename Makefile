@@ -32,8 +32,9 @@ SRCS = \
 	$(SRC_DIR)/windows/window.c \
 	$(SRC_DIR)/parser/parser.c \
 	$(SRC_DIR)/parser/parser_utils.c \
-	$(SRC_DIR)/parser/parser_elements.c 
-# $(SRC_DIR)/assets/ft_generate_ray.c
+	$(SRC_DIR)/parser/parser_elements.c \
+	$(SRC_DIR)/assets/ft_ray.c
+
 # --- Object Files ---
 # Generate object file paths from source file paths
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))

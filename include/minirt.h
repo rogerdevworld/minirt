@@ -22,6 +22,9 @@
 
 // --- 1. Constantes y Macros ---
 # define EPSILON 1e-6          // Pequeño valor para evitar errores de punto flotante
+#ifndef M_PI
+# define M_PI 3.14159265358979323846
+#endif
 # define KEY_W XK_w            // Tecla 'W' para movimiento
 # define KEY_A XK_a            // Tecla 'A' para movimiento
 # define KEY_S XK_s            // Tecla 'S' para movimiento
@@ -184,6 +187,7 @@ typedef struct s_scene
     int                 height;
     int                 has_camera;
     int                 has_ambient;
+    t_color         background_color;
 }                       t_scene;
 
 // Minilibx y la imagen
@@ -239,20 +243,20 @@ void                    render_threaded(t_data *data);
 void                    *thread_render_rows(void *arg);
 void                    put_pixel_to_img(t_img *img, int x, int y, int color);
 
-// // --- 7. Funciones de Utilidad del Ray Tracer ---
-// t_ray                   generate_ray(int x, int y, t_scene *scene);
-// t_hit_record            find_closest_hit(t_ray *ray, t_scene *scene);
-// t_color                 calculate_light(t_hit_record *rec, t_scene *scene);
-// int                     color_to_int(t_color color);
-// t_color                 get_texture_color(t_object *obj, t_vec3 point);
-// t_vec3                  apply_bump_map(t_hit_record *rec, t_object *obj);
+// --- 7. Funciones de Utilidad del Ray Tracer ---
+t_ray                   generate_ray(int x, int y, t_scene *scene);
+t_hit_record            find_closest_hit(t_ray *ray, t_scene *scene);
+t_color                 calculate_light(t_hit_record *rec, t_scene *scene);
+int                     color_to_int(t_color color);
+t_color                 get_texture_color(t_object *obj, t_vec3 point);
+t_vec3                  apply_bump_map(t_hit_record *rec, t_object *obj);
 
 // --- 8. Funciones de Intersección (incluye bonificaciones) ---
-// int                     intersect_sphere(t_ray *ray, t_sphere *sp, t_hit_record *rec);
-// int                     intersect_plane(t_ray *ray, t_plane *pl, t_hit_record *rec);
-// int                     intersect_cylinder(t_ray *ray, t_cylinder *cy, t_hit_record *rec);
-// int                     intersect_cone(t_ray *ray, t_cone *co, t_hit_record *rec);
-// int                     intersect_hyperboloid(t_ray *ray, t_hyperboloid *hb, t_hit_record *rec);
+int                     intersect_sphere(t_ray *ray, t_sphere *sp, t_hit_record *rec);
+int                     intersect_plane(t_ray *ray, t_plane *pl, t_hit_record *rec);
+int                     intersect_cylinder(t_ray *ray, t_cylinder *cy, t_hit_record *rec);
+int                     intersect_cone(t_ray *ray, t_cone *co, t_hit_record *rec);
+int                     intersect_hyperboloid(t_ray *ray, t_hyperboloid *hb, t_hit_record *rec);
 
 // --- 9. Funciones del Parser (incluye bonificaciones) ---
 void                    parse_ambient(t_scene *scene, char **tokens);

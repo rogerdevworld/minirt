@@ -24,45 +24,57 @@ int	color_to_int(t_color color)
 	return (0xFF000000 | (r << 16) | (g << 8) | b);
 }
 
-// Función que ejecuta cada hilo de renderizado
-void	*render_thread_func(void *arg)
-{
-	t_thread_data	*thread_data;
-	t_data			*data;
-	int				y;
-	int				x;
-	t_color			pixel_color;
-	double			r_comp;
-	double			g_comp;
-	double			b_comp;
-	int				mlx_color;
+// Dentro de tu archivo de renderizado
+#include "../include/minirt.h"
 
-	thread_data = (t_thread_data *)arg;
-	data = thread_data->global_data;
-	y = thread_data->start_row;
-	while (y < thread_data->end_row)
-	{
-		x = 0;
-		while (x < data->scene.width)
-		{
-			r_comp = (double)x / data->scene.width;
-			g_comp = (double)y / data->scene.height;
-			b_comp = 0.5 * ((double)x / data->scene.width + (double)y
-					/ data->scene.height);
-			if (b_comp > 1.0)
-				b_comp = 1.0;
-			pixel_color = (t_color){r_comp, g_comp, b_comp};
-			mlx_color = color_to_int(pixel_color);
-			put_pixel_to_img(&data->mlx.img, x, y, mlx_color);
-			x++;
-		}
-		pthread_mutex_lock(&data->progress_mutex);
-		data->rendered_rows++;
-		pthread_mutex_unlock(&data->progress_mutex);
-		// ----------------------------------------------------
-		y++;
-	}
-	return (NULL);
+void *render_thread_func(void *arg)
+{
+    t_thread_data   *thread_data;
+    t_data          *data;
+    int             y;
+    int             x;
+    t_ray           ray;
+    t_hit_record    rec;
+    t_color         final_color;
+
+    thread_data = (t_thread_data *)arg;
+    data = thread_data->global_data;
+    y = thread_data->start_row;
+    while (y < thread_data->end_row)
+    {
+        x = 0;
+        while (x < data->scene.width)
+        {
+            // 1. Generar el rayo para el píxel (x, y)
+            ray = generate_ray(x, y, &data->scene);
+
+            // 2. Encontrar la colisión más cercana
+            rec = find_closest_hit(&ray, &data->scene);
+
+            // 3. Calcular el color final del píxel
+            if (rec.object != NULL)
+            {
+                // Si hubo una colisión, calcular el color con iluminación
+                final_color = calculate_light(&rec, &data->scene);
+            }
+            else
+            {
+                // Si no hubo colisión, usar el color de fondo
+                final_color = data->scene.background_color; 
+            }
+            
+            // 4. Convertir y pintar el píxel
+            int mlx_color = color_to_int(final_color);
+            put_pixel_to_img(&data->mlx.img, x, y, mlx_color);
+            x++;
+        }
+        pthread_mutex_lock(&data->progress_mutex);
+        data->rendered_rows++;
+        pthread_mutex_unlock(&data->progress_mutex);
+        
+        y++;
+    }
+    return (NULL);
 }
 
 // Función principal que lanza los hilos de renderizado
