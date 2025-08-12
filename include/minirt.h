@@ -67,6 +67,7 @@ typedef struct s_hit_record
 	t_vec3			point;
 	t_vec3			normal;
 	double			t;
+	t_ray           ray;
 	struct s_object	*object;
 }					t_hit_record;
 
@@ -76,6 +77,21 @@ typedef struct s_specular
     float               intensity;  // La fuerza del brillo especular (0.0-1.0)
     int                 shininess;  // La "dureza" del brillo (un valor alto = punto de luz pequeño)
 }                       t_specular;
+
+typedef struct s_material
+{
+    t_specular          specular;
+    double              mirror_ratio;
+    
+    int                 has_checkerboard;
+    t_vec3              check_color1;
+    t_vec3              check_color2;
+    double              check_scale;
+    
+    int                 has_bump_map;
+    char                *bump_map_path;
+}                       t_material;
+
 
 // Texturas y patrones (bonificación)
 typedef struct s_texture
@@ -173,19 +189,14 @@ typedef struct s_hyperboloid
 // 	t_specular		specular;
 // 	float			mirror_ratio;
 // }					t_object;
+// Objeto genérico - Ahora más limpio con la nueva estructura de material
 typedef struct s_object
 {
-	t_object_type	type;
-	t_vec3			color;
-	void			*data;
-	t_specular		specular;
-	double			mirror_ratio;
-	int			has_checkerboard;
-	t_vec3			check_color1;
-	t_vec3			check_color2;
-	double			check_scale;
-	char			*bump_map_path;
-}					t_object;
+    t_object_type   type;
+    t_vec3          color;
+    void            *data;
+    t_material      *material; // <-- Puntero a la nueva estructura de material
+}                   t_object;
 
 // --- 5. Estructuras de Control del Programa ---
 
@@ -256,7 +267,7 @@ void                    put_pixel_to_img(t_img *img, int x, int y, int color);
 // --- 7. Funciones de Utilidad del Ray Tracer ---
 t_ray                   generate_ray(int x, int y, t_scene *scene);
 t_hit_record            find_closest_hit(t_ray *ray, t_scene *scene);
-t_color                 calculate_light(t_hit_record *rec, t_scene *scene);
+t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray);
 int                     color_to_int(t_color color);
 t_color                 get_texture_color(t_object *obj, t_vec3 point);
 t_vec3                  apply_bump_map(t_hit_record *rec, t_object *obj);
@@ -324,5 +335,6 @@ void				ft_free_str_array(char **arr);
 void				free_tokens(char **tokens);
 void				free_scene_data(t_scene *scene);
 void				cleanup_program(t_data *data);
-
+int is_in_shadow(t_ray *shadow_ray, t_scene *scene, t_light *light);
+void	init_scene(t_scene *scene);
 #endif // MINIRT_H

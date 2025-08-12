@@ -101,3 +101,30 @@ t_cylinder	cylinder_init(t_vec3 position, t_vec3 axis, double radius,
 	cy.height = height;
 	return (cy);
 }
+// Inicializa un cono.
+// Asegura que el eje esté normalizado.
+t_cone	cone_init(t_vec3 position, t_vec3 axis, double radius, double height)
+{
+	t_cone	cn;
+
+	cn.position = position;
+	cn.axis = vec3_normalize(axis);
+	cn.radius = radius;
+	cn.height = height;
+	return (cn);
+}
+
+// Inicializa un hiperboloide.
+// Asegura que el eje esté normalizado.
+t_hyperboloid	hyperboloid_init(t_vec3 position, t_vec3 axis, double radius_a,
+		double radius_b, double height)
+{
+	t_hyperboloid	hp;
+
+	hp.position = position;
+	hp.axis = vec3_normalize(axis);
+	hp.radius_a = radius_a;
+	hp.radius_b = radius_b;
+	hp.height = height;
+	return (hp);
+}

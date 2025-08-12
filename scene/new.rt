@@ -1,0 +1,24 @@
+# Camera with a good view
+C 0,0,10 0,0,-1 90
+
+# Ambient Light
+A 0.1 255,255,255
+
+# Light
+L -10,10,0 0.8 255,255,255
+
+# A red sphere with a bump map
+# This sphere is slightly to the left
+sp -2,0,0 1.0 255,0,0 bmp:scene/bmp.xpm spc:0.5,10
+
+# A blue plane with a checkerboard texture
+# The plane is at y=0
+pl 0,-1,0 0,1,0 0,0,255 chk: 255,255,255 10,10,10 5.0
+
+
+# A mirrored sphere
+# This sphere is slightly to the right
+sp 2,0,0 1.0 0,255,0 mir:1.0
+
+# Another sphere with a checkerboard texture
+sp 6,0,-15 3 255,255,255 chk: 255,255,255 0,0,0 0.5

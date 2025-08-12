@@ -55,7 +55,7 @@ void *render_thread_func(void *arg)
             if (rec.object != NULL)
             {
                 // Si hubo una colisión, calcular el color con iluminación
-                final_color = calculate_light(&rec, &data->scene);
+                final_color = calculate_light(&rec, &data->scene, &ray);
             }
             else
             {

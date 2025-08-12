@@ -1,0 +1,31 @@
+# Definiciones de la escena
+# C - Camara
+C 0.0,0.0,50.0 0.0,0.0,-1.0 70
+
+# A - Luz ambiental
+A 0.1 255,255,255
+
+# L - Luz puntual
+L 0.0,30.0,50.0 0.8 255,255,255
+
+# Objetos con bonus
+
+# sp - Esfera
+# La esfera usa el bonus de textura de tablero de ajedrez.
+# El material "C" indica "Checkerboard"
+# Los colores del tablero son blanco (255,255,255) y negro (0,0,0)
+# La escala del tablero es 1.0 (unidades del mundo real)
+# El ratio de espejo es 0.0 (no es un espejo)
+# Los valores especulares son intensidad 0.0 (no es brillante) y brillo 0.0
+sp 0.0,0.0,0.0 12.0 M C 255,255,255 0,0,0 1.0 0.0 0.0 0.0
+
+# pl - Plano
+# El plano tiene un material especular muy alto para que se vea brillante.
+# El color es gris claro.
+# El ratio de espejo es 0.5 (mezcla la luz con el reflejo).
+# Los valores especulares son intensidad 0.8 y brillo 50.0 (un brillo pequeño y concentrado).
+pl 0.0, -10.0, 0.0 0.0,1.0,0.0 M S 200,200,200 0.5 0.8 50.0
+
+# cy - Cilindro
+# Un cilindro normal con un color verde.
+cy 20.0,0.0,0.0 0.0,1.0,0.0 5.0 20.0 0.0,255,0.0

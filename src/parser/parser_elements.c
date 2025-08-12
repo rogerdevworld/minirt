@@ -14,7 +14,6 @@ void	parse_sphere(t_scene *scene, char **tokens)
 	sp->center = parse_vec3(tokens[1]);
 	sp->radius = ft_atod(tokens[2]);
 	obj = create_object(SPHERE, sp, parse_vec3_color(tokens[3]));
-	//apply bonus
 	apply_object_modifiers(obj, tokens, 4);
 	add_object_to_scene(scene, obj);
 }
@@ -33,7 +32,6 @@ void	parse_plane(t_scene *scene, char **tokens)
 	pl->position = parse_vec3(tokens[1]);
 	pl->normal = parse_vec3(tokens[2]);
 	obj = create_object(PLANE, pl, parse_vec3_color(tokens[3]));
-	//apply bonus
 	apply_object_modifiers(obj, tokens, 4);
 	add_object_to_scene(scene, obj);
 }
@@ -54,12 +52,11 @@ void	parse_cylinder(t_scene *scene, char **tokens)
 	cy->radius = ft_atod(tokens[3]);
 	cy->height = ft_atod(tokens[4]);
 	obj = create_object(CYLINDER, cy, parse_vec3_color(tokens[5]));
-	//apply bonus
 	apply_object_modifiers(obj, tokens, 6);
 	add_object_to_scene(scene, obj);
 }
 
-// Parser de Cono (co) ->bonus
+// Parser de Cono (cn)
 void	parse_cone(t_scene *scene, char **tokens)
 {
 	t_cone *cn;
@@ -73,10 +70,31 @@ void	parse_cone(t_scene *scene, char **tokens)
 		ft_error_exit("Error: Memory allocation failed");
 	cn->position = parse_vec3(tokens[1]);
 	cn->axis = parse_vec3(tokens[2]);
-	cn->radius = ft_atod(tokens[3]);//en grados
+	cn->radius = ft_atod(tokens[3]);
 	cn->height = ft_atod(tokens[4]);
 	obj = create_object(CONE, cn, parse_vec3_color(tokens[5]));
 	apply_object_modifiers(obj, tokens, 6);
+	add_object_to_scene(scene, obj);
+}
+
+// Nuevo parser para Hiperboloide (hp)
+void	parse_hyperboloid(t_scene *scene, char **tokens)
+{
+	t_hyperboloid *hb;
+	t_object *obj;
+
+	if (ft_strarr_len(tokens) < 7)
+		ft_error_exit("Error: Hyperboloid format invalid");
+	hb = malloc(sizeof(t_hyperboloid));
+	if (!hb)
+		ft_error_exit("Error: Memory allocation failed");
+	hb->position = parse_vec3(tokens[1]);
+	hb->axis = parse_vec3(tokens[2]);
+	hb->radius_a = ft_atod(tokens[3]);
+	hb->radius_b = ft_atod(tokens[4]);
+	hb->height = ft_atod(tokens[5]);
+	obj = create_object(HYPERBOLOID, hb, parse_vec3_color(tokens[6]));
+	apply_object_modifiers(obj, tokens, 7);
 	add_object_to_scene(scene, obj);
 }
 
