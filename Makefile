@@ -33,8 +33,8 @@ SRCS = \
 	$(SRC_DIR)/parser/parser.c \
 	$(SRC_DIR)/parser/parser_utils.c \
 	$(SRC_DIR)/parser/parser_elements.c \
-	$(SRC_DIR)/assets/ft_ray.c
-
+	$(SRC_DIR)/assets/ft_ray.c \
+	$(SRC_DIR)/parser/parser_utils_materials.c
 # --- Object Files ---
 # Generate object file paths from source file paths
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
@@ -46,7 +46,7 @@ HEADERS = $(INC_DIR)/minirt.h
 # --- Compiler Flags ---
 # -Wall, -Wextra, -Werror: Standard warnings and errors as mandatory by 42
 # -I$(INC_DIR): Include directory for your project headers
-CFLAGS =  -pthread -fsanitize=address,leak# -Wall -Werror -Wextra -I$(INC_DIR) -g# -g for debugging
+CFLAGS =  -pthread -g -fsanitize=address,leak# -Wall -Werror -Wextra -I$(INC_DIR) -g# -g for debugging
 
 # --- External Libraries ---
 LIBFT_PATH = ./src/libft

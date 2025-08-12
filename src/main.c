@@ -25,6 +25,8 @@ void	free_scene_data(t_scene *scene)
 		i = 0;
 		while (objects[i])
 		{
+			if (objects[i]->bump_map_path)
+				free(objects[i]->bump_map_path);
 			free(objects[i]->data);
 			free(objects[i]);
 			i++;
@@ -72,6 +74,8 @@ int init_data(t_data *data)
     data->scene.objects = NULL;
     data->scene.background_color = vec3_init(0.0, 0.0, 0.0);
     data->num_threads = get_num_processors();
+    data->scene.has_camera = 0;
+    data->scene.has_ambient = 0;
     data->rendered_rows = 0;
     if (pthread_mutex_init(&data->progress_mutex, NULL) != 0)
     {

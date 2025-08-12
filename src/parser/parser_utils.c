@@ -150,5 +150,13 @@ t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 	obj->type = type;
 	obj->data = data;
 	obj->color = color;
+	obj->specular.intensity = 0.0f;
+	obj->specular.shininess = 0;
+	obj->mirror_ratio = 0.0;
+	obj->bump_map_path = NULL;
+	obj->has_checkerboard = 0;
+	obj->check_color1 = (t_vec3){0, 0, 0};
+	obj->check_color2 = (t_vec3){0, 0, 0};
+	obj->check_scale = 1.0;
 	return (obj);
 }

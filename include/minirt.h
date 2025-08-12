@@ -19,12 +19,13 @@
 # include <pthread.h>            // For multithreading functions
 # include <stdlib.h>             // For malloc, free, and exit
 # include <X11/keysym.h>         // For keycode definitions
-
+#include <errno.h>
 // --- 1. Constantes y Macros ---
 # define EPSILON 1e-6          // Pequeño valor para evitar errores de punto flotante
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
+#define	EISDIR		21
 # define KEY_W XK_w            // Tecla 'W' para movimiento
 # define KEY_A XK_a            // Tecla 'A' para movimiento
 # define KEY_S XK_s            // Tecla 'S' para movimiento
@@ -46,28 +47,28 @@
 // Vector y color
 typedef struct s_vec3
 {
-    double              x;
-    double              y;
-    double              z;
-}                       t_vec3;
+	double			x;
+	double			y;
+	double			z;
+}					t_vec3;
 
-typedef t_vec3 t_color;
+typedef t_vec3		t_color;
 
 // Rayo
 typedef struct s_ray
 {
-    t_vec3              origin;
-    t_vec3              direction;
-}                       t_ray;
+	t_vec3			origin;
+	t_vec3			direction;
+}					t_ray;
 
 // Información de un impacto (hit)
 typedef struct s_hit_record
 {
-    t_vec3              point;
-    t_vec3              normal;
-    double              t;
-    struct s_object     *object;
-}                       t_hit_record;
+	t_vec3			point;
+	t_vec3			normal;
+	double			t;
+	struct s_object	*object;
+}					t_hit_record;
 
 // Parámetros de especularidad (modelo de Phong)
 typedef struct s_specular
@@ -89,27 +90,27 @@ typedef struct s_texture
 // Cámara
 typedef struct s_camera
 {
-    t_vec3              position;
-    t_vec3              orientation;
-    double              fov;
-    t_vec3              forward;
-    t_vec3              right;
-    t_vec3              up;
-}                       t_camera;
+	t_vec3			position;
+	t_vec3			orientation;
+	double			fov;
+	t_vec3			forward;
+	t_vec3			right;
+	t_vec3			up;
+}					t_camera;
 
 // Luces
 typedef struct s_ambient_light
 {
-    double              ratio;
-    t_vec3              color;
-}                       t_ambient_light;
+	double			ratio;
+	t_vec3			color;
+}					t_ambient_light;
 
 typedef struct s_light
 {
-    t_vec3              position;
-    double              brightness;
-    t_vec3              color;
-}                       t_light;
+	t_vec3			position;
+	double			brightness;
+	t_vec3			color;
+}					t_light;
 
 // Tipos de objetos geométricos (incluye bonificaciones)
 typedef enum e_object_type
@@ -124,25 +125,25 @@ typedef enum e_object_type
 // Esfera
 typedef struct s_sphere
 {
-    t_vec3              center;
-    double              radius;
-}                       t_sphere;
+	t_vec3			center;
+	double			radius;
+}					t_sphere;
 
 // Plano
 typedef struct s_plane
 {
-    t_vec3              position;
-    t_vec3              normal;
-}                       t_plane;
+	t_vec3			position;
+	t_vec3			normal;
+}					t_plane;
 
 // Cilindro
 typedef struct s_cylinder
 {
-    t_vec3              position;
-    t_vec3              axis;
-    double              radius;
-    double              height;
-}                       t_cylinder;
+	t_vec3			position;
+	t_vec3			axis;
+	double			radius;
+	double			height;
+}					t_cylinder;
 
 // Cono (bonificación)
 typedef struct s_cone
@@ -164,15 +165,27 @@ typedef struct s_hyperboloid
 }                       t_hyperboloid;
 
 // Objeto genérico
+// typedef struct s_object
+// {
+// 	t_object_type	type;
+// 	t_vec3			color;
+// 	void			*data;
+// 	t_specular		specular;
+// 	float			mirror_ratio;
+// }					t_object;
 typedef struct s_object
 {
-    t_object_type       type;
-    t_vec3              color;
-    void                *data;
-    t_specular          specular;       // Para el brillo especular del modelo de Phong
-    float               mirror_ratio;   // Para la reflexión de espejo (0.0 a 1.0)
-    t_texture           texture;        // Para patrones de tablero o mapas de relieve
-}                       t_object;
+	t_object_type	type;
+	t_vec3			color;
+	void			*data;
+	t_specular		specular;
+	double			mirror_ratio;
+	int			has_checkerboard;
+	t_vec3			check_color1;
+	t_vec3			check_color2;
+	double			check_scale;
+	char			*bump_map_path;
+}					t_object;
 
 // --- 5. Estructuras de Control del Programa ---
 
@@ -193,44 +206,41 @@ typedef struct s_scene
 // Minilibx y la imagen
 typedef struct s_img
 {
-    char                *addr;
-    void                *img_ptr;
-    int                 bpp;
-    int                 line_len;
-    int                 endian;
-    int                 width;
-    int                 height;
-}                       t_img;
+	char			*addr;
+	void			*img_ptr;
+	int				bpp;
+	int				line_len;
+	int				endian;
+	int				width;
+	int				height;
+}					t_img;
 
 typedef struct s_mlx
 {
-    void                *mlx_ptr;
-    void                *win_ptr;
-    t_img               img;
-}                       t_mlx;
+	void			*mlx_ptr;
+	void			*win_ptr;
+	t_img			img;
+}					t_mlx;
 
 // Datos globales para la multihilo
 typedef struct s_data
 {
-    t_mlx               mlx;
-    t_scene             scene;
-    int                 num_threads;
-    int                 rendered_rows;
-    int                 show_progress;
-    pthread_mutex_t     progress_mutex;
-    int                 mouse_is_pressed;
-    int                 last_mouse_x;
-    int                 last_mouse_y;
-}                       t_data;
+	t_mlx			mlx;
+	t_scene			scene;
+	int				num_threads;
+	int				rendered_rows;
+	int				show_progress;
+	pthread_mutex_t	progress_mutex;
+}					t_data;
 
 // Datos específicos del hilo
 typedef struct s_thread_data
 {
-    int                 id;
-    int                 start_row;
-    int                 end_row;
-    t_data              *global_data;
-}                       t_thread_data;
+	int				id;
+	int				start_row;
+	int				end_row;
+	t_data			*global_data;
+}					t_thread_data;
 
 // --- 6. Funciones de Renderizado y MLX ---
 void                    mlx_setup(t_data *data);
@@ -300,19 +310,19 @@ t_vec3                  vec3_reflect(t_vec3 v, t_vec3 n);
 t_vec3                  rotate_vector(t_vec3 v, t_vec3 axis, double angle);
 
 // Funciones auxiliares y de manejo de errores
-void                    validate_args(int argc, char **argv);
-int                     is_valid_float(char *str);
-int                     is_valid_int(char *str);
-int                     is_valid_color_component(char *str);
-int                     is_normalized_vector(t_vec3 vec);
-void                    ft_error_exit(const char *msg);
-void                    add_object_to_scene(t_scene *scene, t_object *obj);
-void                    add_light_to_scene(t_scene *scene, t_light *light);
-int                     ft_strarr_len(char **arr);
-double                  ft_atod(const char *str);
-void                    ft_free_str_array(char **arr);
-void                    free_tokens(char **tokens);
-void                    free_scene_data(t_scene *scene);
-void                    cleanup_program(t_data *data);
+void				validate_args(int argc, char **argv);
+int					is_valid_float(char *str);
+int					is_valid_int(char *str);
+int					is_valid_color_component(char *str);
+int					is_normalized_vector(t_vec3 vec);
+void				ft_error_exit(const char *msg);
+void				add_object_to_scene(t_scene *scene, t_object *obj);
+void				add_light_to_scene(t_scene *scene, t_light *light);
+int					ft_strarr_len(char **arr);
+double				ft_atod(const char *str);
+void				ft_free_str_array(char **arr);
+void				free_tokens(char **tokens);
+void				free_scene_data(t_scene *scene);
+void				cleanup_program(t_data *data);
 
 #endif // MINIRT_H
