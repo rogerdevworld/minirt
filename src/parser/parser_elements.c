@@ -81,7 +81,7 @@ void	parse_cone(t_scene *scene, char **tokens)
 		ft_error_exit("Error: Memory allocation failed");
 	cn->position = parse_vec3(tokens[1]);
 	cn->axis = parse_vec3_normalized(tokens[2]);
-	cn->angle = parse_angle(tokens[3]);
+	cn->radius = parse_positive_double(tokens[3]);
 	cn->height = parse_positive_double(tokens[4]);
 	obj = create_object(CONE, cn, parse_vec3_color(tokens[5]));
 	apply_object_modifiers(obj, tokens, 6);
@@ -140,10 +140,10 @@ void	parse_hyperboloid(t_scene *scene, char **tokens)
 	if (!hb)
 		ft_error_exit("Error: Memory allocation failed");
 	hb->position = parse_vec3(tokens[1]);
-	hb->axis = parse_vec3(tokens[2]);
-	hb->radius_a = ft_atod(tokens[3]);
-	hb->radius_b = ft_atod(tokens[4]);
-	hb->height = ft_atod(tokens[5]);
+	hb->axis = parse_vec3_normalized(tokens[2]);
+	hb->radius_a = parse_positive_double(tokens[3]);
+	hb->radius_b = parse_positive_double(tokens[4]);
+	hb->height = parse_positive_double(tokens[5]);
 	obj = create_object(HYPERBOLOID, hb, parse_vec3_color(tokens[6]));
 	apply_object_modifiers(obj, tokens, 7);
 	add_object_to_scene(scene, obj);

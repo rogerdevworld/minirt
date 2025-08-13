@@ -265,23 +265,23 @@ double  ft_atod(const char *str)
 	return (result * sign);
 }
 
-t_object	*create_object(t_object_type type, void *data, t_vec3 color)
-{
-	t_object	*obj;
+// t_object	*create_object(t_object_type type, void *data, t_vec3 color)
+// {
+// 	t_object	*obj;
 
-	obj = (t_object *)malloc(sizeof(t_object));
-	if (!obj)
-		ft_error_exit("MiniRT: Error: Memory allocation for object failed");
-	obj->type = type;
-	obj->data = data;
-	obj->color = color;
-	obj->specular.intensity = 0.0f;
-	obj->specular.shininess = 0;
-	obj->mirror_ratio = 0.0;
-	obj->bump_map_path = NULL;
-	obj->has_checkerboard = 0;
-	obj->check_color1 = (t_vec3){0, 0, 0};
-	obj->check_color2 = (t_vec3){0, 0, 0};
-	obj->check_scale = 1.0;
-	return (obj);
-}
+// 	obj = (t_object *)malloc(sizeof(t_object));
+// 	if (!obj)
+// 		ft_error_exit("MiniRT: Error: Memory allocation for object failed");
+// 	obj->type = type;
+// 	obj->data = data;
+// 	obj->color = color;
+// 	obj->material->specular.intensity = 0.0f;
+// 	obj->material->specular.shininess = 0;
+// 	obj->material->mirror_ratio = 0.0;
+// 	obj->material->bump_map_path = NULL;
+// 	obj->material->has_checkerboard = 0;
+// 	obj->material->check_color1 = (t_vec3){0, 0, 0};
+// 	obj->material->check_color2 = (t_vec3){0, 0, 0};
+// 	obj->material->check_scale = 1.0;
+// 	return (obj);
+// }
