@@ -68,7 +68,7 @@ void	parse_cylinder(t_scene *scene, char **tokens)
 	add_object_to_scene(scene, obj);
 }
 
-// Parser de Cono (co) ->bonus
+// Parser de Cono (cn)
 void	parse_cone(t_scene *scene, char **tokens)
 {
 	t_cone		*cn;
@@ -89,24 +89,24 @@ void	parse_cone(t_scene *scene, char **tokens)
 }
 
 // Parser de hiperboloide (hp) ->bonus
-void	parse_hyperboloid(t_scene *scene, char **tokens)
-{
-	t_hyperb	*hp;
-	t_object	*obj;
+// void	parse_hyperboloid(t_scene *scene, char **tokens)
+// {
+// 	t_hyperb	*hp;
+// 	t_object	*obj;
 
-	if (ft_strarr_len(tokens) < 6)
-		ft_error_exit("Error: Cone format invalid");
-	hp = malloc(sizeof(t_cone));
-	if (!hp)
-		ft_error_exit("Error: Memory allocation failed");
-	hp->position = parse_vec3(tokens[1]);
-	hp->axis = parse_vec3_normalized(tokens[2]);
-	hp->radius = parse_positive_double(tokens[3]);
-	hp->height = parse_positive_double(tokens[4]);
-	obj = create_object(HYPERBOLOID, hp, parse_vec3_color(tokens[5]));
-	apply_object_modifiers(obj, tokens, 6);
-	add_object_to_scene(scene, obj);
-}
+// 	if (ft_strarr_len(tokens) < 6)
+// 		ft_error_exit("Error: Cone format invalid");
+// 	hp = malloc(sizeof(t_cone));
+// 	if (!hp)
+// 		ft_error_exit("Error: Memory allocation failed");
+// 	hp->position = parse_vec3(tokens[1]);
+// 	hp->axis = parse_vec3_normalized(tokens[2]);
+// 	hp->radius = parse_positive_double(tokens[3]);
+// 	hp->height = parse_positive_double(tokens[4]);
+// 	obj = create_object(HYPERBOLOID, hp, parse_vec3_color(tokens[5]));
+// 	apply_object_modifiers(obj, tokens, 6);
+// 	add_object_to_scene(scene, obj);
+// }
 
 // Parser de Paraboloide (pb) ->bonus
 void	parse_paraboloid(t_scene *scene, char **tokens)
@@ -125,6 +125,27 @@ void	parse_paraboloid(t_scene *scene, char **tokens)
 	pb->height = parse_positive_double(tokens[4]);
 	obj = create_object(CONE, pb, parse_vec3_color(tokens[5]));
 	apply_object_modifiers(obj, tokens, 6);
+	add_object_to_scene(scene, obj);
+}
+
+// Nuevo parser para Hiperboloide (hp)
+void	parse_hyperboloid(t_scene *scene, char **tokens)
+{
+	t_hyperboloid *hb;
+	t_object *obj;
+
+	if (ft_strarr_len(tokens) < 7)
+		ft_error_exit("Error: Hyperboloid format invalid");
+	hb = malloc(sizeof(t_hyperboloid));
+	if (!hb)
+		ft_error_exit("Error: Memory allocation failed");
+	hb->position = parse_vec3(tokens[1]);
+	hb->axis = parse_vec3(tokens[2]);
+	hb->radius_a = ft_atod(tokens[3]);
+	hb->radius_b = ft_atod(tokens[4]);
+	hb->height = ft_atod(tokens[5]);
+	obj = create_object(HYPERBOLOID, hb, parse_vec3_color(tokens[6]));
+	apply_object_modifiers(obj, tokens, 7);
 	add_object_to_scene(scene, obj);
 }
 

@@ -63,10 +63,10 @@ double	parse_fov(char *str)
 }
 
 // Convierte un string "x,y,z" a un t_vec3
-t_vec3	parse_vec3(char *str)
+t_vec3  parse_vec3(char *str)
 {
-	t_vec3	vec;
-	char	**coords;
+    t_vec3  vec;
+    char    **coords;
 
 	coords = ft_split(str, ',');
 	if (ft_strarr_len(coords) != 3)
@@ -139,10 +139,10 @@ double	validate_color_component(char *str)
 }
 
 // Convierte un string de color "r,g,b" a un t_vec3
-t_vec3	parse_vec3_color(char *str)
+t_vec3  parse_vec3_color(char *str)
 {
-	t_vec3	color;
-	char	**rgb;
+    t_vec3  color;
+    char    **rgb;
 
 	if (!str)
 		ft_error_exit("MiniRT: Error: color string is NULL");
@@ -160,10 +160,10 @@ t_vec3	parse_vec3_color(char *str)
 }
 
 // Añade un objeto de forma dinámica a la escena
-void	add_object_to_scene(t_scene *scene, t_object *obj)
+void    add_object_to_scene(t_scene *scene, t_object *obj)
 {
-	int			count;
-	t_object	**new_objects;
+    int         count;
+    t_object    **new_objects;
 
 	count = 0;
 	if (scene->objects)
@@ -184,10 +184,10 @@ void	add_object_to_scene(t_scene *scene, t_object *obj)
 }
 
 // Añade una luz de forma dinámica a la escena
-void	add_light_to_scene(t_scene *scene, t_light *light)
+void    add_light_to_scene(t_scene *scene, t_light *light)
 {
-	int		count;
-	t_light	**new_lights;
+    int     count;
+    t_light **new_lights;
 
 	count = 0;
 	if (scene->lights)
@@ -206,38 +206,38 @@ void	add_light_to_scene(t_scene *scene, t_light *light)
 	scene->lights = new_lights;
 }
 
-void	ft_free_str_array(char **arr)
+void    ft_free_str_array(char **arr)
 {
-	int	i;
+    int i;
 
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
+    if (!arr)
+        return ;
+    i = 0;
+    while (arr[i])
+    {
+        free(arr[i]);
+        i++;
+    }
+    free(arr);
 }
 
-int	ft_strarr_len(char **arr)
+int ft_strarr_len(char **arr)
 {
-	int	len;
+    int len;
 
-	len = 0;
-	if (!arr)
-		return (0);
-	while (arr[len])
-		len++;
-	return (len);
+    len = 0;
+    if (!arr)
+        return (0);
+    while (arr[len])
+        len++;
+    return (len);
 }
 
-double	ft_atod(const char *str)
+double  ft_atod(const char *str)
 {
-	double	result;
-	double	decimal_part;
-	int		sign;
+    double  result;
+    double  decimal_part;
+    int     sign;
 
 	result = 0.0;
 	decimal_part = 1.0;

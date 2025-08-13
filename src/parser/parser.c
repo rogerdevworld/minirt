@@ -12,7 +12,7 @@
 
 #include "../../include/minirt.h"
 
-static void	init_scene(t_scene *scene)
+void	init_scene(t_scene *scene)
 {
 	scene->width = 0;
 	scene->height = 0;
@@ -110,10 +110,10 @@ void	parse_rt_file(t_scene *scene, const char *file_path)
 			parse_cylinder(scene, tokens);
 		else if (ft_strcmp(tokens[0], "cn") == 0)
 			parse_cone(scene, tokens);
-		else if (ft_strcmp(tokens[0], "hp") == 0)
-			parse_hyperboloid(scene, tokens);
 		else if (ft_strcmp(tokens[0], "pb") == 0)
 			parse_paraboloid(scene, tokens);
+		else if (ft_strcmp(tokens[0], "hp") == 0)
+			parse_hyperboloid(scene, tokens);
 		ft_free_str_array(tokens);
 		free(line);
 	}

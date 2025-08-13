@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser_utils_materials.c                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jaacosta <jaacosta@student.42barcelon      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/06 20:56:44 by jaacosta          #+#    #+#             */
-/*   Updated: 2025/08/06 20:56:45 by jaacosta         ###   ########.fr       */
-/*                                                                            */
+/* */
+/* :::      ::::::::   */
+/* parser_utils_materials.c                           :+:      :+:    :+:   */
+/* +:+ +:+         +:+     */
+/* By: jaacosta <jaacosta@student.42barcelon      +#+  +:+       +#+        */
+/* +#+#+#+#+#+   +#+           */
+/* Created: 2025/08/06 20:56:44 by jaacosta          #+#    #+#             */
+/* Updated: 2025/08/06 20:56:45 by jaacosta         ###   ########.fr       */
+/* */
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
@@ -40,17 +40,17 @@ double	parse_mirror(char *token)
 	return (ft_atod(token + 4));
 }
 
-void	parse_checkboard(char *token, t_object *obj)
+void	parse_checkboard(char *token, t_material *material)
 {
 	char	**parts;
 
 	parts = ft_split(token + 4, ';');
 	if (ft_strarr_len(parts) != 3)
 		ft_error_exit("MiniRT: Error: Invalid checkerboard format");
-	obj->check_color1 = parse_vec3_color(parts[0]);
-	obj->check_color2 = parse_vec3_color(parts[1]);
-	obj->check_scale = ft_atod(parts[2]);
-	obj->has_checkerboard = 1;
+	material->check_color1 = parse_vec3_color(parts[0]);
+	material->check_color2 = parse_vec3_color(parts[1]);
+	material->check_scale = ft_atod(parts[2]);
+	material->has_checkerboard = 1;
 	ft_free_str_array(parts);
 }
 
@@ -122,6 +122,39 @@ char	*parse_bump_map(char *token)
 	return (path);
 }
 
+t_material	*create_material(void)
+{
+	t_material	*material;
+
+	material = malloc(sizeof(t_material));
+	if (!material)
+		ft_error_exit("Error: Memory allocation for material failed");
+	material->specular.intensity = 0.0f;
+	material->specular.shininess = 0;
+	material->mirror_ratio = 0.0;
+	material->has_checkerboard = 0;
+	material->check_color1 = (t_vec3){0, 0, 0};
+	material->check_color2 = (t_vec3){0, 0, 0};
+	material->check_scale = 1.0;
+	material->bump_map_path = NULL;
+	material->has_bump_map = 0;
+	return (material);
+}
+
+t_object	*create_object(t_object_type type, void *data, t_vec3 color)
+{
+	t_object	*obj;
+
+	obj = (t_object *)malloc(sizeof(t_object));
+	if (!obj)
+		ft_error_exit("Error: Memory allocation for object failed");
+	obj->type = type;
+	obj->data = data;
+	obj->color = color;
+	obj->material = create_material();
+	return (obj);
+}
+
 void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 {
 	int	i;
@@ -130,13 +163,16 @@ void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 	while (tokens[i])
 	{
 		if (ft_strncmp(tokens[i], "spc:", 4) == 0)
-			parse_specular(tokens[i], &obj->specular);
+			parse_specular(tokens[i], &obj->material->specular);
 		else if (ft_strncmp(tokens[i], "mir:", 4) == 0)
-			obj->mirror_ratio = parse_mirror(tokens[i]);
+			obj->material->mirror_ratio = parse_mirror(tokens[i]);
 		else if (ft_strncmp(tokens[i], "chk:", 4) == 0)
-			parse_checkboard(tokens[i], obj);
+			parse_checkboard(tokens[i], obj->material);
 		else if (ft_strncmp(tokens[i], "bmp:", 4) == 0)
-			obj->bump_map_path = parse_bump_map(tokens[i]);
+		{
+			obj->material->bump_map_path = parse_bump_map(tokens[i]);
+			obj->material->has_bump_map = 1;
+		}
 		i++;
 	}
 }
