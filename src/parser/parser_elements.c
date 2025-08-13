@@ -24,7 +24,7 @@ void	parse_sphere(t_scene *scene, char **tokens)
 	if (!sp)
 		ft_error_exit("Error: Memory allocation failed");
 	sp->center = parse_vec3(tokens[1]);
-	sp->radius = ft_atod(tokens[2]);
+	sp->radius = parse_positive_double(tokens[2]);
 	obj = create_object(SPHERE, sp, parse_vec3_color(tokens[3]));
 	apply_object_modifiers(obj, tokens, 4);
 	add_object_to_scene(scene, obj);
@@ -61,8 +61,8 @@ void	parse_cylinder(t_scene *scene, char **tokens)
 		ft_error_exit("Error: Memory allocation failed");
 	cy->position = parse_vec3(tokens[1]);
 	cy->axis = parse_vec3_normalized(tokens[2]);
-	cy->radius = ft_atod(tokens[3]);
-	cy->height = ft_atod(tokens[4]);
+	cy->radius = parse_positive_double(tokens[3]);
+	cy->height = parse_positive_double(tokens[4]);
 	obj = create_object(CYLINDER, cy, parse_vec3_color(tokens[5]));
 	apply_object_modifiers(obj, tokens, 6);
 	add_object_to_scene(scene, obj);
@@ -71,20 +71,59 @@ void	parse_cylinder(t_scene *scene, char **tokens)
 // Parser de Cono (co) ->bonus
 void	parse_cone(t_scene *scene, char **tokens)
 {
-	t_cone *cn;
-	t_object *obj;
+	t_cone		*cn;
+	t_object	*obj;
 
 	if (ft_strarr_len(tokens) < 6)
 		ft_error_exit("Error: Cone format invalid");
-
 	cn = malloc(sizeof(t_cone));
 	if (!cn)
 		ft_error_exit("Error: Memory allocation failed");
 	cn->position = parse_vec3(tokens[1]);
-	cn->axis = parse_vec3(tokens[2]);
-	cn->angle = ft_atod(tokens[3]);//en grados
-	cn->height = ft_atod(tokens[4]);
+	cn->axis = parse_vec3_normalized(tokens[2]);
+	cn->angle = parse_angle(tokens[3]);
+	cn->height = parse_positive_double(tokens[4]);
 	obj = create_object(CONE, cn, parse_vec3_color(tokens[5]));
+	apply_object_modifiers(obj, tokens, 6);
+	add_object_to_scene(scene, obj);
+}
+
+// Parser de hiperboloide (hp) ->bonus
+void	parse_hyperboloid(t_scene *scene, char **tokens)
+{
+	t_hyperb	*hp;
+	t_object	*obj;
+
+	if (ft_strarr_len(tokens) < 6)
+		ft_error_exit("Error: Cone format invalid");
+	hp = malloc(sizeof(t_cone));
+	if (!hp)
+		ft_error_exit("Error: Memory allocation failed");
+	hp->position = parse_vec3(tokens[1]);
+	hp->axis = parse_vec3_normalized(tokens[2]);
+	hp->radius = parse_positive_double(tokens[3]);
+	hp->height = parse_positive_double(tokens[4]);
+	obj = create_object(HYPERBOLOID, hp, parse_vec3_color(tokens[5]));
+	apply_object_modifiers(obj, tokens, 6);
+	add_object_to_scene(scene, obj);
+}
+
+// Parser de Paraboloide (pb) ->bonus
+void	parse_paraboloid(t_scene *scene, char **tokens)
+{
+	t_parab		*pb;
+	t_object	*obj;
+
+	if (ft_strarr_len(tokens) < 6)
+		ft_error_exit("Error: Cone format invalid");
+	pb = malloc(sizeof(t_cone));
+	if (!pb)
+		ft_error_exit("Error: Memory allocation failed");
+	pb->position = parse_vec3(tokens[1]);
+	pb->axis = parse_vec3_normalized(tokens[2]);
+	pb->focal_lenght = parse_positive_double(tokens[3]);
+	pb->height = parse_positive_double(tokens[4]);
+	obj = create_object(CONE, pb, parse_vec3_color(tokens[5]));
 	apply_object_modifiers(obj, tokens, 6);
 	add_object_to_scene(scene, obj);
 }
@@ -127,9 +166,8 @@ void	parse_light(t_scene *scene, char **tokens)
 // Parser de Luz Ambiental (A)
 void	parse_ambient(t_scene *scene, char **tokens)
 {
-	t_vec3 color;
-	double ratio;
-
+	t_vec3	color;
+	double	ratio;
 
 	if (scene->has_ambient)
 		ft_error_exit("Error: Multiple ambient lights not allowed");

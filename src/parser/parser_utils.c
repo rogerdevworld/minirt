@@ -12,6 +12,37 @@
 
 #include "../../include/minirt.h"
 
+// Validacion para el angulo de cono
+double	parse_angle(char *str)
+{
+	double	angle;
+
+	if (!str)
+		ft_error_exit("MiniRT: Error: FOV string is NULL");
+	angle = ft_atod(str);
+	if (angle < 0 || angle > 90)
+		ft_error_exit("MiniRT: Error: Angle must be in range (0,90) degrees");
+	return (angle);
+}
+
+// Validadcion para los valores doubles que deben ser positivos
+double	parse_positive_double(char *str)
+{
+	double	val;
+	char	*trimmed;
+
+	trimmed = ft_strtrim(str, " \t\r\n");
+	if (!trimmed)
+		ft_error_exit("MiniRT: Error: Memory allocation failed");
+	if (trimmed[0] == '\0')
+		ft_error_exit("MiniRT: Error: Empty numeric value");
+	val = ft_atod(trimmed);
+	free(trimmed);
+	if (val <= 0)
+		ft_error_exit("MiniRT: Error: Incorrect data values");
+	return (val);
+}
+
 // Validacion del valor fov de la camara
 double	parse_fov(char *str)
 {
@@ -39,7 +70,7 @@ t_vec3	parse_vec3(char *str)
 
 	coords = ft_split(str, ',');
 	if (ft_strarr_len(coords) != 3)
-		ft_error_exit("Error: Invalid vector format");
+		ft_error_exit("MiniRT: Error: Invalid vector format");
 	vec.x = ft_atod(coords[0]);
 	vec.y = ft_atod(coords[1]);
 	vec.z = ft_atod(coords[2]);
@@ -140,7 +171,7 @@ void	add_object_to_scene(t_scene *scene, t_object *obj)
 			count++;
 	new_objects = (t_object **)malloc(sizeof(t_object *) * (count + 2));
 	if (!new_objects)
-		ft_error_exit("Error: Malloc failed for objects");
+		ft_error_exit("MiniRT: Error: Malloc failed for objects");
 	if (scene->objects)
 	{
 		ft_memcpy(new_objects, scene->objects, sizeof(t_object *) * (count
@@ -164,7 +195,7 @@ void	add_light_to_scene(t_scene *scene, t_light *light)
 			count++;
 	new_lights = (t_light **)malloc(sizeof(t_light *) * (count + 2));
 	if (!new_lights)
-		ft_error_exit("Error: Malloc failed for lights");
+		ft_error_exit("MiniRT: Error: Malloc failed for lights");
 	if (scene->lights)
 	{
 		ft_memcpy(new_lights, scene->lights, sizeof(t_light *) * (count + 1));
@@ -240,7 +271,7 @@ t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 
 	obj = (t_object *)malloc(sizeof(t_object));
 	if (!obj)
-		ft_error_exit("Error: Memory allocation for object failed");
+		ft_error_exit("MiniRT: Error: Memory allocation for object failed");
 	obj->type = type;
 	obj->data = data;
 	obj->color = color;

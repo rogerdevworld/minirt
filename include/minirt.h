@@ -108,6 +108,8 @@ typedef enum e_object_type
 	PLANE,
 	CYLINDER,
     CONE,
+	HYPERBOLOID,
+	PARABOLOID,
 }					t_object_type;
 
 // Esfera
@@ -141,6 +143,21 @@ typedef struct s_cone
 	double			height;
 }					t_cone;
 
+typedef struct s_hyperb
+{
+	t_vec3			position;
+	t_vec3			axis;
+	double			radius;
+	double			height;
+}					t_hyperb;
+
+typedef struct s_parab
+{
+	t_vec3			position;
+	t_vec3			axis;
+	double			focal_lenght;
+	double			height;
+}					t_parab;
 // Objeto genérico
 // typedef struct s_object
 // {
@@ -244,7 +261,8 @@ int					open_filename(const char *filename);
 int					valid_extension_rt(const char *file_name);
 void				validate_file(int fd, const char *file_name);
 double				parse_fov(char *str);
-// void				validate_file(int fd);
+double				parse_angle(char *str);
+double				parse_positive_double(char *str);
 void				parse_rt_file(t_scene *scene, const char *file_path);
 void				parse_ambient(t_scene *scene, char **tokens);
 void				parse_camera(t_scene *scene, char **tokens);
@@ -252,7 +270,9 @@ void				parse_light(t_scene *scene, char **tokens);
 void				parse_sphere(t_scene *scene, char **tokens);
 void				parse_plane(t_scene *scene, char **tokens);
 void				parse_cylinder(t_scene *scene, char **tokens);
-void                parse_cone(t_scene *scene, char **tokens);
+void				parse_cone(t_scene *scene, char **tokens);
+void				parse_hyperboloid(t_scene *scene, char **tokens);
+void				parse_paraboloid(t_scene *scene, char **tokens);
 t_vec3				parse_vec3(char *str);
 t_vec3				parse_vec3_color(char *str);
 t_vec3				parse_vec3_normalized(char *str);
