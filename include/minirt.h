@@ -13,7 +13,10 @@
 # define MINIRT_H
 
 // --- 0. Includes de Librerías ---
-# include "../minilibx/mlx.h"    // Minilibx library for window and events
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
+#include <X11/X.h>
+#include "../MLX42/include/MLX42/MLX42.h" // O la ruta a tu minilibx local
 # include "../src/libft/libft.h" // Your personal library
 # include <math.h>               // For mathematical operations (sin, cos, etc.)
 # include <pthread.h>            // For multithreading functions
