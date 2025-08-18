@@ -131,87 +131,7 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
     return (vec3_init(0, 0, 0));
 }
 
-// // Corregido: calculate_light ahora maneja la reflexión
-// t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth)
-// {
-//     t_color final_color;
-//     t_color ambient_color;
-//     t_light **lights = (t_light **)scene->lights;
-//     int     i = 0;
-
-//     // Primer y más importante: validar el objeto del hit record.
-//     if (rec->object == NULL)
-//         return (scene->background_color);
-
-//     // Obtener el color del objeto (color sólido, tablero o textura)
-//     t_color object_color = get_object_color(rec);
-
-//     // 1. Luz ambiente
-//     ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
-//     ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
-//     final_color = ambient_color;
-
-//     // 2. Iterar sobre las luces
-//     while (lights[i] != NULL)
-//     {
-//         t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
-
-//         // Rayo de sombra
-//         t_ray shadow_ray;
-//         shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
-//         shadow_ray.direction = to_light;
-        
-//         if (is_in_shadow(&shadow_ray, scene, lights[i]))
-//         {
-//             i++;
-//             continue;
-//         }
-
-//         // 3. Diffuse Light
-//         double dot_prod = vec3_dot(rec->normal, to_light);
-//         if (dot_prod > 0)
-//         {
-//             // The contribution is a mix of the light's color and the object's color
-//             t_color diffuse_contribution = vec3_mult_vec(lights[i]->color, object_color);
-//             diffuse_contribution = vec3_mul(diffuse_contribution, dot_prod * lights[i]->brightness);
-//             final_color = vec3_add(final_color, diffuse_contribution);
-//         }
-
-//         // 4. Specular Light
-//         if (rec->object->material && rec->object->material->specular.intensity > 0.0)
-//         {
-//             t_color specular_color = calculate_specular_light(rec, lights[i], ray);
-//             final_color = vec3_add(final_color, specular_color);
-//         }
-//         i++;
-//     }
-//     // 5. Manejo de la reflexión (materiales de espejo)
-//     // El control de la reflexión debe ir después del cálculo de la luz difusa/especular
-//     // y solo si el objeto tiene propiedades de espejo.
-//     if (rec->object->material && rec->object->material->mirror_ratio > 0.0 && depth < MAX_RECURSION_DEPTH)
-//     {
-//         t_ray reflected_ray;
-//         reflected_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
-//         reflected_ray.direction = vec3_reflect(ray->direction, rec->normal);
-
-//         t_hit_record reflected_rec = find_closest_hit(&reflected_ray, scene);
-
-//         t_color reflected_color;
-//         if (reflected_rec.object != NULL)
-//             reflected_color = calculate_light(&reflected_rec, scene, &reflected_ray, depth + 1);
-//         else
-//             reflected_color = scene->background_color;
-
-//         final_color = vec3_add(vec3_mul(final_color, 1.0 - rec->object->material->mirror_ratio),
-//                                vec3_mul(reflected_color, rec->object->material->mirror_ratio));
-//     }
-//         // Final clamp to prevent values from going over 1.0
-//     final_color.x = fmin(1.0, fmax(0.0, final_color.x));
-//     final_color.y = fmin(1.0, fmax(0.0, final_color.y));
-//     final_color.z = fmin(1.0, fmax(0.0, final_color.z));
-//     return (final_color);
-// }
-
+// Corregido: calculate_light ahora maneja la reflexión
 t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth)
 {
     t_color final_color;
@@ -219,19 +139,24 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
     t_light **lights = (t_light **)scene->lights;
     int     i = 0;
 
+    // Primer y más importante: validar el objeto del hit record.
     if (rec->object == NULL)
         return (scene->background_color);
 
+    // Obtener el color del objeto (color sólido, tablero o textura)
     t_color object_color = get_object_color(rec);
 
+    // 1. Luz ambiente
     ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
     ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
     final_color = ambient_color;
 
+    // 2. Iterar sobre las luces
     while (lights[i] != NULL)
     {
         t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
 
+        // Rayo de sombra
         t_ray shadow_ray;
         shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
         shadow_ray.direction = to_light;
@@ -242,14 +167,17 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
             continue;
         }
 
+        // 3. Diffuse Light
         double dot_prod = vec3_dot(rec->normal, to_light);
         if (dot_prod > 0)
         {
+            // The contribution is a mix of the light's color and the object's color
             t_color diffuse_contribution = vec3_mult_vec(lights[i]->color, object_color);
             diffuse_contribution = vec3_mul(diffuse_contribution, dot_prod * lights[i]->brightness);
             final_color = vec3_add(final_color, diffuse_contribution);
         }
 
+        // 4. Specular Light
         if (rec->object->material && rec->object->material->specular.intensity > 0.0)
         {
             t_color specular_color = calculate_specular_light(rec, lights[i], ray);
@@ -257,15 +185,14 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
         }
         i++;
     }
-
+    // 5. Manejo de la reflexión (materiales de espejo)
+    // El control de la reflexión debe ir después del cálculo de la luz difusa/especular
+    // y solo si el objeto tiene propiedades de espejo.
     if (rec->object->material && rec->object->material->mirror_ratio > 0.0 && depth < MAX_RECURSION_DEPTH)
     {
         t_ray reflected_ray;
         reflected_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
-        
-        // CORRECCIÓN CLAVE: Invertir la dirección del rayo original
-        t_vec3 incident_direction = vec3_mul(ray->direction, -1.0);
-        reflected_ray.direction = vec3_reflect(incident_direction, rec->normal);
+        reflected_ray.direction = vec3_reflect(ray->direction, rec->normal);
 
         t_hit_record reflected_rec = find_closest_hit(&reflected_ray, scene);
 
@@ -278,13 +205,86 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
         final_color = vec3_add(vec3_mul(final_color, 1.0 - rec->object->material->mirror_ratio),
                                vec3_mul(reflected_color, rec->object->material->mirror_ratio));
     }
-
+        // Final clamp to prevent values from going over 1.0
     final_color.x = fmin(1.0, fmax(0.0, final_color.x));
     final_color.y = fmin(1.0, fmax(0.0, final_color.y));
     final_color.z = fmin(1.0, fmax(0.0, final_color.z));
-    
     return (final_color);
 }
+
+// t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth)
+// {
+//     t_color final_color;
+//     t_color ambient_color;
+//     t_light **lights = (t_light **)scene->lights;
+//     int     i = 0;
+
+//     if (rec->object == NULL)
+//         return (scene->background_color);
+
+//     t_color object_color = get_object_color(rec);
+
+//     ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
+//     ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
+//     final_color = ambient_color;
+
+//     while (lights[i] != NULL)
+//     {
+//         t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
+
+//         t_ray shadow_ray;
+//         shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
+//         shadow_ray.direction = to_light;
+        
+//         if (is_in_shadow(&shadow_ray, scene, lights[i]))
+//         {
+//             i++;
+//             continue;
+//         }
+
+//         double dot_prod = vec3_dot(rec->normal, to_light);
+//         if (dot_prod > 0)
+//         {
+//             t_color diffuse_contribution = vec3_mult_vec(lights[i]->color, object_color);
+//             diffuse_contribution = vec3_mul(diffuse_contribution, dot_prod * lights[i]->brightness);
+//             final_color = vec3_add(final_color, diffuse_contribution);
+//         }
+
+//         if (rec->object->material && rec->object->material->specular.intensity > 0.0)
+//         {
+//             t_color specular_color = calculate_specular_light(rec, lights[i], ray);
+//             final_color = vec3_add(final_color, specular_color);
+//         }
+//         i++;
+//     }
+
+//     if (rec->object->material && rec->object->material->mirror_ratio > 0.0 && depth < MAX_RECURSION_DEPTH)
+//     {
+//         t_ray reflected_ray;
+//         reflected_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
+        
+//         // CORRECCIÓN CLAVE: Invertir la dirección del rayo original
+//         t_vec3 incident_direction = vec3_mul(ray->direction, -1.0);
+//         reflected_ray.direction = vec3_reflect(incident_direction, rec->normal);
+
+//         t_hit_record reflected_rec = find_closest_hit(&reflected_ray, scene);
+
+//         t_color reflected_color;
+//         if (reflected_rec.object != NULL)
+//             reflected_color = calculate_light(&reflected_rec, scene, &reflected_ray, depth + 1);
+//         else
+//             reflected_color = scene->background_color;
+
+//         final_color = vec3_add(vec3_mul(final_color, 1.0 - rec->object->material->mirror_ratio),
+//                                vec3_mul(reflected_color, rec->object->material->mirror_ratio));
+//     }
+
+//     final_color.x = fmin(1.0, fmax(0.0, final_color.x));
+//     final_color.y = fmin(1.0, fmax(0.0, final_color.y));
+//     final_color.z = fmin(1.0, fmax(0.0, final_color.z));
+    
+//     return (final_color);
+// }
 
 t_vec2 get_uv_sphere(t_hit_record *rec)
 {
