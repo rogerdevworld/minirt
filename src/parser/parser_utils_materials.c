@@ -18,7 +18,8 @@ int	valid_extension_rt(const char *filename)
 	len = 0;
 	while (filename[len] != '\0')
 		len++;
-	return (len > 3 && filename[len - 3] == '.' && filename[len - 2] == 'r'
+	return (len > 3 && filename[len - 3] == '.'
+		&& filename[len - 2] == 'r'
 		&& filename[len - 1] == 't');
 }
 
@@ -53,29 +54,25 @@ void	parse_checkboard(char *token, t_material *material)
 	ft_free_str_array(parts);
 }
 
-#include "../../include/minirt.h"
-
 int	validate_texture_extension(const char *file_name)
 {
-	int	len;
+	int		len;
 
-	len = ft_strlen(file_name);
-	// Corrected check for .png files
-	if (len >= 4 && file_name[len - 4] == '.' && ((file_name[len - 3] == 'p'
-				|| file_name[len - 3] == 'P') && (file_name[len - 2] == 'n'
-				|| file_name[len - 2] == 'N') && (file_name[len - 1] == 'g'
-				|| file_name[len - 1] == 'G')))
-	{
+	if (!file_name)
+		return (0);
+	len = 0;
+	while (file_name[len])
+		len++;
+	if (len >= 4 && file_name[len - 4] == '.'
+		&& (file_name[len - 3] == 'p') || (file_name[len - 3] == 'P')
+		&& (file_name[len - 2] == 'n') || (file_name[len - 2] == 'N')
+		&& (file_name[len - 1] == 'g') || (file_name[len - 1] == 'G'))
 		return (1);
-	}
-	// Corrected check for .xpm files
-	if (len >= 4 && file_name[len - 4] == '.' && ((file_name[len - 3] == 'x'
-				|| file_name[len - 3] == 'X') && (file_name[len - 2] == 'p'
-				|| file_name[len - 2] == 'P') && (file_name[len - 1] == 'm'
-				|| file_name[len - 1] == 'M')))
-	{
+	if (len >= 4 && file_name[len - 4] == '.'
+		&& (file_name[len - 3] == 'x') || (file_name[len - 3] == 'X')
+		&& (file_name[len - 2] == 'p') || (file_name[len - 2] == 'P')
+		&& (file_name[len - 1] == 'm') || (file_name[len - 1] == 'M'))
 		return (1);
-	}
 	return (0);
 }
 
@@ -139,10 +136,8 @@ t_material	*create_material(void)
 	material->check_color1 = (t_vec3){0, 0, 0};
 	material->check_color2 = (t_vec3){0, 0, 0};
 	material->check_scale = 1.0;
-	material->bump_map_path = NULL;
-	material->has_bump_map = 0;
 	material->texture = NULL;
-	material->has_texture = false;
+	material->has_bump_map = 0;
 	return (material);
 }
 
@@ -162,7 +157,7 @@ t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 
 void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 {
-	int i;
+	int	i;
 
 	i = start_idx;
 	while (tokens[i])
@@ -175,9 +170,12 @@ void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 			parse_checkboard(tokens[i], obj->material);
 		else if (ft_strncmp(tokens[i], "bmp:", 4) == 0)
 		{
-			obj->material->bump_map_path = parse_bump_map(tokens[i]);
-			obj->material->has_bump_map = 1;
-		}
+            // Carga del bump map (si es un PNG)
+            obj->material->texture = mlx_load_png(tokens[i] + 4);
+            if (!obj->material->texture)
+                ft_error_exit("Error: Failed to load PNG bump map.");
+            obj->material->has_bump_map = 1;
+        }
 		i++;
 	}
 }

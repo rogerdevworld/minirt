@@ -42,7 +42,7 @@ t_color get_object_color(t_hit_record *rec)
     if (!rec->object->material)
         return (rec->object->color); // Fallback al color base si no hay material
 
-    if (rec->object->material->has_texture)
+    if (rec->object->material->has_bump_map)
     {
         return (get_texture_color(rec));
     }
@@ -249,18 +249,16 @@ t_color get_texture_color(t_hit_record *rec)
     x_tex = (int)(uv.x * (texture->width - 1));
     y_tex = (int)(uv.y * (texture->height - 1));
 
-    // 5. Final validation of the pixel index
-    // Check if the calculated index is within the texture's bounds
     index = (y_tex * texture->width + x_tex) * 4;
-    if (index < 0 || index >= (int)(texture->width * texture->height * 4))
-        return (rec->object->color); // Fallback if index is invalid
 
-    // Access the pixel data and return the color
     t_color tex_color;
-    tex_color.x = (double)texture->pixels[index] / 255.0;
-    tex_color.y = (double)texture->pixels[index + 1] / 255.0;
-    tex_color.z = (double)texture->pixels[index + 2] / 255.0;
 
+    // Lee los bytes en orden ARGB (Alfa, Rojo, Verde, Azul)
+    // El formato ARGB es común, y el canal R (Red) es el segundo byte.
+    tex_color.x = (double)texture->pixels[index + 1] / 255.0; // Canal Rojo
+    tex_color.y = (double)texture->pixels[index + 2] / 255.0; // Canal Verde
+    tex_color.z = (double)texture->pixels[index + 3] / 255.0; // Canal Azul
+    
     return (tex_color);
 }
 

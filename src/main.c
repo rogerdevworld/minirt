@@ -1,44 +1,5 @@
 #include "../include/minirt.h"
 
-// Función para liberar la memoria de la escena (objetos y luces)
-void	free_scene_data(t_scene *scene)
-{
-	t_object	**objects;
-	int			i;
-	t_light		**lights;
-
-	if (scene->objects)
-	{
-		objects = (t_object **)scene->objects;
-		i = 0;
-		while (objects[i])
-		{
-			// Liberar la estructura de material
-			if (objects[i]->material)
-			{
-				if (objects[i]->material->bump_map_path)
-					free(objects[i]->material->bump_map_path);
-				free(objects[i]->material);
-			}
-			free(objects[i]->data);
-			free(objects[i]);
-			i++;
-		}
-		free(objects);
-	}
-	if (scene->lights)
-	{
-		lights = (t_light **)scene->lights;
-		i = 0;
-		while (lights[i])
-		{
-			free(lights[i]);
-			i++;
-		}
-		free(lights);
-	}
-}
-
 int init_data(t_data *data)
 {
     // Inicializar todos los campos a cero, previene valores basura.

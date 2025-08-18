@@ -17,6 +17,7 @@
 #include <X11/keysym.h>
 #include <X11/X.h>
 #include "../MLX42/include/MLX42/MLX42.h" // O la ruta a tu minilibx local
+// #include "../MLX42/include/MLX42/xpm.h" // O la ruta a tu minilibx local
 # include "../src/libft/libft.h" // Your personal library
 # include <math.h>               // For mathematical operations (sin, cos, etc.)
 # include <pthread.h>            // For multithreading functions
@@ -88,13 +89,21 @@ typedef struct s_specular
     int                 shininess;  // La "dureza" del brillo (un valor alto = punto de luz pequeño)
 }                       t_specular;
 
+// typedef enum e_texture_type
+// {
+//     NONE,
+//     PNG,
+//     XPM
+// }   t_texture_type;
+
 typedef struct s_material
 {
     t_specular          specular;
     double              mirror_ratio;
-    
-	int                 has_texture; // Flag para activar la textura
-    mlx_texture_t       *texture;    // Puntero a la textura cargada
+
+    // Un solo puntero para todas las texturas
+    mlx_texture_t                *texture;
+    bool has_textura;
 
     int                 has_checkerboard;
     t_vec3              check_color1;
@@ -102,7 +111,10 @@ typedef struct s_material
     double              check_scale;
     
     int                 has_bump_map;
-    char                *bump_map_path;
+    // Un solo puntero y un enum para el bump map
+    // void                *bump_map_ptr;
+    // t_texture_type      bump_map_type;
+
 }                       t_material;
 
 
@@ -234,8 +246,8 @@ typedef struct s_scene
 {
     t_ambient_light     ambient;
     t_camera            camera;
-    void                *lights;
-    void                *objects;
+    t_list                *lights;
+    t_list                *objects;
     int                 width;
     int                 height;
     int                 has_camera;

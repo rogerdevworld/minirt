@@ -42,14 +42,44 @@ int mlx_setup(t_data *data)
     return (0); // Éxito
 }
 
-// La función `cleanup_program` accede a `data->mlx.mlx_ptr`
-void    cleanup_program(t_data *data)
+void free_object_and_data(void *content)
 {
-    free_scene_data(&data->scene);
+    t_object *obj;
+
+    if (!content)
+        return;
+
+    obj = (t_object *)content;
+
+    // Free all dynamically allocated parts of the object
+    if (obj->material)
+    {
+        if (obj->material->texture)
+            mlx_delete_texture(obj->material->texture);
+        // if (obj->material->bump_map)
+        //     mlx_delete_texture(obj->material->bump_map);
+        free(obj->material);
+    }
+    if (obj->data)
+        free(obj->data);
+    // free(obj);
+}
+
+void cleanup_program(t_data *data)
+{
+    // Clean up all object nodes, their materials, and object data
+    if (data->scene.objects)
+        ft_lstclear(&data->scene.objects, free_object_and_data);
+
+    // Clean up all light nodes
+    if (data->scene.lights)
+        ft_lstclear(&data->scene.lights, free);
+
+    // Clean up MLX image and MLX instance
+    if (data->mlx.img.img_ptr)
+        mlx_delete_image(data->mlx.mlx_ptr, data->mlx.img.img_ptr);
     if (data->mlx.mlx_ptr)
         mlx_terminate(data->mlx.mlx_ptr);
-    pthread_mutex_destroy(&data->progress_mutex);
-    ft_printf("MiniRT: Cleanup complete.\n");
 }
 
 // Función para cerrar la ventana y liberar recursos
