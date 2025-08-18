@@ -126,17 +126,17 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
             continue;
         }
 
-        // 3. Luz difusa
+        // 3. Diffuse Light
         double dot_prod = vec3_dot(rec->normal, to_light);
         if (dot_prod > 0)
         {
-            t_color light_contribution = vec3_mult_vec(lights[i]->color, object_color);
-            light_contribution = vec3_mul(light_contribution, lights[i]->brightness * dot_prod);
-            final_color = vec3_add(final_color, light_contribution);
+            // The contribution is a mix of the light's color and the object's color
+            t_color diffuse_contribution = vec3_mult_vec(lights[i]->color, object_color);
+            diffuse_contribution = vec3_mul(diffuse_contribution, dot_prod * lights[i]->brightness);
+            final_color = vec3_add(final_color, diffuse_contribution);
         }
 
-        // 4. Luz especular - La validación de 'material' ya se ha hecho en get_object_color
-        // pero es seguro y buena práctica revalidar aquí.
+        // 4. Specular Light
         if (rec->object->material && rec->object->material->specular.intensity > 0.0)
         {
             t_color specular_color = calculate_specular_light(rec, lights[i], ray);
@@ -144,7 +144,6 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
         }
         i++;
     }
-
     // 5. Manejo de la reflexión (materiales de espejo)
     // El control de la reflexión debe ir después del cálculo de la luz difusa/especular
     // y solo si el objeto tiene propiedades de espejo.
@@ -165,7 +164,10 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
         final_color = vec3_add(vec3_mul(final_color, 1.0 - rec->object->material->mirror_ratio),
                                vec3_mul(reflected_color, rec->object->material->mirror_ratio));
     }
-    
+        // Final clamp to prevent values from going over 1.0
+    final_color.x = fmin(1.0, fmax(0.0, final_color.x));
+    final_color.y = fmin(1.0, fmax(0.0, final_color.y));
+    final_color.z = fmin(1.0, fmax(0.0, final_color.z));
     return (final_color);
 }
 

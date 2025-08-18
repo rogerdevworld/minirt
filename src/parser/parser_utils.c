@@ -161,25 +161,27 @@ double  validate_color_component(char *str)
     return (v / 255.0);
 }
 
-// Convierte un string de color "r,g,b" a un t_vec3
 t_vec3  parse_vec3_color(char *str)
 {
     t_vec3  color;
     char    **rgb;
 
-	if (!str)
-		ft_error_exit("MiniRT: Error: color string is NULL");
-	rgb = ft_split(str, ',');
-	if (ft_strarr_len(rgb) != 3)
-	{
-		ft_free_str_array(rgb);
-		ft_error_exit("MiniRT: Error: Invalid color format");
-	}
-	color.x = validate_color_component(rgb[0]);
-	color.y = validate_color_component(rgb[1]);
-	color.z = validate_color_component(rgb[2]);
-	ft_free_str_array(rgb);
-	return (color);
+    if (!str)
+        ft_error_exit("MiniRT: Error: color string is NULL");
+    rgb = ft_split(str, ',');
+    if (ft_strarr_len(rgb) != 3)
+    {
+        ft_free_str_array(rgb);
+        ft_error_exit("MiniRT: Error: Invalid color format");
+    }
+    
+    // Call the function for each component; it already returns a normalized value
+    color.x = validate_color_component(rgb[0]);
+    color.y = validate_color_component(rgb[1]);
+    color.z = validate_color_component(rgb[2]);
+    
+    ft_free_str_array(rgb);
+    return (color);
 }
 
 // Añade un objeto de forma dinámica a la escena
