@@ -1,5 +1,44 @@
 #include "../../include/minirt.h"
 
+// src/assets/ft_ray.c
+t_ray generate_antialiased_ray(int x, int y, int sub_x, int sub_y, t_scene *scene)
+{
+    t_ray   ray;
+    t_vec3  camera_right;
+    t_vec3  camera_up;
+    t_vec3  viewport_center;
+    double  aspect_ratio;
+    double  fov_rad;
+    double  x_coord_normalized;
+    double  y_coord_normalized;
+    double  jitter_x;
+    double  jitter_y;
+
+    ray.origin = scene->camera.position;
+
+    fov_rad = scene->camera.fov * M_PI / 180.0;
+    aspect_ratio = (double)scene->width / (double)scene->height;
+
+    camera_up = vec3_init(0.0, 1.0, 0.0);
+    camera_right = vec3_normalize(vec3_cross(scene->camera.orientation, camera_up));
+    camera_up = vec3_normalize(vec3_cross(camera_right, scene->camera.orientation));
+
+    // Ajustar las coordenadas del píxel para el subpíxel
+    jitter_x = ((double)sub_x + 0.5) / SUBPIXEL_SAMPLES;
+    jitter_y = ((double)sub_y + 0.5) / SUBPIXEL_SAMPLES;
+
+    x_coord_normalized = ((double)x + jitter_x) / scene->width - 0.5;
+    y_coord_normalized = 0.5 - ((double)y + jitter_y) / scene->height;
+    
+    viewport_center = vec3_add(scene->camera.position, vec3_mul(scene->camera.orientation, 1.0));
+    ray.direction = vec3_add(vec3_add(viewport_center, vec3_mul(camera_right, 2.0 * tan(fov_rad / 2.0) * aspect_ratio * x_coord_normalized)),
+                             vec3_mul(camera_up, 2.0 * tan(fov_rad / 2.0) * y_coord_normalized));
+    ray.direction = vec3_sub(ray.direction, ray.origin);
+    ray.direction = vec3_normalize(ray.direction);
+
+    return (ray);
+}
+
 t_ray generate_ray(int x, int y, t_scene *scene)
 {
     t_ray   ray;
@@ -35,14 +74,13 @@ t_ray generate_ray(int x, int y, t_scene *scene)
     return (ray);
 }
 
-// Corregido: Ahora get_object_color maneja texturas, tableros y color base
 t_color get_object_color(t_hit_record *rec)
 {
     // Primer y más importante: Si no hay material, devuelve el color base.
     if (!rec->object->material)
         return (rec->object->color);
 
-    // Si el material tiene una textura principal (no un bump map)
+    // Si el material tiene una textura principal
     if (rec->object->material->has_texture)
     {
         return (get_texture_color(rec));
@@ -93,7 +131,87 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
     return (vec3_init(0, 0, 0));
 }
 
-// Corregido: calculate_light ahora maneja la reflexión
+// // Corregido: calculate_light ahora maneja la reflexión
+// t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth)
+// {
+//     t_color final_color;
+//     t_color ambient_color;
+//     t_light **lights = (t_light **)scene->lights;
+//     int     i = 0;
+
+//     // Primer y más importante: validar el objeto del hit record.
+//     if (rec->object == NULL)
+//         return (scene->background_color);
+
+//     // Obtener el color del objeto (color sólido, tablero o textura)
+//     t_color object_color = get_object_color(rec);
+
+//     // 1. Luz ambiente
+//     ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
+//     ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
+//     final_color = ambient_color;
+
+//     // 2. Iterar sobre las luces
+//     while (lights[i] != NULL)
+//     {
+//         t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
+
+//         // Rayo de sombra
+//         t_ray shadow_ray;
+//         shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
+//         shadow_ray.direction = to_light;
+        
+//         if (is_in_shadow(&shadow_ray, scene, lights[i]))
+//         {
+//             i++;
+//             continue;
+//         }
+
+//         // 3. Diffuse Light
+//         double dot_prod = vec3_dot(rec->normal, to_light);
+//         if (dot_prod > 0)
+//         {
+//             // The contribution is a mix of the light's color and the object's color
+//             t_color diffuse_contribution = vec3_mult_vec(lights[i]->color, object_color);
+//             diffuse_contribution = vec3_mul(diffuse_contribution, dot_prod * lights[i]->brightness);
+//             final_color = vec3_add(final_color, diffuse_contribution);
+//         }
+
+//         // 4. Specular Light
+//         if (rec->object->material && rec->object->material->specular.intensity > 0.0)
+//         {
+//             t_color specular_color = calculate_specular_light(rec, lights[i], ray);
+//             final_color = vec3_add(final_color, specular_color);
+//         }
+//         i++;
+//     }
+//     // 5. Manejo de la reflexión (materiales de espejo)
+//     // El control de la reflexión debe ir después del cálculo de la luz difusa/especular
+//     // y solo si el objeto tiene propiedades de espejo.
+//     if (rec->object->material && rec->object->material->mirror_ratio > 0.0 && depth < MAX_RECURSION_DEPTH)
+//     {
+//         t_ray reflected_ray;
+//         reflected_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
+//         reflected_ray.direction = vec3_reflect(ray->direction, rec->normal);
+
+//         t_hit_record reflected_rec = find_closest_hit(&reflected_ray, scene);
+
+//         t_color reflected_color;
+//         if (reflected_rec.object != NULL)
+//             reflected_color = calculate_light(&reflected_rec, scene, &reflected_ray, depth + 1);
+//         else
+//             reflected_color = scene->background_color;
+
+//         final_color = vec3_add(vec3_mul(final_color, 1.0 - rec->object->material->mirror_ratio),
+//                                vec3_mul(reflected_color, rec->object->material->mirror_ratio));
+//     }
+//         // Final clamp to prevent values from going over 1.0
+//     final_color.x = fmin(1.0, fmax(0.0, final_color.x));
+//     final_color.y = fmin(1.0, fmax(0.0, final_color.y));
+//     final_color.z = fmin(1.0, fmax(0.0, final_color.z));
+//     return (final_color);
+// }
+
 t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth)
 {
     t_color final_color;
@@ -101,24 +219,19 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
     t_light **lights = (t_light **)scene->lights;
     int     i = 0;
 
-    // Primer y más importante: validar el objeto del hit record.
     if (rec->object == NULL)
         return (scene->background_color);
 
-    // Obtener el color del objeto (color sólido, tablero o textura)
     t_color object_color = get_object_color(rec);
 
-    // 1. Luz ambiente
     ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
     ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
     final_color = ambient_color;
 
-    // 2. Iterar sobre las luces
     while (lights[i] != NULL)
     {
         t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
 
-        // Rayo de sombra
         t_ray shadow_ray;
         shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
         shadow_ray.direction = to_light;
@@ -129,17 +242,14 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
             continue;
         }
 
-        // 3. Diffuse Light
         double dot_prod = vec3_dot(rec->normal, to_light);
         if (dot_prod > 0)
         {
-            // The contribution is a mix of the light's color and the object's color
             t_color diffuse_contribution = vec3_mult_vec(lights[i]->color, object_color);
             diffuse_contribution = vec3_mul(diffuse_contribution, dot_prod * lights[i]->brightness);
             final_color = vec3_add(final_color, diffuse_contribution);
         }
 
-        // 4. Specular Light
         if (rec->object->material && rec->object->material->specular.intensity > 0.0)
         {
             t_color specular_color = calculate_specular_light(rec, lights[i], ray);
@@ -147,14 +257,15 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
         }
         i++;
     }
-    // 5. Manejo de la reflexión (materiales de espejo)
-    // El control de la reflexión debe ir después del cálculo de la luz difusa/especular
-    // y solo si el objeto tiene propiedades de espejo.
+
     if (rec->object->material && rec->object->material->mirror_ratio > 0.0 && depth < MAX_RECURSION_DEPTH)
     {
         t_ray reflected_ray;
         reflected_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
-        reflected_ray.direction = vec3_reflect(ray->direction, rec->normal);
+        
+        // CORRECCIÓN CLAVE: Invertir la dirección del rayo original
+        t_vec3 incident_direction = vec3_mul(ray->direction, -1.0);
+        reflected_ray.direction = vec3_reflect(incident_direction, rec->normal);
 
         t_hit_record reflected_rec = find_closest_hit(&reflected_ray, scene);
 
@@ -167,10 +278,11 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
         final_color = vec3_add(vec3_mul(final_color, 1.0 - rec->object->material->mirror_ratio),
                                vec3_mul(reflected_color, rec->object->material->mirror_ratio));
     }
-        // Final clamp to prevent values from going over 1.0
+
     final_color.x = fmin(1.0, fmax(0.0, final_color.x));
     final_color.y = fmin(1.0, fmax(0.0, final_color.y));
     final_color.z = fmin(1.0, fmax(0.0, final_color.z));
+    
     return (final_color);
 }
 
@@ -322,24 +434,24 @@ int intersect_sphere(t_ray *ray, t_sphere *sp, t_hit_record *rec)
     if (discriminant < 0)
         return (0);
 
+    // Encuentra la primera intersección válida (la más cercana)
     t = (-b - sqrt(discriminant)) / (2.0 * a);
-    if (t > EPSILON)
+    if (t < EPSILON)
     {
-        rec->t = t;
-        rec->point = ray_at(*ray, rec->t);
-        rec->normal = vec3_normalize(vec3_sub(rec->point, sp->center));
-        return (1);
+        t = (-b + sqrt(discriminant)) / (2.0 * a);
+        if (t < EPSILON)
+            return (0);
     }
 
-    t = (-b + sqrt(discriminant)) / (2.0 * a);
-    if (t > EPSILON)
-    {
-        rec->t = t;
-        rec->point = ray_at(*ray, rec->t);
-        rec->normal = vec3_normalize(vec3_sub(rec->point, sp->center));
-        return (1);
-    }
-    return (0);
+    rec->t = t;
+    rec->point = ray_at(*ray, rec->t);
+    rec->normal = vec3_normalize(vec3_sub(rec->point, sp->center));
+
+    // Corrige la normal si el rayo viene de dentro de la esfera
+    if (vec3_dot(ray->direction, rec->normal) > 0)
+        rec->normal = vec3_mul(rec->normal, -1.0);
+
+    return (1);
 }
 
 int intersect_plane(t_ray *ray, t_plane *pl, t_hit_record *rec)
@@ -357,50 +469,60 @@ int intersect_plane(t_ray *ray, t_plane *pl, t_hit_record *rec)
 
     rec->t = t;
     rec->point = ray_at(*ray, rec->t);
-    rec->normal = pl->normal;
-    if (vec3_dot(rec->normal, ray->direction) > 0)
-        rec->normal = vec3_mul(rec->normal, -1.0);
+    
+    // Lógica corregida para la normal del plano
+    if (vec3_dot(pl->normal, ray->direction) > 0)
+        rec->normal = vec3_mul(pl->normal, -1.0);
+    else
+        rec->normal = pl->normal;
 
     return (1);
+}
+double  vec3_length_squared(t_vec3 v)
+{
+    return (vec3_dot(v, v));
 }
 
 static int intersect_caps(t_ray *ray, t_cylinder *cy, double *t_cap, t_hit_record *rec)
 {
-    double  t_top;
-    double  t_bottom;
-    t_vec3  p_top;
-    t_vec3  p_bottom;
-    
-    // Intersección con la tapa superior
-    t_top = vec3_dot(vec3_sub(vec3_add(cy->position, vec3_mul(cy->axis, cy->height / 2.0)), ray->origin), cy->axis) / vec3_dot(ray->direction, cy->axis);
-    p_top = ray_at(*ray, t_top);
-    if (t_top > EPSILON && vec3_length(vec3_sub(p_top, vec3_add(cy->position, vec3_mul(cy->axis, cy->height / 2.0)))) <= cy->radius)
-        t_bottom = t_top;
+    double  t_top, t_bottom;
+    t_vec3  p_top, p_bottom;
+
+    double denom = vec3_dot(ray->direction, cy->axis);
+    if (fabs(denom) < EPSILON)
+        t_top = -1.0;
     else
-        t_bottom = -1.0;
-        
-    // Intersección con la tapa inferior
-    t_bottom = vec3_dot(vec3_sub(vec3_add(cy->position, vec3_mul(cy->axis, -cy->height / 2.0)), ray->origin), cy->axis) / vec3_dot(ray->direction, cy->axis);
-    p_bottom = ray_at(*ray, t_bottom);
-    if (t_bottom > EPSILON && vec3_length(vec3_sub(p_bottom, vec3_add(cy->position, vec3_mul(cy->axis, -cy->height / 2.0)))) <= cy->radius)
-    {
-        if (t_bottom < t_top || t_top < 0)
-            t_top = t_bottom;
-    }
+        t_top = vec3_dot(vec3_sub(vec3_add(cy->position, vec3_mul(cy->axis, cy->height / 2.0)), ray->origin), cy->axis) / denom;
     
-    if (t_top > EPSILON)
-    {
+    p_top = ray_at(*ray, t_top);
+    if (t_top > EPSILON && vec3_length_squared(vec3_sub(p_top, vec3_add(cy->position, vec3_mul(cy->axis, cy->height / 2.0)))) <= cy->radius * cy->radius)
         *t_cap = t_top;
+    else
+        *t_cap = -1.0;
+
+    if (fabs(denom) < EPSILON)
+        t_bottom = -1.0;
+    else
+        t_bottom = vec3_dot(vec3_sub(vec3_add(cy->position, vec3_mul(cy->axis, -cy->height / 2.0)), ray->origin), cy->axis) / denom;
+
+    p_bottom = ray_at(*ray, t_bottom);
+    if (t_bottom > EPSILON && vec3_length_squared(vec3_sub(p_bottom, vec3_add(cy->position, vec3_mul(cy->axis, -cy->height / 2.0)))) <= cy->radius * cy->radius)
+    {
+        if (*t_cap < 0 || t_bottom < *t_cap)
+            *t_cap = t_bottom;
+    }
+
+    if (*t_cap > EPSILON)
+    {
         rec->point = ray_at(*ray, *t_cap);
-        if (t_top == t_top) // Esto es para determinar si es la tapa de arriba o abajo
-            rec->normal = cy->axis;
-        else
+        if (denom > 0)
             rec->normal = vec3_mul(cy->axis, -1.0);
+        else
+            rec->normal = cy->axis;
         return (1);
     }
     return (0);
 }
-
 
 static int intersect_sides(t_ray *ray, t_cylinder *cy, t_hit_record *rec)
 {
@@ -477,63 +599,46 @@ int intersect_cylinder(t_ray *ray, t_cylinder *cy, t_hit_record *rec)
     return (0);
 }
 
-// Función corregida para la intersección de un rayo con un cono
 int intersect_cone(t_ray *ray, t_cone *cn, t_hit_record *rec)
 {
-    t_vec3  oc;
-    double  a, b, c, discriminant;
-    double  t, t1, t2;
-    double  m, m1, m2;
-    double  cone_cos2;
+    t_vec3  oc = vec3_sub(ray->origin, cn->position);
+    double  cone_cos2 = pow(cn->radius / (cn->height / 2.0), 2.0);
 
-    oc = vec3_sub(ray->origin, cn->position);
-    
-    // Calcular el coseno al cuadrado del ángulo del cono
-    // tan(theta) = radius / (height/2)
-    // cos2(theta) = 1 / (1 + tan2(theta)) = 1 / (1 + (2*radius/height)^2)
-    cone_cos2 = (cn->radius / (cn->height / 2.0));
-    cone_cos2 = 1.0 / (1.0 + cone_cos2 * cone_cos2);
+    double a = vec3_dot(ray->direction, ray->direction) - (1 + cone_cos2) * pow(vec3_dot(ray->direction, cn->axis), 2);
+    double b = 2.0 * (vec3_dot(ray->direction, oc) - (1 + cone_cos2) * vec3_dot(ray->direction, cn->axis) * vec3_dot(oc, cn->axis));
+    double c = vec3_dot(oc, oc) - (1 + cone_cos2) * pow(vec3_dot(oc, cn->axis), 2);
 
-    // Coeficientes de la ecuación cuadrática
-    a = vec3_dot(ray->direction, ray->direction) - cone_cos2 * pow(vec3_dot(ray->direction, cn->axis), 2);
-    b = 2.0 * (vec3_dot(ray->direction, oc) - cone_cos2 * vec3_dot(ray->direction, cn->axis) * vec3_dot(oc, cn->axis));
-    c = vec3_dot(oc, oc) - cone_cos2 * pow(vec3_dot(oc, cn->axis), 2);
-
-    discriminant = b * b - 4.0 * a * c;
+    double discriminant = b * b - 4.0 * a * c;
     if (discriminant < 0.0)
         return (0);
 
-    t1 = (-b - sqrt(discriminant)) / (2.0 * a);
-    t2 = (-b + sqrt(discriminant)) / (2.0 * a);
+    double t1 = (-b - sqrt(discriminant)) / (2.0 * a);
+    double t2 = (-b + sqrt(discriminant)) / (2.0 * a);
     
-    // Calcular las distancias a lo largo del eje del cono
-    m1 = vec3_dot(ray->direction, cn->axis) * t1 + vec3_dot(oc, cn->axis);
-    m2 = vec3_dot(ray->direction, cn->axis) * t2 + vec3_dot(oc, cn->axis);
+    // Calcular m, la distancia a lo largo del eje del cono
+    double m1 = vec3_dot(ray->direction, cn->axis) * t1 + vec3_dot(oc, cn->axis);
+    double m2 = vec3_dot(ray->direction, cn->axis) * t2 + vec3_dot(oc, cn->axis);
 
-    if (t1 > EPSILON && m1 >= -cn->height / 2.0 && m1 <= cn->height / 2.0)
-        t = t1;
-    else if (t2 > EPSILON && m2 >= -cn->height / 2.0 && m2 <= cn->height / 2.0)
-        t = t2;
-    else
-        return (0);
-
-    m = vec3_dot(ray->direction, cn->axis) * t + vec3_dot(oc, cn->axis);
+    rec->t = -1.0;
+    if (t1 > EPSILON && m1 > 0 && m1 < cn->height)
+        rec->t = t1;
+    if (t2 > EPSILON && m2 > 0 && m2 < cn->height)
+    {
+        if (rec->t < 0 || t2 < rec->t)
+            rec->t = t2;
+    }
     
-    rec->t = t;
-    rec->point = ray_at(*ray, rec->t);
-    rec->normal = vec3_normalize(vec3_sub(vec3_sub(rec->point, cn->position), 
-                                          vec3_mul(cn->axis, m * (1 + (cn->radius / (cn->height/2.0)) * (cn->radius / (cn->height/2.0))))));
-    
-    if (vec3_dot(rec->normal, ray->direction) > 0)
-        rec->normal = vec3_mul(rec->normal, -1);
-    
-    return (1);
+    if (rec->t > EPSILON)
+    {
+        double m = vec3_dot(ray->direction, cn->axis) * rec->t + vec3_dot(oc, cn->axis);
+        rec->point = ray_at(*ray, rec->t);
+        rec->normal = vec3_normalize(vec3_sub(vec3_sub(rec->point, cn->position), vec3_mul(cn->axis, m * (1 + cone_cos2))));
+        if (vec3_dot(rec->normal, ray->direction) > 0)
+            rec->normal = vec3_mul(rec->normal, -1);
+        return (1);
+    }
+    return (0);
 }
-
-#include "../../include/minirt.h"
-
-// Función para la intersección de un rayo con un hiperboloide
-#include "../../include/minirt.h"
 
 int intersect_hyperboloid(t_ray *ray, t_hyperboloid *hp, t_hit_record *rec)
 {
@@ -585,10 +690,22 @@ int intersect_hyperboloid(t_ray *ray, t_hyperboloid *hp, t_hit_record *rec)
     else
         return (0);
     
-    rec->t = t;
+    rec->t = -1.0;
+    if (t1 > EPSILON && m1 >= hp->position.z - z_limit && m1 <= hp->position.z + z_limit)
+        rec->t = t1;
+    
+    if (t2 > EPSILON && m2 >= hp->position.z - z_limit && m2 <= hp->position.z + z_limit)
+    {
+        if (rec->t < 0 || t2 < rec->t)
+            rec->t = t2;
+    }
+
+    if (rec->t < 0)
+        return (0);
+    
     rec->point = ray_at(*ray, rec->t);
 
-    // Calcular la normal en el punto de intersección
+    // Calcular la normal usando el gradiente de la ecuación
     t_vec3 point_relative = vec3_sub(rec->point, hp->position);
     double x_n = (2.0 * vec3_dot(point_relative, u_v)) / (hp->radius_a * hp->radius_a);
     double y_n = (2.0 * vec3_dot(point_relative, w_v)) / (hp->radius_b * hp->radius_b);

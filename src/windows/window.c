@@ -21,7 +21,7 @@ int mlx_setup(t_data *data)
 
     // mlx_new_image() crea un objeto de imagen.
     // Accedemos a img_ptr a través de las estructuras anidadas.
-    data->mlx.img.img_ptr = mlx_new_image(data->mlx.mlx_ptr, data->scene.width, data->scene.height);
+    data->mlx.img.img_ptr = mlx_new_image(data->mlx.mlx_ptr, 4060, 2160);
     if (!data->mlx.img.img_ptr)
     {
         mlx_terminate(data->mlx.mlx_ptr);

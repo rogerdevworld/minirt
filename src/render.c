@@ -24,16 +24,66 @@ int	color_to_int(t_color color)
 	return (0xFF000000 | (r << 16) | (g << 8) | b);
 }
 
-/* src/render.c */
+// normal 
+// void *render_thread_func(void *arg)
+// {
+//     t_thread_data   *thread_data;
+//     t_data          *data;
+//     int             y;
+//     int             x;
+//     t_ray           ray;
+//     t_hit_record    rec;
+//     t_color         final_color;
+
+//     thread_data = (t_thread_data *)arg;
+//     data = thread_data->global_data;
+//     y = thread_data->start_row;
+//     while (y < thread_data->end_row)
+//     {
+//         x = 0;
+//         while (x < data->scene.width)
+//         {
+//             // 1. Generar el rayo para el píxel (x, y)
+//             ray = generate_ray(x, y, &data->scene);
+//             // 2. Encontrar la colisión más cercana
+//             rec = find_closest_hit(&ray, &data->scene);
+//             // 3. Calcular el color final del píxel
+//             if (rec.object != NULL)
+//             {
+//                 final_color = calculate_light(&rec, &data->scene, &ray, 0);
+//             }
+//             else
+//             {
+//                 final_color = data->scene.background_color; 
+//             }
+            
+//             // 4. Convertir y pintar el píxel con la función de la nueva lib
+//             int mlx_color = color_to_int(final_color);
+//             // mlx_put_pixel es la forma correcta para MLX42
+//             mlx_put_pixel(data->mlx.img.img_ptr, x, y, mlx_color);
+//             x++;
+//         }
+//         pthread_mutex_lock(&data->progress_mutex);
+//         data->rendered_rows++;
+//         pthread_mutex_unlock(&data->progress_mutex);
+        
+//         y++;
+//     }
+//     return (NULL);
+// }
+
+// 4k
 void *render_thread_func(void *arg)
 {
     t_thread_data   *thread_data;
     t_data          *data;
-    int             y;
-    int             x;
+    int             y, x;
+    int             sub_x, sub_y;
     t_ray           ray;
     t_hit_record    rec;
     t_color         final_color;
+    t_color         subpixel_color;
+    double          inv_sub_sq = 1.0 / (double)(SUBPIXEL_SAMPLES * SUBPIXEL_SAMPLES);
 
     thread_data = (t_thread_data *)arg;
     data = thread_data->global_data;
@@ -43,24 +93,31 @@ void *render_thread_func(void *arg)
         x = 0;
         while (x < data->scene.width)
         {
-            // 1. Generar el rayo para el píxel (x, y)
-            ray = generate_ray(x, y, &data->scene);
-            // 2. Encontrar la colisión más cercana
-            rec = find_closest_hit(&ray, &data->scene);
-            // 3. Calcular el color final del píxel
-            if (rec.object != NULL)
+            final_color = vec3_init(0.0, 0.0, 0.0);
+            sub_y = 0;
+            while (sub_y < SUBPIXEL_SAMPLES)
             {
-                final_color = calculate_light(&rec, &data->scene, &ray, 0);
+                sub_x = 0;
+                while (sub_x < SUBPIXEL_SAMPLES)
+                {
+                    // Genera un rayo para cada subpíxel
+                    ray = generate_antialiased_ray(x, y, sub_x, sub_y, &data->scene);
+                    rec = find_closest_hit(&ray, &data->scene);
+                    
+                    if (rec.object != NULL)
+                        subpixel_color = calculate_light(&rec, &data->scene, &ray, 0);
+                    else
+                        subpixel_color = data->scene.background_color; 
+                    
+                    final_color = vec3_add(final_color, subpixel_color);
+                    sub_x++;
+                }
+                sub_y++;
             }
-            else
-            {
-                final_color = data->scene.background_color; 
-            }
+            // Promedia el color final
+            final_color = vec3_mul(final_color, inv_sub_sq);
             
-            // 4. Convertir y pintar el píxel con la función de la nueva lib
-            int mlx_color = color_to_int(final_color);
-            // mlx_put_pixel es la forma correcta para MLX42
-            mlx_put_pixel(data->mlx.img.img_ptr, x, y, mlx_color);
+            mlx_put_pixel(data->mlx.img.img_ptr, x, y, color_to_int(final_color));
             x++;
         }
         pthread_mutex_lock(&data->progress_mutex);

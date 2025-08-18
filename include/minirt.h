@@ -31,6 +31,7 @@
 #endif
 # define MAX_RECURSION_DEPTH 5
 #define	EISDIR		21
+#define SUBPIXEL_SAMPLES 2 
 # define KEY_W XK_w            // Tecla 'W' para movimiento
 # define KEY_A XK_a            // Tecla 'A' para movimiento
 # define KEY_S XK_s            // Tecla 'S' para movimiento
@@ -399,4 +400,6 @@ void                    key_hook(mlx_key_data_t keydata, void* param);
 void    cleanup_program(t_data *data);
 t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth);
 t_color get_texture_color(t_hit_record *rec);
+t_ray generate_antialiased_ray(int x, int y, int sub_x, int sub_y, t_scene *scene);
+
 #endif // MINIRT_H
