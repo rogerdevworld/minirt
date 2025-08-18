@@ -103,39 +103,62 @@ t_vec3	parse_vec3_normalized(char *str)
 	return (vec);
 }
 
-void	validate_is_integer(char *str)
+// Nueva versión: esta función devuelve 1 si es un entero válido, 0 si no.
+int validate_is_integer(char *str)
 {
-	int		i;
+    int     i;
 
-	i = 0;
-	while (str[i])
-	{
-		if (!ft_isdigit((unsigned char)str[i]))
-			ft_error_exit("MiniRT: Error: color components must be integers");
-		i++;
-	}
+    i = 0;
+    // Si la cadena está vacía, no es un entero válido
+    if (!str || str[0] == '\0')
+        return (0);
+    while (str[i])
+    {
+        // Si algún carácter no es un dígito, no es un entero
+        if (!ft_isdigit((unsigned char)str[i]))
+            return (0);
+        i++;
+    }
+    return (1);
 }
 
-//valida un string que trae los valores de r,g,b
-double	validate_color_component(char *str)
+// Nueva versión: ahora la lógica es lineal y segura
+double  validate_color_component(char *str)
 {
-	char	*trimmed;
-	int		v;
+    char    *trimmed;
+    int     v;
 
-	trimmed = ft_strtrim(str, " \r\t\n");
-	if (!trimmed)
-		ft_error_exit("MiniRT: Error: allocating memory in color parser");
-	if (trimmed[0] == '\0')
-	{
-		free(trimmed);
-		ft_error_exit("MiniRT: Error: color component is empty");
-	}
-	validate_is_integer(trimmed);
-	v = ft_atoi(trimmed);
-	free(trimmed);
-	if (v < 0 || v > 255)
-		ft_error_exit("MiniRT: Error: Color values must be in range 0–255");
-	return (v / 255.0);
+    trimmed = ft_strtrim(str, " \r\t\n");
+    if (!trimmed)
+        ft_error_exit("MiniRT: Error: allocating memory in color parser");
+    
+    // Primero, valida si la cadena es un entero válido
+    if (!validate_is_integer(trimmed))
+    {
+        free(trimmed);
+        ft_error_exit("MiniRT: Error: color components must be valid integers");
+    }
+
+    // Si la cadena está vacía, fallar explícitamente después de la validación
+    if (trimmed[0] == '\0')
+    {
+        free(trimmed);
+        ft_error_exit("MiniRT: Error: color component is empty");
+    }
+
+    // Ahora que la cadena es válida, la usamos
+    v = ft_atoi(trimmed);
+    
+    // Validar el rango antes de liberar
+    if (v < 0 || v > 255)
+    {
+        free(trimmed);
+        ft_error_exit("MiniRT: Error: Color values must be in range 0–255");
+    }
+    
+    // Finalmente, liberamos la memoria
+    free(trimmed);
+    return (v / 255.0);
 }
 
 // Convierte un string de color "r,g,b" a un t_vec3

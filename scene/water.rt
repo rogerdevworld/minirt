@@ -1,0 +1,20 @@
+# Camera with a good view
+C 0,0,10 0,0,-1 90
+
+# Ambient Light
+A 0.1 255,255,255
+
+# Light
+L -10,10,0 0.8 255,255,255
+
+
+# A blue plane with a checkerboard texture
+# El color del objeto es azul (0,0,255)
+# usa una textura de tablero de ajedrez (checkerboard)
+# con los colores blanco y un gris muy oscuro y una escala de 5.0.
+pl 0,-1,0 0,1,0 0,0,255 bmp:scene/water.png
+
+# A mirrored sphere
+# El color del objeto es verde (0,255,0)
+# es un espejo perfecto (mir) con un ratio de 1.0.
+sp 2,0,0 1.0 0,255,0 mir:1.0

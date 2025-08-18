@@ -35,11 +35,20 @@ t_ray generate_ray(int x, int y, t_scene *scene)
     return (ray);
 }
 
-// Lógica para obtener el color del objeto (incluye bonus de tablero de ajedrez)
+// Corregido: Ahora get_object_color maneja texturas, tableros y color base
 t_color get_object_color(t_hit_record *rec)
 {
-    // Si el objeto tiene un tablero de ajedrez
-    if (rec->object->material->has_checkerboard)
+    // AÑADE ESTA LÍNEA AQUÍ
+    if (!rec->object->material)
+        return (rec->object->color); // Fallback al color base si no hay material
+
+    if (rec->object->material->has_texture)
+    {
+        return (get_texture_color(rec));
+    }
+
+    // Si tiene un tablero
+    else if (rec->object->material->has_checkerboard)
     {
         t_vec3 local_point = rec->point;
         int pattern_x = (int)floor(local_point.x / rec->object->material->check_scale);
@@ -51,11 +60,11 @@ t_color get_object_color(t_hit_record *rec)
         else
             return (rec->object->material->check_color2);
     }
-    // Si no hay tablero, devolver el color normal del objeto
+    // Devolver el color base si no hay texturas ni tableros
     return (rec->object->color);
 }
 
-// Calcula la luz especular para un punto de impacto
+// Corregido: Agrega validación para el material
 t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
 {
     t_vec3      to_light;
@@ -63,6 +72,9 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
     t_vec3      reflected_dir;
     double      spec_factor;
     t_color     specular_color;
+
+    if (!rec || !rec->object || !rec->object->material)
+        return (vec3_init(0, 0, 0));
 
     to_light = vec3_normalize(vec3_sub(light->position, rec->point));
     view_dir = vec3_normalize(vec3_mul(ray->direction, -1.0));
@@ -78,15 +90,19 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
     return (vec3_init(0, 0, 0));
 }
 
-// Calcula el color final para un punto de impacto, con todos los bonus
-t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray)
+// Corregido: calculate_light ahora maneja la reflexión
+t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth)
 {
     t_color final_color;
     t_color ambient_color;
     t_light **lights = (t_light **)scene->lights;
     int     i = 0;
 
-    // 0. Obtener el color del objeto (incluye tablero)
+    // Primer y más importante: validar el objeto del hit record.
+    if (rec->object == NULL)
+        return (scene->background_color);
+
+    // Obtener el color del objeto (color sólido, tablero o textura)
     t_color object_color = get_object_color(rec);
 
     // 1. Luz ambiente
@@ -101,7 +117,7 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray)
 
         // Rayo de sombra
         t_ray shadow_ray;
-        shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));  
+        shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
         shadow_ray.direction = to_light;
         
         if (is_in_shadow(&shadow_ray, scene, lights[i]))
@@ -119,15 +135,133 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray)
             final_color = vec3_add(final_color, light_contribution);
         }
 
-        // 4. Luz especular
-        if (rec->object->material->specular.intensity > 0.0)
+        // 4. Luz especular - La validación de 'material' ya se ha hecho en get_object_color
+        // pero es seguro y buena práctica revalidar aquí.
+        if (rec->object->material && rec->object->material->specular.intensity > 0.0)
         {
             t_color specular_color = calculate_specular_light(rec, lights[i], ray);
             final_color = vec3_add(final_color, specular_color);
         }
         i++;
     }
+
+    // 5. Manejo de la reflexión (materiales de espejo)
+    // El control de la reflexión debe ir después del cálculo de la luz difusa/especular
+    // y solo si el objeto tiene propiedades de espejo.
+    if (rec->object->material && rec->object->material->mirror_ratio > 0.0 && depth < MAX_RECURSION_DEPTH)
+    {
+        t_ray reflected_ray;
+        reflected_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
+        reflected_ray.direction = vec3_reflect(ray->direction, rec->normal);
+
+        t_hit_record reflected_rec = find_closest_hit(&reflected_ray, scene);
+
+        t_color reflected_color;
+        if (reflected_rec.object != NULL)
+            reflected_color = calculate_light(&reflected_rec, scene, &reflected_ray, depth + 1);
+        else
+            reflected_color = scene->background_color;
+
+        final_color = vec3_add(vec3_mul(final_color, 1.0 - rec->object->material->mirror_ratio),
+                               vec3_mul(reflected_color, rec->object->material->mirror_ratio));
+    }
+    
     return (final_color);
+}
+
+t_vec2 get_uv_sphere(t_hit_record *rec)
+{
+    t_vec3 local_point = vec3_sub(rec->point, ((t_sphere *)rec->object->data)->center);
+    double u = 0.5 + atan2(local_point.z, local_point.x) / (2.0 * M_PI);
+    double v = 0.5 - asin(local_point.y / ((t_sphere *)rec->object->data)->radius) / M_PI;
+    return (vec2_init(u, v));
+}
+
+// Ejemplo para un plano
+t_vec2 get_uv_plane(t_hit_record *rec)
+{
+    // Esto es una simple proyección en 2D
+    double u = fmod(rec->point.x, 1.0);
+    double v = fmod(rec->point.z, 1.0);
+    if (u < 0) u += 1.0;
+    if (v < 0) v += 1.0;
+    return (vec2_init(u, v));
+}
+
+// Ejemplo para un cilindro
+t_vec2 get_uv_cylinder(t_hit_record *rec)
+{
+    t_cylinder *cy = (t_cylinder *)rec->object->data;
+    t_vec3 local_point = vec3_sub(rec->point, cy->position);
+    
+    // Altura del cilindro
+    double m = vec3_dot(local_point, cy->axis);
+    double v = (m + cy->height / 2.0) / cy->height;
+
+    // Ángulo alrededor del cilindro
+    t_vec3 temp_axis = vec3_normalize(vec3_cross(cy->axis, vec3_init(1, 0, 0)));
+    if (vec3_length(temp_axis) < EPSILON)
+        temp_axis = vec3_normalize(vec3_cross(cy->axis, vec3_init(0, 1, 0)));
+        
+    t_vec3 p = vec3_sub(local_point, vec3_mul(cy->axis, m));
+    double u = acos(vec3_dot(p, temp_axis) / vec3_length(p)) / (2.0 * M_PI);
+    
+    if (vec3_dot(vec3_cross(temp_axis, p), cy->axis) < 0)
+        u = 1.0 - u;
+        
+    return (vec2_init(u, v));
+}
+
+// src/assets/ft_ray.c (o donde tengas tu lógica de renderizado)
+t_color get_texture_color(t_hit_record *rec)
+{
+    t_vec2          uv;
+    mlx_texture_t   *texture;
+    int             x_tex;
+    int             y_tex;
+    int             index;
+
+    // 1. Validate that the texture pointer exists before use
+    if (!rec->object->material || !rec->object->material->texture)
+        return (rec->object->color); // Fallback to the object's base color
+
+    texture = rec->object->material->texture;
+
+    // 2. Validate texture dimensions to prevent division by zero or invalid indices
+    if (texture->width <= 0 || texture->height <= 0)
+        return (rec->object->color);
+
+    // 3. Select the correct UV mapping function based on object type
+    if (rec->object->type == SPHERE)
+        uv = get_uv_sphere(rec);
+    else if (rec->object->type == PLANE)
+        uv = get_uv_plane(rec);
+    else if (rec->object->type == CYLINDER)
+        uv = get_uv_cylinder(rec);
+    // Add more object types here if needed (e.g., CONE)
+    else
+        return (rec->object->color); // Fallback for objects without texture mapping
+
+    // 4. Clamp UV coordinates to prevent out-of-bounds access
+    uv.x = fmax(0.0, fmin(1.0, uv.x));
+    uv.y = fmax(0.0, fmin(1.0, uv.y));
+    
+    x_tex = (int)(uv.x * (texture->width - 1));
+    y_tex = (int)(uv.y * (texture->height - 1));
+
+    // 5. Final validation of the pixel index
+    // Check if the calculated index is within the texture's bounds
+    index = (y_tex * texture->width + x_tex) * 4;
+    if (index < 0 || index >= (int)(texture->width * texture->height * 4))
+        return (rec->object->color); // Fallback if index is invalid
+
+    // Access the pixel data and return the color
+    t_color tex_color;
+    tex_color.x = (double)texture->pixels[index] / 255.0;
+    tex_color.y = (double)texture->pixels[index + 1] / 255.0;
+    tex_color.z = (double)texture->pixels[index + 2] / 255.0;
+
+    return (tex_color);
 }
 
 t_hit_record find_closest_hit(t_ray *ray, t_scene *scene)

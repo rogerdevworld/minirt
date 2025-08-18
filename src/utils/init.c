@@ -11,6 +11,15 @@
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
+// Inicializa una estructura de vector 2D
+t_vec2 vec2_init(double x, double y)
+{
+    t_vec2 vec;
+    vec.x = x;
+    vec.y = y;
+    return (vec);
+}
+
 // Inicializa un vector 3D con los valores dados.
 t_vec3	vec3_init(double x, double y, double z)
 {

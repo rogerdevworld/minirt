@@ -28,6 +28,7 @@
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
+# define MAX_RECURSION_DEPTH 5
 #define	EISDIR		21
 # define KEY_W XK_w            // Tecla 'W' para movimiento
 # define KEY_A XK_a            // Tecla 'A' para movimiento
@@ -48,6 +49,12 @@
 // --- 3. Estructuras de Datos Primarias ---
 
 // Vector y color
+typedef struct s_vec2
+{
+	double			x;
+	double			y;
+}					t_vec2;
+
 typedef struct s_vec3
 {
 	double			x;
@@ -86,6 +93,9 @@ typedef struct s_material
     t_specular          specular;
     double              mirror_ratio;
     
+	int                 has_texture; // Flag para activar la textura
+    mlx_texture_t       *texture;    // Puntero a la textura cargada
+
     int                 has_checkerboard;
     t_vec3              check_color1;
     t_vec3              check_color2;
@@ -286,9 +296,9 @@ void                    put_pixel_to_img(t_img *img, int x, int y, int color);
 // --- 7. Funciones de Utilidad del Ray Tracer ---
 t_ray                   generate_ray(int x, int y, t_scene *scene);
 t_hit_record            find_closest_hit(t_ray *ray, t_scene *scene);
-t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray);
+// t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray);
 int                     color_to_int(t_color color);
-t_color                 get_texture_color(t_object *obj, t_vec3 point);
+// t_color                 get_texture_color(t_object *obj, t_vec3 point);
 t_vec3                  apply_bump_map(t_hit_record *rec, t_object *obj);
 
 // --- 8. Funciones de Intersección (incluye bonificaciones) ---
@@ -337,6 +347,9 @@ t_hyperboloid           hyperboloid_init(t_vec3 position, t_vec3 axis, double ra
 
 // --- 11. Funciones a Mover a Libft / Utilidades Generales ---
 
+// Prototipo de la función
+t_vec2 vec2_init(double x, double y);
+
 // Funciones de manejo de vectores
 t_vec3                  vec3_add(t_vec3 v1, t_vec3 v2);
 t_vec3                  vec3_sub(t_vec3 v1, t_vec3 v2);
@@ -372,5 +385,6 @@ int	get_num_processors(void);
 int                     mlx_setup(t_data *data);
 void                    key_hook(mlx_key_data_t keydata, void* param);
 void    cleanup_program(t_data *data);
-
+t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth);
+t_color get_texture_color(t_hit_record *rec);
 #endif // MINIRT_H

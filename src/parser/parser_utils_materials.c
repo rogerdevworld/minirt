@@ -18,8 +18,7 @@ int	valid_extension_rt(const char *filename)
 	len = 0;
 	while (filename[len] != '\0')
 		len++;
-	return (len > 3 && filename[len - 3] == '.'
-		&& filename[len - 2] == 'r'
+	return (len > 3 && filename[len - 3] == '.' && filename[len - 2] == 'r'
 		&& filename[len - 1] == 't');
 }
 
@@ -56,28 +55,28 @@ void	parse_checkboard(char *token, t_material *material)
 
 #include "../../include/minirt.h"
 
-int validate_texture_extension(const char *file_name)
+int	validate_texture_extension(const char *file_name)
 {
-    int len;
+	int	len;
 
-    len = ft_strlen(file_name);
-    // Corrected check for .png files
-    if (len >= 4 && file_name[len - 4] == '.'
-        && ((file_name[len - 3] == 'p' || file_name[len - 3] == 'P')
-        && (file_name[len - 2] == 'n' || file_name[len - 2] == 'N')
-        && (file_name[len - 1] == 'g' || file_name[len - 1] == 'G')))
-    {
-        return (1);
-    }
-    // Corrected check for .xpm files
-    if (len >= 4 && file_name[len - 4] == '.'
-        && ((file_name[len - 3] == 'x' || file_name[len - 3] == 'X')
-        && (file_name[len - 2] == 'p' || file_name[len - 2] == 'P')
-        && (file_name[len - 1] == 'm' || file_name[len - 1] == 'M')))
-    {
-        return (1);
-    }
-    return (0);
+	len = ft_strlen(file_name);
+	// Corrected check for .png files
+	if (len >= 4 && file_name[len - 4] == '.' && ((file_name[len - 3] == 'p'
+				|| file_name[len - 3] == 'P') && (file_name[len - 2] == 'n'
+				|| file_name[len - 2] == 'N') && (file_name[len - 1] == 'g'
+				|| file_name[len - 1] == 'G')))
+	{
+		return (1);
+	}
+	// Corrected check for .xpm files
+	if (len >= 4 && file_name[len - 4] == '.' && ((file_name[len - 3] == 'x'
+				|| file_name[len - 3] == 'X') && (file_name[len - 2] == 'p'
+				|| file_name[len - 2] == 'P') && (file_name[len - 1] == 'm'
+				|| file_name[len - 1] == 'M')))
+	{
+		return (1);
+	}
+	return (0);
 }
 
 char	*copy_trimmed_token(char *token, int len)
@@ -142,6 +141,8 @@ t_material	*create_material(void)
 	material->check_scale = 1.0;
 	material->bump_map_path = NULL;
 	material->has_bump_map = 0;
+	material->texture = NULL;
+	material->has_texture = false;
 	return (material);
 }
 
@@ -161,7 +162,7 @@ t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 
 void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 {
-	int	i;
+	int i;
 
 	i = start_idx;
 	while (tokens[i])

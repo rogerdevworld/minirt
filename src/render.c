@@ -50,7 +50,7 @@ void *render_thread_func(void *arg)
             // 3. Calcular el color final del píxel
             if (rec.object != NULL)
             {
-                final_color = calculate_light(&rec, &data->scene, &ray);
+                final_color = calculate_light(&rec, &data->scene, &ray, 0);
             }
             else
             {
