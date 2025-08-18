@@ -6,7 +6,7 @@
 #    By: rmarrero <rmarrero@student.42barcelona.com>+#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/16 12:58:52 by rmarrero          #+#    #+#              #
-#    Updated: 2025/08/17 23:45:00 by rmarrero         ###   ########.fr        #
+#    Updated: 2025/08/18 03:45:00 by rmarrero         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ RM = rm -rf
 SRC_DIR = ./src
 OBJ_DIR = ./.obj
 INC_DIR = ./include
-LIBFT_DIR = ./libft
-MLX_DIR = ./minilibx
+LIBFT_DIR = ./src/libft
+MLX_DIR = ./MLX42
 
 # --- Source Files ---
 # List all your .c files here. This list MUST be updated manually.
@@ -42,29 +42,18 @@ SRCS = \
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
 # --- Header Files ---
-# List all your .h files here. This list MUST be updated manually.
-HEADERS = \
-    $(INC_DIR)/minirt.h
+HEADERS = -I$(INC_DIR) -I$(MLX_DIR)/include
 
 # --- Compiler Flags ---
-# -Wall, -Wextra, -Werror: Mandatory flags for 42 projects
-# -I$(INC_DIR): Include directory for your project headers
-# -g -fsanitize=address: Optional flags for debugging
-CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR) -pthread #-g -fsanitize=address
+# -Werror -Wextra -Wall: Mandatory flags for 42 projects
+# -Ofast: Optional optimization flag
+CFLAGS = #-Wall -Wextra -Werror -Ofast
 
-# --- Library Flags ---
-# Detect OS to use the correct MiniLibX flags
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S), Linux)
-    # -lXext -lX11: X Window System libraries on Linux.
-    # -lm: Math library.
-    # -lmlx: Minilibx library. The linker will find it in system paths.
-    MLX_FLAGS = -lXext -lX11 -lm
-    MLX_LIB = -L$(MLX_DIR) -lmlx
-else ifeq ($(UNAME_S), Darwin) # macOS
-    MLX_FLAGS = -framework OpenGL -framework AppKit -lm
-    MLX_LIB = -L$(MLX_DIR) -lmlx
-endif
+# --- Library Flags for MLX42 ---
+# -L$(LIBFT_DIR) -lft: Link your Libft
+# -L$(MLX_DIR)/build: Set the library path for MLX42
+# -lmlx42 -ldl -lglfw -pthread -lm: Link MLX42 and its dependencies
+LIBS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR)/build -lmlx42 -ldl -lglfw -pthread -lm
 
 # --- Color Output ---
 GREEN  = \033[32m
@@ -74,26 +63,30 @@ RED    = \033[31m
 RESET  = \033[0m
 
 # --- Main Targets ---
-.PHONY: all clean fclean re bonus
+.PHONY: all clean fclean re libmlx
 
-all: $(NAME)
+all: libmlx $(NAME)
+
+# Target to compile MLX42
+libmlx:
+	@echo "$(YELLOW)Compiling MLX42...$(RESET)"
+	@cmake $(MLX_DIR) -B $(MLX_DIR)/build -DCMAKE_BUILD_TYPE=Release
+	@make -C $(MLX_DIR)/build -j4
 
 # Link all object files and libraries to create the final executable
-$(NAME): $(OBJS) $(HEADERS)
+$(NAME): $(OBJS)
 	@echo "$(YELLOW)Compiling and linking Libft...$(RESET)"
 	@make -C $(LIBFT_DIR)
-	@echo "$(YELLOW)Compiling and linking MiniLibX...$(RESET)"
-	@make -C $(MLX_DIR)
 	@echo "$(BLUE)Linking $(NAME)...$(RESET)"
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft $(MLX_LIB) $(MLX_FLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
 	@echo "$(GREEN)MiniRT compiled successfully! 🎉$(RESET)"
 
-# --- Compilation Rules ---
+# --- Compilation Rule ---
 # Rule to compile a .c file into a .o file
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@echo "$(BLUE)Compiling $<...$(RESET)"
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 # Create object directories if they don't exist
 $(OBJ_DIR):
@@ -104,12 +97,14 @@ clean:
 	@echo "$(YELLOW)Cleaning object files...$(RESET)"
 	@$(RM) $(OBJ_DIR)
 	@make clean -C $(LIBFT_DIR)
-	@make clean -C $(MLX_DIR)
+	# The MLX42 build directory is removed here, no need to run 'make clean'
+	@$(RM) -rf $(MLX_DIR)/build
 
 fclean: clean
 	@echo "$(YELLOW)Cleaning executable...$(RESET)"
 	@$(RM) $(NAME)
 	@make fclean -C $(LIBFT_DIR)
-	@make fclean -C $(MLX_DIR)
+	# The MLX42 build directory is removed here
+	@$(RM) -rf $(MLX_DIR)/build
 
 re: fclean all

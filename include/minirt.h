@@ -273,9 +273,9 @@ typedef struct s_thread_data
 }					t_thread_data;
 
 // --- 6. Funciones de Renderizado y MLX ---
-void                    mlx_setup(t_data *data);
+// void                    mlx_setup(t_data *data);
 int                     close_window(t_data *data);
-int                     key_hook(int keycode, t_data *data);
+// int                     key_hook(int keycode, t_data *data);
 int                     mouse_press(int button, int x, int y, t_data *data);
 int                     mouse_release(int button, int x, int y, t_data *data);
 int                     mouse_move(int x, int y, t_data *data);
@@ -368,4 +368,9 @@ void				free_scene_data(t_scene *scene);
 void				cleanup_program(t_data *data);
 int is_in_shadow(t_ray *shadow_ray, t_scene *scene, t_light *light);
 void	init_scene(t_scene *scene);
+int	get_num_processors(void);
+int                     mlx_setup(t_data *data);
+void                    key_hook(mlx_key_data_t keydata, void* param);
+void    cleanup_program(t_data *data);
+
 #endif // MINIRT_H

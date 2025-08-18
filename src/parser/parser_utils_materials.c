@@ -54,26 +54,30 @@ void	parse_checkboard(char *token, t_material *material)
 	ft_free_str_array(parts);
 }
 
-int	validate_texture_extension(const char *file_name)
-{
-	int		len;
+#include "../../include/minirt.h"
 
-	if (!file_name)
-		return (0);
-	len = 0;
-	while (file_name[len])
-		len++;
-	if (len >= 4 && file_name[len - 4] == '.'
-		&& (file_name[len - 3] == 'p') || (file_name[len - 3] == 'P')
-		&& (file_name[len - 2] == 'n') || (file_name[len - 2] == 'N')
-		&& (file_name[len - 1] == 'g') || (file_name[len - 1] == 'G'))
-		return (1);
-	if (len >= 4 && file_name[len - 4] == '.'
-		&& (file_name[len - 3] == 'x') || (file_name[len - 3] == 'X')
-		&& (file_name[len - 2] == 'p') || (file_name[len - 2] == 'P')
-		&& (file_name[len - 1] == 'm') || (file_name[len - 1] == 'M'))
-		return (1);
-	return (0);
+int validate_texture_extension(const char *file_name)
+{
+    int len;
+
+    len = ft_strlen(file_name);
+    // Corrected check for .png files
+    if (len >= 4 && file_name[len - 4] == '.'
+        && ((file_name[len - 3] == 'p' || file_name[len - 3] == 'P')
+        && (file_name[len - 2] == 'n' || file_name[len - 2] == 'N')
+        && (file_name[len - 1] == 'g' || file_name[len - 1] == 'G')))
+    {
+        return (1);
+    }
+    // Corrected check for .xpm files
+    if (len >= 4 && file_name[len - 4] == '.'
+        && ((file_name[len - 3] == 'x' || file_name[len - 3] == 'X')
+        && (file_name[len - 2] == 'p' || file_name[len - 2] == 'P')
+        && (file_name[len - 1] == 'm' || file_name[len - 1] == 'M')))
+    {
+        return (1);
+    }
+    return (0);
 }
 
 char	*copy_trimmed_token(char *token, int len)
