@@ -1,0 +1,24 @@
+# Archivo de escena para ver la esfera desde arriba.
+# Se ha alejado la cámara para evitar que la esfera ocupe toda la vista.
+
+# Luz ambiental
+A 0.3 255,255,255
+
+# Luz
+# La luz está a 10 unidades sobre la escena.
+L 0,10,0 0.5 255,255,255
+
+# Cámara
+# La cámara está en la posición (0, 15, 0), más alejada del origen.
+#C 0,10,0 0,-1,0 80.0
+C 0,0,10 0,0,-1 80.0
+# Esfera
+# La esfera está centrada en el origen (0, 0, 0).
+# Es un espejo perfecto con un ratio de 1.0.
+sp 0,0,0 1.0 0,255,0 mir:1.0
+
+# Plano con textura de damero
+# El plano se encuentra en la posición (0, -1, 0)
+# con una normal (0, 1, 0) que lo hace un "suelo".
+# El patrón de damero es blanco y gris oscuro, con una escala de 5.0.
+pl 0,-1,0 0,1,0 0,0,255 bmp:scene/water.png

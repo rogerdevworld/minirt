@@ -25,47 +25,6 @@ void put_pixel_to_img(t_img *img, int x, int y, int color)
     *(unsigned int*)dst = color;
 }
 
-// Inicialización de MiniLibX y configuración de la ventana/imagen
-void mlx_setup(t_data *data)
-{
-    data->mlx.mlx_ptr = NULL;
-    data->mlx.win_ptr = NULL;
-    data->mlx.img.img_ptr = NULL;
-
-    data->mlx.mlx_ptr = mlx_init();
-    if (!data->mlx.mlx_ptr)
-    {
-        ft_printf("MiniRT: Error: No se pudo inicializar MiniLibX.\n");
-        exit(1);
-    }
-    data->mlx.win_ptr = mlx_new_window(data->mlx.mlx_ptr,
-                                       data->scene.width,
-                                       data->scene.height,
-                                       "miniRT");
-    if (!data->mlx.win_ptr)
-    {
-        mlx_destroy_display(data->mlx.mlx_ptr);
-        ft_printf("MiniRT: Error: No se pudo crear la ventana.\n");
-        exit(1);
-    }
-    data->mlx.img.img_ptr = mlx_new_image(data->mlx.mlx_ptr,
-                                           data->scene.width,
-                                           data->scene.height);
-    if (!data->mlx.img.img_ptr)
-    {
-        mlx_destroy_window(data->mlx.mlx_ptr, data->mlx.win_ptr);
-        mlx_destroy_display(data->mlx.mlx_ptr);
-         ft_printf("MiniRT: Error: No se pudo crear la imagen MLX.\n");
-        exit(1);
-    }
-    data->mlx.img.addr = mlx_get_data_addr(data->mlx.img.img_ptr,
-                                           &data->mlx.img.bpp,
-                                           &data->mlx.img.line_len,
-                                           &data->mlx.img.endian);
-    data->mlx.img.width = data->scene.width;
-    data->mlx.img.height = data->scene.height;
-}
-
 // Función para cerrar la ventana y liberar recursos
 // Asumimos que esta es tu función para el hook MLX_ON_DESTROY (evento 17)
 int close_window(t_data *data)

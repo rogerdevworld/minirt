@@ -35,101 +35,6 @@ t_ray generate_ray(int x, int y, t_scene *scene)
     return (ray);
 }
 
-// Lógica para obtener el color del objeto (incluye bonus de tablero de ajedrez)
-t_color get_object_color(t_hit_record *rec)
-{
-    // Si el objeto tiene un tablero de ajedrez
-    if (rec->object->material->has_checkerboard)
-    {
-        t_vec3 local_point = rec->point;
-        int pattern_x = (int)floor(local_point.x / rec->object->material->check_scale);
-        int pattern_y = (int)floor(local_point.y / rec->object->material->check_scale);
-        int pattern_z = (int)floor(local_point.z / rec->object->material->check_scale);
-        
-        if ((pattern_x + pattern_y + pattern_z) % 2 == 0)
-            return (rec->object->material->check_color1);
-        else
-            return (rec->object->material->check_color2);
-    }
-    // Si no hay tablero, devolver el color normal del objeto
-    return (rec->object->color);
-}
-
-// Calcula la luz especular para un punto de impacto
-t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
-{
-    t_vec3      to_light;
-    t_vec3      view_dir;
-    t_vec3      reflected_dir;
-    double      spec_factor;
-    t_color     specular_color;
-
-    to_light = vec3_normalize(vec3_sub(light->position, rec->point));
-    view_dir = vec3_normalize(vec3_mul(ray->direction, -1.0));
-    reflected_dir = vec3_reflect(to_light, rec->normal);
-
-    spec_factor = vec3_dot(view_dir, reflected_dir);
-    if (spec_factor > 0)
-    {
-        spec_factor = pow(spec_factor, rec->object->material->specular.shininess);
-        specular_color = vec3_mul(light->color, rec->object->material->specular.intensity * spec_factor);
-        return (specular_color);
-    }
-    return (vec3_init(0, 0, 0));
-}
-
-// Calcula el color final para un punto de impacto, con todos los bonus
-t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray)
-{
-    t_color final_color;
-    t_color ambient_color;
-    t_light **lights = (t_light **)scene->lights;
-    int     i = 0;
-
-    // 0. Obtener el color del objeto (incluye tablero)
-    t_color object_color = get_object_color(rec);
-
-    // 1. Luz ambiente
-    ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
-    ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
-    final_color = ambient_color;
-
-    // 2. Iterar sobre las luces
-    while (lights[i] != NULL)
-    {
-        t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
-
-        // Rayo de sombra
-        t_ray shadow_ray;
-        shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));  
-        shadow_ray.direction = to_light;
-        
-        if (is_in_shadow(&shadow_ray, scene, lights[i]))
-        {
-            i++;
-            continue;
-        }
-
-        // 3. Luz difusa
-        double dot_prod = vec3_dot(rec->normal, to_light);
-        if (dot_prod > 0)
-        {
-            t_color light_contribution = vec3_mult_vec(lights[i]->color, object_color);
-            light_contribution = vec3_mul(light_contribution, lights[i]->brightness * dot_prod);
-            final_color = vec3_add(final_color, light_contribution);
-        }
-
-        // 4. Luz especular
-        if (rec->object->material->specular.intensity > 0.0)
-        {
-            t_color specular_color = calculate_specular_light(rec, lights[i], ray);
-            final_color = vec3_add(final_color, specular_color);
-        }
-        i++;
-    }
-    return (final_color);
-}
-
 t_hit_record find_closest_hit(t_ray *ray, t_scene *scene)
 {
     t_hit_record    closest_hit;
@@ -393,11 +298,6 @@ int intersect_cone(t_ray *ray, t_cone *cn, t_hit_record *rec)
     return (1);
 }
 
-#include "../../include/minirt.h"
-
-// Función para la intersección de un rayo con un hiperboloide
-#include "../../include/minirt.h"
-
 int intersect_hyperboloid(t_ray *ray, t_hyperboloid *hp, t_hit_record *rec)
 {
     t_vec3  oc;
@@ -499,4 +399,191 @@ int is_in_shadow(t_ray *shadow_ray, t_scene *scene, t_light *light)
         i++;
     }
     return (0); // No hay ningún objeto obstruyendo la luz
+}
+
+t_color get_texture_color(t_hit_record *rec, t_texture *texture)
+{
+    // Check if the texture pointer itself is valid.
+    printf("get_texture_color: texture ptr: %p\n", texture);
+    if (!texture)
+    {
+        printf("Error: texture is NULL!\n");
+        return (vec3_init(0, 0, 0)); // Return a default color
+    }
+    
+    // Check the type of the texture.
+    printf("get_texture_color: texture type: %d\n", texture->type);
+
+    if (texture->type == TEX_CHECKERBOARD)
+    {
+        // Check if the colors are valid before using them.
+        printf("Checkerboard: color1 x:%.2f, y:%.2f, z:%.2f\n", texture->color1.x, texture->color1.y, texture->color1.z);
+        printf("Checkerboard: color2 x:%.2f, y:%.2f, z:%.2f\n", texture->color2.x, texture->color2.y, texture->color2.z);
+
+        t_vec3 local_point = rec->point;
+        int pattern_x = (int)floor(local_point.x / texture->scale);
+        int pattern_y = (int)floor(local_point.y / texture->scale);
+        int pattern_z = (int)floor(local_point.z / texture->scale);
+
+        if ((pattern_x + pattern_y + pattern_z) % 2 == 0)
+            return (texture->color1);
+        else
+            return (texture->color2);
+    }
+    else if (texture->type == TEX_IMAGE)
+    {
+        t_vec2      uv;
+        int         x;
+        int         y;
+        char        *dst;
+
+        // Check if the image pointer is valid.
+        printf("Image texture: img ptr: %p\n", texture->img);
+
+        if (!texture->img)
+        {
+            printf("Error: Image pointer is NULL!\n");
+            return (texture->color1);
+        }
+        printf("Image texture: img width: %d, height: %d\n", texture->img->width, texture->img->height);
+        printf("Image texture: img line_len: %d, bpp: %d\n", texture->img->line_len, texture->img->bpp);
+        
+        // This is the line where the corruption is likely occurring.
+        if (rec->object->type == SPHERE)
+        {
+            printf("Image texture: sphere detected.\n");
+            t_vec3 local_point = vec3_normalize(vec3_sub(rec->point, ((t_sphere*)rec->object->data)->center));
+            uv.x = 0.5 + atan2(local_point.z, local_point.x) / (2.0 * M_PI);
+            uv.y = 0.5 - asin(local_point.y) / M_PI;
+        }
+        else if (rec->object->type == PLANE)
+        {
+            printf("Image texture: plane detected.\n");
+            double scale = texture->scale;
+            uv.x = fmod(rec->point.x / scale, 1.0);
+            uv.y = fmod(rec->point.z / scale, 1.0);
+            if (uv.x < 0) uv.x += 1.0;
+            if (uv.y < 0) uv.y += 1.0;
+        }
+        
+        // Check the calculated UV coordinates.
+        printf("UV coordinates: x=%.4f, y=%.4f\n", uv.x, uv.y);
+
+        x = (int)(uv.x * texture->img->width);
+        y = (int)(uv.y * texture->img->height);
+
+        x = x % texture->img->width;
+        y = y % texture->img->height;
+        if (x < 0) x = texture->img->width + x;
+        if (y < 0) y = texture->img->height + y;
+
+        // Check the final pixel coordinates.
+        printf("Pixel coordinates: x=%d, y=%d\n", x, y);
+
+        // This is where the read occurs. If any of the above pointers are bad, this will crash.
+        dst = texture->img->addr + (y * texture->img->line_len + x * (texture->img->bpp / 8));
+        
+        // Check if dst pointer is valid before dereferencing.
+        printf("dst pointer: %p\n", dst);
+
+        t_color color;
+        unsigned int pixel_color = *(unsigned int *)dst;
+        color.x = (double)((pixel_color >> 16) & 0xFF) / 255.0;
+        color.y = (double)((pixel_color >> 8) & 0xFF) / 255.0;
+        color.z = (double)(pixel_color & 0xFF) / 255.0;
+
+        return (color);
+    }
+    // Return a solid color if the type is not handled.
+    printf("Solid color: x:%.2f, y:%.2f, z:%.2f\n", texture->color1.x, texture->color1.y, texture->color1.z);
+    return (texture->color1);
+}
+
+t_color get_object_color(t_hit_record *rec)
+{
+    return (get_texture_color(rec, &rec->object->material->albedo));
+}
+
+t_color calculate_specular_light_with_normal(t_hit_record *rec, t_light *light, t_ray *ray, t_vec3 normal)
+{
+    t_vec3      to_light;
+    t_vec3      view_dir;
+    t_vec3      reflected_dir;
+    double      spec_factor;
+    t_color     specular_color;
+
+    to_light = vec3_normalize(vec3_sub(light->position, rec->point));
+    view_dir = vec3_normalize(vec3_mul(ray->direction, -1.0));
+    reflected_dir = vec3_reflect(to_light, normal);
+
+    spec_factor = vec3_dot(view_dir, reflected_dir);
+    if (spec_factor > 0)
+    {
+        spec_factor = pow(spec_factor, rec->object->material->specular.shininess);
+        specular_color = vec3_mul(light->color, rec->object->material->specular.intensity * spec_factor);
+        return (specular_color);
+    }
+    return (vec3_init(0, 0, 0));
+}
+
+t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray)
+{
+    t_color final_color;
+    t_color object_color;
+    t_vec3  final_normal;
+    t_light **lights = (t_light **)scene->lights;
+    int     i = 0;
+
+    if (rec->object->material->normal_map.type == TEX_IMAGE)
+    {
+        t_color bump_color = get_texture_color(rec, &rec->object->material->normal_map);
+        t_vec3 bump_normal = vec3_init(
+            (bump_color.x * 2.0) - 1.0,
+            (bump_color.y * 2.0) - 1.0,
+            (bump_color.z * 2.0) - 1.0
+        );
+        final_normal = vec3_normalize(vec3_add(rec->normal, bump_normal));
+    }
+    else
+    {
+        final_normal = rec->normal;
+    }
+    if (vec3_dot(final_normal, ray->direction) > 0)
+        final_normal = vec3_mul(final_normal, -1);
+
+    object_color = get_object_color(rec);
+
+    t_color ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
+    ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
+    final_color = ambient_color;
+
+    while (lights[i] != NULL)
+    {
+        t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
+        t_ray shadow_ray;
+        shadow_ray.origin = vec3_add(rec->point, vec3_mul(final_normal, EPSILON));
+        shadow_ray.direction = to_light;
+
+        if (is_in_shadow(&shadow_ray, scene, lights[i]))
+        {
+            i++;
+            continue;
+        }
+
+        double dot_prod = vec3_dot(final_normal, to_light);
+        if (dot_prod > 0)
+        {
+            t_color light_contribution = vec3_mult_vec(lights[i]->color, object_color);
+            light_contribution = vec3_mul(light_contribution, lights[i]->brightness * dot_prod);
+            final_color = vec3_add(final_color, light_contribution);
+        }
+
+        if (rec->object->material->specular.intensity > 0.0)
+        {
+            t_color specular_color = calculate_specular_light_with_normal(rec, lights[i], ray, final_normal);
+            final_color = vec3_add(final_color, specular_color);
+        }
+        i++;
+    }
+    return (final_color);
 }

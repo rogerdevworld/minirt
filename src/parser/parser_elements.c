@@ -1,152 +1,139 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parser_elements.c                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jaacosta <jaacosta@student.42barcelon      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 22:24:49 by jaacosta          #+#    #+#             */
-/*   Updated: 2025/08/12 22:24:53 by jaacosta         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../include/minirt.h"
 
-// Parser de Esfera (sp)
-void	parse_sphere(t_scene *scene, char **tokens)
+// Parser for Sphere (sp)
+void    parse_sphere(t_scene *scene, char **tokens)
 {
-	t_sphere	*sp;
-	t_object	*obj;
+    t_sphere    *sp;
+    t_object    *obj;
+    t_material  *material;
 
-	if (ft_strarr_len(tokens) < 4)
-		ft_error_exit("Error: Sphere format invalid");
-	sp = (t_sphere *)malloc(sizeof(t_sphere));
-	if (!sp)
-		ft_error_exit("Error: Memory allocation failed");
-	sp->center = parse_vec3(tokens[1]);
-	sp->radius = parse_positive_double(tokens[2]);
-	obj = create_object(SPHERE, sp, parse_vec3_color(tokens[3]));
-	apply_object_modifiers(obj, tokens, 4);
-	add_object_to_scene(scene, obj);
+    if (ft_strarr_len(tokens) < 4)
+        ft_error_exit("Error: Sphere format invalid");
+    sp = (t_sphere *)malloc(sizeof(t_sphere));
+    if (!sp)
+        ft_error_exit("Error: Memory allocation failed");
+    sp->center = parse_vec3(tokens[1]);
+    sp->radius = parse_positive_double(tokens[2]);
+    
+    // Allocate and initialize the material.
+    material = create_material(parse_vec3_color(tokens[3]));
+    obj = create_object(SPHERE, sp, material);
+    apply_object_modifiers(obj, tokens, 4);
+    add_object_to_scene(scene, obj);
 }
 
-// Parser de Plano (pl)
-void	parse_plane(t_scene *scene, char **tokens)
+// Parser for Plane (pl)
+void    parse_plane(t_scene *scene, char **tokens)
 {
-	t_plane		*pl;
-	t_object	*obj;
+    t_plane     *pl;
+    t_object    *obj;
+    t_material  *material;
 
-	if (ft_strarr_len(tokens) < 4)
-		ft_error_exit("Error: Plane format invalid");
-	pl = (t_plane *)malloc(sizeof(t_plane));
-	if (!pl)
-		ft_error_exit("Error: Memory allocation failed");
-	pl->position = parse_vec3(tokens[1]);
-	pl->normal = parse_vec3_normalized(tokens[2]);
-	obj = create_object(PLANE, pl, parse_vec3_color(tokens[3]));
-	apply_object_modifiers(obj, tokens, 4);
-	add_object_to_scene(scene, obj);
+    if (ft_strarr_len(tokens) < 4)
+        ft_error_exit("Error: Plane format invalid");
+    pl = (t_plane *)malloc(sizeof(t_plane));
+    if (!pl)
+        ft_error_exit("Error: Memory allocation failed");
+    pl->position = parse_vec3(tokens[1]);
+    pl->normal = parse_vec3_normalized(tokens[2]);
+    
+    material = create_material(parse_vec3_color(tokens[3]));
+    obj = create_object(PLANE, pl, material);
+    apply_object_modifiers(obj, tokens, 4);
+    add_object_to_scene(scene, obj);
 }
 
 // Parser de Cilindro (cy)
-void	parse_cylinder(t_scene *scene, char **tokens)
+void    parse_cylinder(t_scene *scene, char **tokens)
 {
-	t_cylinder	*cy;
-	t_object	*obj;
+    t_cylinder  *cy;
+    t_object    *obj;
+    t_material  *material;
 
-	if (ft_strarr_len(tokens) < 6)
-		ft_error_exit("Error: Cylinder format invalid");
-	cy = (t_cylinder *)malloc(sizeof(t_cylinder));
-	if (!cy)
-		ft_error_exit("Error: Memory allocation failed");
-	cy->position = parse_vec3(tokens[1]);
-	cy->axis = parse_vec3_normalized(tokens[2]);
-	cy->radius = parse_positive_double(tokens[3]);
-	cy->height = parse_positive_double(tokens[4]);
-	obj = create_object(CYLINDER, cy, parse_vec3_color(tokens[5]));
-	apply_object_modifiers(obj, tokens, 6);
-	add_object_to_scene(scene, obj);
+    if (ft_strarr_len(tokens) < 6)
+        ft_error_exit("Error: Cylinder format invalid");
+    cy = (t_cylinder *)malloc(sizeof(t_cylinder));
+    if (!cy)
+        ft_error_exit("Error: Memory allocation failed");
+    cy->position = parse_vec3(tokens[1]);
+    cy->axis = parse_vec3_normalized(tokens[2]);
+    cy->radius = parse_positive_double(tokens[3]);
+    cy->height = parse_positive_double(tokens[4]);
+    
+    material = create_material(parse_vec3_color(tokens[5]));
+    obj = create_object(CYLINDER, cy, material);
+    apply_object_modifiers(obj, tokens, 6);
+    add_object_to_scene(scene, obj);
 }
 
 // Parser de Cono (cn)
-void	parse_cone(t_scene *scene, char **tokens)
+void    parse_cone(t_scene *scene, char **tokens)
 {
-	t_cone		*cn;
-	t_object	*obj;
+    t_cone      *cn;
+    t_object    *obj;
+    t_material  *material;
 
-	if (ft_strarr_len(tokens) < 6)
-		ft_error_exit("Error: Cone format invalid");
-	cn = malloc(sizeof(t_cone));
-	if (!cn)
-		ft_error_exit("Error: Memory allocation failed");
-	cn->position = parse_vec3(tokens[1]);
-	cn->axis = parse_vec3_normalized(tokens[2]);
-	cn->radius = parse_positive_double(tokens[3]);
-	cn->height = parse_positive_double(tokens[4]);
-	obj = create_object(CONE, cn, parse_vec3_color(tokens[5]));
-	apply_object_modifiers(obj, tokens, 6);
-	add_object_to_scene(scene, obj);
+    if (ft_strarr_len(tokens) < 6)
+        ft_error_exit("Error: Cone format invalid");
+    cn = malloc(sizeof(t_cone));
+    if (!cn)
+        ft_error_exit("Error: Memory allocation failed");
+    cn->position = parse_vec3(tokens[1]);
+    cn->axis = parse_vec3_normalized(tokens[2]);
+    cn->radius = parse_positive_double(tokens[3]);
+    cn->height = parse_positive_double(tokens[4]);
+    
+    material = create_material(parse_vec3_color(tokens[5]));
+    obj = create_object(CONE, cn, material);
+    apply_object_modifiers(obj, tokens, 6);
+    add_object_to_scene(scene, obj);
 }
 
-// Parser de hiperboloide (hp) ->bonus
-// void	parse_hyperboloid(t_scene *scene, char **tokens)
-// {
-// 	t_hyperb	*hp;
-// 	t_object	*obj;
-
-// 	if (ft_strarr_len(tokens) < 6)
-// 		ft_error_exit("Error: Cone format invalid");
-// 	hp = malloc(sizeof(t_cone));
-// 	if (!hp)
-// 		ft_error_exit("Error: Memory allocation failed");
-// 	hp->position = parse_vec3(tokens[1]);
-// 	hp->axis = parse_vec3_normalized(tokens[2]);
-// 	hp->radius = parse_positive_double(tokens[3]);
-// 	hp->height = parse_positive_double(tokens[4]);
-// 	obj = create_object(HYPERBOLOID, hp, parse_vec3_color(tokens[5]));
-// 	apply_object_modifiers(obj, tokens, 6);
-// 	add_object_to_scene(scene, obj);
-// }
-
-// Parser de Paraboloide (pb) ->bonus
-void	parse_paraboloid(t_scene *scene, char **tokens)
+// Parser de Paraboloide (pb)
+void    parse_paraboloid(t_scene *scene, char **tokens)
 {
-	t_parab		*pb;
-	t_object	*obj;
+    t_parab     *pb;
+    t_object    *obj;
+    t_material  *material;
 
-	if (ft_strarr_len(tokens) < 6)
-		ft_error_exit("Error: Cone format invalid");
-	pb = malloc(sizeof(t_cone));
-	if (!pb)
-		ft_error_exit("Error: Memory allocation failed");
-	pb->position = parse_vec3(tokens[1]);
-	pb->axis = parse_vec3_normalized(tokens[2]);
-	pb->focal_lenght = parse_positive_double(tokens[3]);
-	pb->height = parse_positive_double(tokens[4]);
-	obj = create_object(CONE, pb, parse_vec3_color(tokens[5]));
-	apply_object_modifiers(obj, tokens, 6);
-	add_object_to_scene(scene, obj);
+    if (ft_strarr_len(tokens) < 6)
+        ft_error_exit("Error: Paraboloid format invalid");
+    pb = malloc(sizeof(t_parab));
+    if (!pb)
+        ft_error_exit("Error: Memory allocation failed");
+    pb->position = parse_vec3(tokens[1]);
+    pb->axis = parse_vec3_normalized(tokens[2]);
+    pb->focal_lenght = parse_positive_double(tokens[3]);
+    pb->height = parse_positive_double(tokens[4]);
+    
+    material = create_material(parse_vec3_color(tokens[5]));
+    obj = create_object(PARABOLOID, pb, material);
+    apply_object_modifiers(obj, tokens, 6);
+    add_object_to_scene(scene, obj);
 }
 
-// Nuevo parser para Hiperboloide (hp)
-void	parse_hyperboloid(t_scene *scene, char **tokens)
+// Parser de Hiperboloide (hp)
+void    parse_hyperboloid(t_scene *scene, char **tokens)
 {
-	t_hyperboloid *hb;
-	t_object *obj;
+    t_hyperboloid *hb;
+    t_object *obj;
+    t_material *material;
 
-	if (ft_strarr_len(tokens) < 7)
-		ft_error_exit("Error: Hyperboloid format invalid");
-	hb = malloc(sizeof(t_hyperboloid));
-	if (!hb)
-		ft_error_exit("Error: Memory allocation failed");
-	hb->position = parse_vec3(tokens[1]);
-	hb->axis = parse_vec3_normalized(tokens[2]);
-	hb->radius_a = parse_positive_double(tokens[3]);
-	hb->radius_b = parse_positive_double(tokens[4]);
-	hb->height = parse_positive_double(tokens[5]);
-	obj = create_object(HYPERBOLOID, hb, parse_vec3_color(tokens[6]));
-	apply_object_modifiers(obj, tokens, 7);
-	add_object_to_scene(scene, obj);
+    if (ft_strarr_len(tokens) < 7)
+        ft_error_exit("Error: Hyperboloid format invalid");
+    hb = malloc(sizeof(t_hyperboloid));
+    if (!hb)
+        ft_error_exit("Error: Memory allocation failed");
+    hb->position = parse_vec3(tokens[1]);
+    hb->axis = parse_vec3_normalized(tokens[2]);
+    hb->radius_a = parse_positive_double(tokens[3]);
+    hb->radius_b = parse_positive_double(tokens[4]);
+    hb->height = parse_positive_double(tokens[5]);
+    
+    material = create_material(parse_vec3_color(tokens[6]));
+    obj = create_object(HYPERBOLOID, hb, material);
+    apply_object_modifiers(obj, tokens, 7);
+    add_object_to_scene(scene, obj);
 }
 
 // Parser de Cámara (C)

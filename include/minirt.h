@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minirt.h                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rmarrero <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 14:24:12 by rmarrero          #+#    #+#             */
-/*   Updated: 2025/07/23 14:24:32 by rmarrero         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 #ifndef MINIRT_H
 # define MINIRT_H
 
@@ -45,14 +34,22 @@
 // --- 3. Estructuras de Datos Primarias ---
 
 // Vector y color
+// En tu archivo minirt.h
+typedef struct s_vec2
+{
+    double  x;
+    double  y;
+}   t_vec2;
+
 typedef struct s_vec3
 {
-	double			x;
-	double			y;
-	double			z;
-}					t_vec3;
+    double  x;
+    double  y;
+    double  z;
+}   t_vec3;
 
-typedef t_vec3		t_color;
+// Puedes mantener los alias de color si lo necesitas
+typedef t_vec3  t_color;
 
 // Rayo
 typedef struct s_ray
@@ -71,35 +68,49 @@ typedef struct s_hit_record
 	struct s_object	*object;
 }					t_hit_record;
 
-// Parámetros de especularidad (modelo de Phong)
+// Minilibx y la imagen
+typedef struct s_img
+{
+	char			*addr;
+	void			*img_ptr;
+	int				bpp;
+	int				line_len;
+	int				endian;
+	int				width;
+	int				height;
+}					t_img;
+
+typedef enum e_texture_type
+{
+    TEX_SOLID,
+    TEX_CHECKERBOARD,
+    TEX_IMAGE
+}                   t_texture_type;
+
+typedef struct s_texture
+{
+    t_texture_type  type;
+    t_color         color1;
+    t_color         color2;
+    double          scale;
+    char            *img_path; // Puntero a la imagen cargada por mlx
+    t_img            *img; // Ruta del archivo de la imagen
+}                   t_texture;
+
 typedef struct s_specular
 {
-    float               intensity;  // La fuerza del brillo especular (0.0-1.0)
-    int                 shininess;  // La "dureza" del brillo (un valor alto = punto de luz pequeño)
-}                       t_specular;
+    float           intensity;
+    int             shininess;
+}                   t_specular;
 
 typedef struct s_material
 {
-    t_specular          specular;
-    double              mirror_ratio;
-    
-    int                 has_checkerboard;
-    t_vec3              check_color1;
-    t_vec3              check_color2;
-    double              check_scale;
-    
-    int                 has_bump_map;
-    char                *bump_map_path;
-}                       t_material;
-
-
-// Texturas y patrones (bonificación)
-typedef struct s_texture
-{
-    int                 is_checkerboard; // 1 para patrón de tablero, 0 para color sólido.
-    int                 is_bump_map;     // 1 si usa mapa de relieve, 0 si no.
-    char                *file_path;      // Ruta al archivo de textura o mapa de relieve.
-}                       t_texture;
+    t_texture       albedo;         // Color o textura base (albedo)
+    t_texture       normal_map;     // Para los mapas de relieve (bump/normal maps)
+    t_specular      specular;
+    double          reflectivity;
+    double          refraction_idx; // Índice de refracción
+}                   t_material;
 
 // --- 4. Estructuras de Elementos de la Escena ---
 
@@ -144,6 +155,7 @@ typedef struct s_sphere
 {
 	t_vec3			center;
 	double			radius;
+    t_material      material;
 }					t_sphere;
 
 // Plano
@@ -151,6 +163,7 @@ typedef struct s_plane
 {
 	t_vec3			position;
 	t_vec3			normal;
+    t_material      material;
 }					t_plane;
 
 // Cilindro
@@ -160,6 +173,7 @@ typedef struct s_cylinder
 	t_vec3			axis;
 	double			radius;
 	double			height;
+    t_material      material;
 }					t_cylinder;
 
 // Cono (bonificación)
@@ -169,6 +183,7 @@ typedef struct s_cone
     t_vec3              axis;
     double              radius;
     double              height;
+    t_material      material;
 }                       t_cone;
 
 // Hiperboloide (bonificación)
@@ -179,15 +194,8 @@ typedef struct s_hyperboloid
     double              radius_a;
     double              radius_b;
     double              height;
+    t_material      material;
 }                       t_hyperboloid;
-
-// typedef struct s_hyperb
-// {
-// 	t_vec3			position;
-// 	t_vec3			axis;
-// 	double			radius;
-// 	double			height;
-// }					t_hyperb;
 
 typedef struct s_parab
 {
@@ -195,6 +203,7 @@ typedef struct s_parab
 	t_vec3			axis;
 	double			focal_lenght;
 	double			height;
+    t_material      material;
 }					t_parab;
 // Objeto genérico
 // typedef struct s_object
@@ -211,7 +220,7 @@ typedef struct s_object
     t_object_type   type;
     t_vec3          color;
     void            *data;
-    t_material      *material; // <-- Puntero a la nueva estructura de material
+    t_material      *material;
 }                   t_object;
 
 // --- 5. Estructuras de Control del Programa ---
@@ -221,26 +230,14 @@ typedef struct s_scene
 {
     t_ambient_light     ambient;
     t_camera            camera;
-    void                *lights;
-    void                *objects;
+    t_list                *lights;
+    t_list                *objects;
     int                 width;
     int                 height;
     int                 has_camera;
     int                 has_ambient;
     t_color         background_color;
 }                       t_scene;
-
-// Minilibx y la imagen
-typedef struct s_img
-{
-	char			*addr;
-	void			*img_ptr;
-	int				bpp;
-	int				line_len;
-	int				endian;
-	int				width;
-	int				height;
-}					t_img;
 
 typedef struct s_mlx
 {
@@ -285,7 +282,7 @@ t_ray                   generate_ray(int x, int y, t_scene *scene);
 t_hit_record            find_closest_hit(t_ray *ray, t_scene *scene);
 t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray);
 int                     color_to_int(t_color color);
-t_color                 get_texture_color(t_object *obj, t_vec3 point);
+t_color get_texture_color(t_hit_record *rec, t_texture *texture);
 t_vec3                  apply_bump_map(t_hit_record *rec, t_object *obj);
 
 // --- 8. Funciones de Intersección (incluye bonificaciones) ---
@@ -316,8 +313,8 @@ void				parse_paraboloid(t_scene *scene, char **tokens);
 t_vec3				parse_vec3(char *str);
 t_vec3				parse_vec3_color(char *str);
 t_vec3				parse_vec3_normalized(char *str);
-t_object			*create_object(t_object_type type, void *data,
-						t_vec3 color);
+// t_object			*create_object(t_object_type type, void *data,
+// 						t_vec3 color);
 
 
 // --- 10. Funciones de Inicialización ---
@@ -361,8 +358,13 @@ int					ft_strarr_len(char **arr);
 double				ft_atod(const char *str);
 void				ft_free_str_array(char **arr);
 void				free_tokens(char **tokens);
-void				free_scene_data(t_scene *scene);
+void    free_scene_data(t_scene *scene, t_mlx *mlx);
 void				cleanup_program(t_data *data);
 int is_in_shadow(t_ray *shadow_ray, t_scene *scene, t_light *light);
 void	init_scene(t_scene *scene);
-#endif // MINIRT_H
+
+int	get_num_processors(void);
+t_object    *create_object(t_object_type type, void *data, t_material *material);
+t_material *create_material(t_vec3 albedo_color);
+
+#endif

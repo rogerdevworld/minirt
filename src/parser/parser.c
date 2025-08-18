@@ -79,46 +79,53 @@ void	validate_file(int fd, const char *file_name)
 	}
 }
 
-void	parse_rt_file(t_scene *scene, const char *file_path)
-{
-	int		fd;
-	char	*line;
-	char	**tokens;
 
-	if (!valid_extension_rt(file_path))
-		ft_error_exit("MiniRT: Error: the file must be of type '*.rt'");
-	fd = open_filename(file_path);
-	validate_file(fd, file_path);
-	close(fd);
-	fd = open_filename(file_path);
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		tokens = ft_split(line, ' ');
-		if (!tokens)
-			ft_error_exit("MiniRT: Error: ft_split failed");
-		if (ft_strcmp(tokens[0], "A") == 0)
-			parse_ambient(scene, tokens);
-		else if (ft_strcmp(tokens[0], "C") == 0)
-			parse_camera(scene, tokens);
-		else if (ft_strcmp(tokens[0], "L") == 0)
-			parse_light(scene, tokens);
-		else if (ft_strcmp(tokens[0], "sp") == 0)
-			parse_sphere(scene, tokens);
-		else if (ft_strcmp(tokens[0], "pl") == 0)
-			parse_plane(scene, tokens);
-		else if (ft_strcmp(tokens[0], "cy") == 0)
-			parse_cylinder(scene, tokens);
-		else if (ft_strcmp(tokens[0], "cn") == 0)
-			parse_cone(scene, tokens);
-		else if (ft_strcmp(tokens[0], "pb") == 0)
-			parse_paraboloid(scene, tokens);
-		else if (ft_strcmp(tokens[0], "hp") == 0)
-			parse_hyperboloid(scene, tokens);
-		ft_free_str_array(tokens);
-		free(line);
-	}
-	close(fd);
-	if (!scene->has_camera || !scene->has_ambient)
-		ft_error_exit("MiniRT: Error: A camera and \
-			ambient light are required.");
+void    parse_rt_file(t_scene *scene, const char *file_path)
+{
+    int     fd;
+    char    *line;
+    char    **tokens;
+
+    if (!valid_extension_rt(file_path))
+        ft_error_exit("MiniRT: Error: the file must be of type '*.rt'");
+    fd = open_filename(file_path);
+    validate_file(fd, file_path);
+    close(fd);
+    fd = open_filename(file_path);
+    while ((line = get_next_line(fd)) != NULL)
+    {
+        tokens = ft_split(line, ' ');
+        if (!tokens || !*tokens) // Check if the line is empty or just whitespace
+        {
+            if (tokens)
+                ft_free_str_array(tokens);
+            free(line);
+            continue;
+        }
+
+        if (ft_strcmp(tokens[0], "A") == 0)
+            parse_ambient(scene, tokens);
+        else if (ft_strcmp(tokens[0], "C") == 0)
+            parse_camera(scene, tokens);
+        else if (ft_strcmp(tokens[0], "L") == 0)
+            parse_light(scene, tokens);
+        else if (ft_strcmp(tokens[0], "sp") == 0)
+            parse_sphere(scene, tokens);
+        else if (ft_strcmp(tokens[0], "pl") == 0)
+            parse_plane(scene, tokens);
+        else if (ft_strcmp(tokens[0], "cy") == 0)
+            parse_cylinder(scene, tokens);
+        else if (ft_strcmp(tokens[0], "cn") == 0)
+            parse_cone(scene, tokens);
+        else if (ft_strcmp(tokens[0], "pb") == 0)
+            parse_paraboloid(scene, tokens);
+        else if (ft_strcmp(tokens[0], "hp") == 0)
+            parse_hyperboloid(scene, tokens);
+
+        ft_free_str_array(tokens);
+        free(line);
+    }
+    close(fd);
+    if (!scene->has_camera || !scene->has_ambient)
+        ft_error_exit("MiniRT: Error: A camera and ambient light are required.");
 }
