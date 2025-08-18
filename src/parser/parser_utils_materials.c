@@ -137,7 +137,7 @@ t_material	*create_material(void)
 	material->check_color2 = (t_vec3){0, 0, 0};
 	material->check_scale = 1.0;
 	material->texture = NULL;
-	material->has_bump_map = 0;
+	material->has_texture = false;
 	return (material);
 }
 
@@ -174,7 +174,7 @@ void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
             obj->material->texture = mlx_load_png(tokens[i] + 4);
             if (!obj->material->texture)
                 ft_error_exit("Error: Failed to load PNG bump map.");
-            obj->material->has_bump_map = 1;
+            obj->material->has_texture = true;
         }
 		i++;
 	}

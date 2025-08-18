@@ -103,14 +103,14 @@ typedef struct s_material
 
     // Un solo puntero para todas las texturas
     mlx_texture_t                *texture;
-    bool has_textura;
+    bool has_texture;
 
     int                 has_checkerboard;
     t_vec3              check_color1;
     t_vec3              check_color2;
     double              check_scale;
     
-    int                 has_bump_map;
+    // int                 has_bump_map;
     // Un solo puntero y un enum para el bump map
     // void                *bump_map_ptr;
     // t_texture_type      bump_map_type;

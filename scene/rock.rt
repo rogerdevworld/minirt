@@ -9,4 +9,4 @@ L -10,10,0 0.8 255,255,255
 
 sp -2,0,0 1.0 255,0,0 spc:0.5,10
 pl 0,10,0 0,-1,0 135,206,235
-pl 0,-1,0 0,1,0 0,0,255 bmp:scene/texture/water.png
+pl 0,-1,0 0,1,0 0,0,255 bmp:scene/texture/rock.png

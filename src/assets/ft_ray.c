@@ -38,16 +38,16 @@ t_ray generate_ray(int x, int y, t_scene *scene)
 // Corregido: Ahora get_object_color maneja texturas, tableros y color base
 t_color get_object_color(t_hit_record *rec)
 {
-    // AÑADE ESTA LÍNEA AQUÍ
+    // Primer y más importante: Si no hay material, devuelve el color base.
     if (!rec->object->material)
-        return (rec->object->color); // Fallback al color base si no hay material
+        return (rec->object->color);
 
-    if (rec->object->material->has_bump_map)
+    // Si el material tiene una textura principal (no un bump map)
+    if (rec->object->material->has_texture)
     {
         return (get_texture_color(rec));
     }
-
-    // Si tiene un tablero
+    // Si tiene un tablero de ajedrez
     else if (rec->object->material->has_checkerboard)
     {
         t_vec3 local_point = rec->point;
@@ -60,8 +60,11 @@ t_color get_object_color(t_hit_record *rec)
         else
             return (rec->object->material->check_color2);
     }
-    // Devolver el color base si no hay texturas ni tableros
-    return (rec->object->color);
+    // Si no tiene ni textura ni tablero, devuelve el color base del objeto
+    else
+    {
+        return (rec->object->color);
+    }
 }
 
 // Corregido: Agrega validación para el material
@@ -257,9 +260,9 @@ t_color get_texture_color(t_hit_record *rec)
 
     // Lee los bytes en orden ARGB (Alfa, Rojo, Verde, Azul)
     // El formato ARGB es común, y el canal R (Red) es el segundo byte.
-    tex_color.x = (double)texture->pixels[index + 1] / 255.0; // Canal Rojo
-    tex_color.y = (double)texture->pixels[index + 2] / 255.0; // Canal Verde
-    tex_color.z = (double)texture->pixels[index + 3] / 255.0; // Canal Azul
+    tex_color.x = (double)texture->pixels[index] / 255.0;     // Red
+    tex_color.y = (double)texture->pixels[index + 1] / 255.0; // Green
+    tex_color.z = (double)texture->pixels[index + 2] / 255.0; // Blue
     
     return (tex_color);
 }
