@@ -55,27 +55,43 @@ t_color get_object_color(t_hit_record *rec)
     return (rec->object->color);
 }
 
+t_vec3 vec3_mul_scalar(t_vec3 v, double s) {
+    t_vec3 result;
+    result.x = v.x * s;
+    result.y = v.y * s;
+    result.z = v.z * s;
+    return result;
+}
+
 // Calcula la luz especular para un punto de impacto
 t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
 {
     t_vec3      to_light;
     t_vec3      view_dir;
-    t_vec3      reflected_dir;
+    t_vec3      reflect_dir;
     double      spec_factor;
     t_color     specular_color;
 
     to_light = vec3_normalize(vec3_sub(light->position, rec->point));
     view_dir = vec3_normalize(vec3_mul(ray->direction, -1.0));
-    reflected_dir = vec3_reflect(to_light, rec->normal);
+    // REFLEJA el opuesto de la dirección de la luz (de la luz hacia el punto) sobre la normal
+    reflect_dir = vec3_reflect(vec3_mul(to_light, -1.0), rec->normal);
 
-    spec_factor = vec3_dot(view_dir, reflected_dir);
-    if (spec_factor > 0)
+    // Cálculo del exponente phong y la contribución especular
+    spec_factor = vec3_dot(view_dir, reflect_dir);
+    if (spec_factor > 0 && rec->object->material->specular.shininess > 0)
     {
         spec_factor = pow(spec_factor, rec->object->material->specular.shininess);
-        specular_color = vec3_mul(light->color, rec->object->material->specular.intensity * spec_factor);
-        return (specular_color);
+        // SE MULTIPLICA POR LA INTENSIDAD Y POR LA LamBERTIANA (dot(normal, to_light))
+        double diff = vec3_dot(rec->normal, to_light);
+        if (diff > 0)
+        {
+            // Esto da un efecto mucho más correcto
+            specular_color = vec3_mul(light->color, rec->object->material->specular.intensity * spec_factor * diff * light->brightness);
+            return specular_color;
+        }
     }
-    return (vec3_init(0, 0, 0));
+    return vec3_init(0, 0, 0);
 }
 
 // Calcula el color final para un punto de impacto, con todos los bonus

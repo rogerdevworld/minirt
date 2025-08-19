@@ -123,7 +123,7 @@ void	parse_paraboloid(t_scene *scene, char **tokens)
 	pb->axis = parse_vec3_normalized(tokens[2]);
 	pb->focal_lenght = parse_positive_double(tokens[3]);
 	pb->height = parse_positive_double(tokens[4]);
-	obj = create_object(CONE, pb, parse_vec3_color(tokens[5]));
+	obj = create_object(PARABOLOID, pb, parse_vec3_color(tokens[5]));
 	apply_object_modifiers(obj, tokens, 6);
 	add_object_to_scene(scene, obj);
 }
