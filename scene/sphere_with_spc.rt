@@ -5,7 +5,7 @@
 #pl 0,-15,0 0,1,0 255,255,255
 
 # Camera (C): position, orientation, FOV
-C 0,10,25 0,-0.4,-1 70
+C 0,10,25 0,-0.4,-1 90
 
 # Ambient Light (A): ratio, color
 A 0.1 255,255,255
@@ -18,12 +18,11 @@ L -20,10,-10 0.5 0,0,20
 
 # Esfera 1: reflexion especular
 # tiene una reflexion especular que hace de modelo phong
-sp 10,10,-10 4.0 50,50,255 spc:0.9,80
-
-# Tiene un material de espejo (mir) con un ratio de 1.0.
-sp 0,0,-10 5.0 200,200,200 spc:0.7,10 
+sp 10,10,-10 4.0 50,50,255 spc:0.7,10
 
 # Plano: Base con textura de tablero de ajedrez
 # Los colores son gris y blanco, y la escala del tablero es 3.0.
 pl 0,-15,0 0,1,0 255,255,255 chk:150,150,150;255,255,255;3.0
 
+# Cono: Un cono simple con un color rojo
+cn 20,0,-2 0,1,0 7.0 15.0 255,0,0

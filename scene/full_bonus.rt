@@ -7,16 +7,17 @@ A 0.1 255,255,255
 # Lights (L): position, brightness, color
 L 10,20,20 0.8 255,255,255
 L -20,10,-10 0.5 0,0,255
+L 20,30,-20 0.8 255,255,255
 
 # Spheres (sp): position, radius, color/material
 
 # Esfera 1: Espejo perfecto
 # Tiene un material de espejo (mir) con un ratio de 1.0.
-sp 0,0,-10 5.0 200,200,200 mir:1.0
+sp 0,0,-10 5.0 200,200,200 spc:0.9,80
 
 # Esfera 2: Con textura de tablero de ajedrez
 # Los colores del tablero son blanco y negro, con una escala de 2.0.
-sp -10,10,-10 4.0 255,255,255 chk:255,255,255;0,0,0;2.0
+sp -10,10,-10 4.0 255,255,255 chk:255,255,255;0,0,0;2.0 spc:0.9,80
 
 # Esfera 3: Con propiedades especulares (brillante)
 # El color base es un azul metálico.
