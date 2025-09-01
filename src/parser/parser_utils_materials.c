@@ -158,6 +158,7 @@ t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 {
 	int	i;
+	char	*path_bmp;
 
 	i = start_idx;
 	while (tokens[i])
@@ -171,7 +172,8 @@ void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 		else if (ft_strncmp(tokens[i], "bmp:", 4) == 0)
 		{
             // Carga del bump map (si es un PNG)
-            obj->material->texture = mlx_load_png(tokens[i] + 4);
+			path_bmp = ft_strtrim(tokens[i] + 4, " \t\n\r");
+            obj->material->texture = mlx_load_png(path_bmp);
             if (!obj->material->texture)
                 ft_error_exit("Error: Failed to load PNG bump map.");
             obj->material->has_texture = true;

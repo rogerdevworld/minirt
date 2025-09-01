@@ -5,10 +5,12 @@ int	color_to_int(t_color color)
 	int	r;
 	int	g;
 	int	b;
+    int a;
 
-	r = (int)(color.x * 255.99);
-	g = (int)(color.y * 255.99);
-	b = (int)(color.z * 255.99);
+	r = (int)(color.x * 255.00);
+	g = (int)(color.y * 255.00);
+	b = (int)(color.z * 255.00);
+    a = 255;
 	if (r < 0)
 		r = 0;
 	if (r > 255)
@@ -21,7 +23,8 @@ int	color_to_int(t_color color)
 		b = 0;
 	if (b > 255)
 		b = 255;
-	return (0xFF000000 | (r << 16) | (g << 8) | b);
+	//return (0xFF000000 | (r << 16) | (g << 8) | b);
+	return ((r << 24) | (g << 16) | (b << 8) | a);
 }
 
 // normal 
