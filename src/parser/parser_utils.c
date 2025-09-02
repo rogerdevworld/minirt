@@ -192,8 +192,10 @@ void    add_object_to_scene(t_scene *scene, t_object *obj)
 
 	count = 0;
 	if (scene->objects)
+	{
 		while (((t_object **)scene->objects)[count])
 			count++;
+	}
 	new_objects = (t_object **)malloc(sizeof(t_object *) * (count + 2));
 	if (!new_objects)
 		ft_error_exit("MiniRT: Error: Malloc failed for objects");

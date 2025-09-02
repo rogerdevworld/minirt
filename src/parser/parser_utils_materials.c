@@ -129,6 +129,7 @@ t_material	*create_material(void)
 	material = malloc(sizeof(t_material));
 	if (!material)
 		ft_error_exit("Error: Memory allocation for material failed");
+	ft_memset(material, 0, sizeof(t_material));
 	material->specular.intensity = 0.0f;
 	material->specular.shininess = 0;
 	material->mirror_ratio = 0.0;
@@ -148,6 +149,7 @@ t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 	obj = (t_object *)malloc(sizeof(t_object));
 	if (!obj)
 		ft_error_exit("Error: Memory allocation for object failed");
+	ft_memset(obj, 0, sizeof(t_object));
 	obj->type = type;
 	obj->data = data;
 	obj->color = color;
@@ -175,8 +177,12 @@ void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
 			path_bmp = ft_strtrim(tokens[i] + 4, " \t\n\r");
             obj->material->texture = mlx_load_png(path_bmp);
             if (!obj->material->texture)
-                ft_error_exit("Error: Failed to load PNG bump map.");
+			{
+				free(path_bmp);
+            	ft_error_exit("Error: Failed to load PNG bump map.");
+			}
             obj->material->has_texture = true;
+			free(path_bmp);
         }
 		i++;
 	}
