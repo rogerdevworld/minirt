@@ -6,7 +6,7 @@
 #    By: rmarrero <rmarrero@student.42barcelona.com>+#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/16 12:58:52 by rmarrero          #+#    #+#              #
-#    Updated: 2025/08/18 03:45:00 by rmarrero         ###   ########.fr        #
+#    Updated: 2025/09/03 21:26:43 by rmarrero         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ HEADERS = -I$(INC_DIR) -I$(MLX_DIR)/include
 # --- Compiler Flags ---
 # -Werror -Wextra -Wall: Mandatory flags for 42 projects
 # -Ofast: Optional optimization flag
-CFLAGS = -fsanitize=address,leak #-Wall -Wextra -Werror -Ofast 
+CFLAGS = -fsanitize=thread -Ofast -pthread #-Wall -Wextra -Werror
 
 # --- Library Flags for MLX42 ---
 # -L$(LIBFT_DIR) -lft: Link your Libft

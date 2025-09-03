@@ -123,9 +123,7 @@ void *render_thread_func(void *arg)
             mlx_put_pixel(data->mlx.img.img_ptr, x, y, color_to_int(final_color));
             x++;
         }
-        pthread_mutex_lock(&data->progress_mutex);
-        data->rendered_rows++;
-        pthread_mutex_unlock(&data->progress_mutex);
+-
         
         y++;
     }
@@ -184,5 +182,4 @@ void    render_threaded(t_data *data)
         pthread_join(threads[i], NULL);
         i++;
     }
-    // No necesitas destruir el mutex aquí, ya lo haces en `cleanup_program`
 }
