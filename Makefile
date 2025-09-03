@@ -47,7 +47,7 @@ HEADERS = -I$(INC_DIR) -I$(MLX_DIR)/include
 # --- Compiler Flags ---
 # -Werror -Wextra -Wall: Mandatory flags for 42 projects
 # -Ofast: Optional optimization flag
-CFLAGS = -fsanitize=address,leak #-Wall -Wextra -Werror -Ofast 
+CFLAGS =  -fsanitize=address,leak -g -O3 -march=native -flto #-Wall -Wextra -Werror -Ofast 
 
 # --- Library Flags for MLX42 ---
 # -L$(LIBFT_DIR) -lft: Link your Libft
