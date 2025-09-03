@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     parse_rt_file(&data.scene, argv[1]);
 
     if (mlx_setup(&data) != 0)
-        return (cleanup_program(&data), 1);
+       return (cleanup_program(&data), 1);
 
     render_threaded(&data);
 

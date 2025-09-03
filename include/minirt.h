@@ -247,8 +247,8 @@ typedef struct s_scene
 {
     t_ambient_light     ambient;
     t_camera            camera;
-    t_list                *lights;
-    t_list                *objects;
+    t_light               **lights;
+    t_object                **objects;
     int                 width;
     int                 height;
     int                 has_camera;

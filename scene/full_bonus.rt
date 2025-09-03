@@ -18,22 +18,11 @@ sp 0,0,-10 5.0 200,200,200 mir:1.0
 # Los colores del tablero son blanco y negro, con una escala de 2.0.
 sp -10,10,-10 4.0 255,255,255 chk:255,255,255;0,0,0;2.0
 
-# Esfera 3: Con propiedades especulares (brillante)
-# El color base es un azul metálico.
-# La intensidad especular es 0.9 y el brillo es 80 (un brillo duro y concentrado).
-sp 10,10,-10 4.0 50,50,255 spc:0.9,80
-
-# Esfera 4: Con textura XPM y brillo
-# Usa una textura XPM para el color.
-# La ruta del archivo es "textures/my_texture.xpm".
-# También tiene un brillo especular con intensidad 0.6 y brillo 20.
-sp 0,20,-10 4.0 255,255,255 bmp:scene/my_textures.xpm spc:0.6,20
-
 # Planes (pl): position, normal, color/material
 
 # Plano: Base con textura de tablero de ajedrez
 # Los colores son gris y blanco, y la escala del tablero es 3.0.
-pl 0,-15,0 0,1,0 255,255,255 chk:150,150,150;255,255,255;3.0
+pl 0,-15,0 0,1,0 255,255,255 mir:1.0
 
 # Cylinder (cy): position, axis, radius, height, color
 

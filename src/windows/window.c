@@ -42,38 +42,95 @@ int mlx_setup(t_data *data)
     return (0); // Éxito
 }
 
-void free_object_and_data(void *content)
+// void free_object_and_data(void *content)
+// {
+//     t_object *obj;
+
+//     if (!content)
+//         return;
+
+//     obj = (t_object *)content;
+
+//     // Free all dynamically allocated parts of the object
+//     if (obj->material)
+//     {
+//         if (obj->material->texture)
+//             mlx_delete_texture(obj->material->texture);
+//         // if (obj->material->bump_map)
+//         //     mlx_delete_texture(obj->material->bump_map);
+//         free(obj->material);
+//     }
+//     if (obj->data)
+//         free(obj->data);
+//     free(obj);
+// }
+
+// Libera UN objeto completo (material, data, y el propio objeto)
+static void free_one_object(t_object *obj)
 {
-    t_object *obj;
+    if (!obj) return;
 
-    if (!content)
-        return;
-
-    obj = (t_object *)content;
-
-    // Free all dynamically allocated parts of the object
-    if (obj->material)
-    {
-        if (obj->material->texture)
+    if (obj->material) {
+        if (obj->material->texture) {
             mlx_delete_texture(obj->material->texture);
-        // if (obj->material->bump_map)
-        //     mlx_delete_texture(obj->material->bump_map);
+            obj->material->texture = NULL;
+        }
         free(obj->material);
+        obj->material = NULL;
     }
-    if (obj->data)
+    if (obj->data) {
         free(obj->data);
-    // free(obj);
+        obj->data = NULL;
+    }
+    free(obj);
 }
 
+void free_scene_objects(t_scene *scene)
+{
+    if (!scene->objects) return;
+
+    for (size_t i = 0; scene->objects[i]; ++i) {
+        free_one_object(scene->objects[i]);
+    }
+    free(scene->objects);
+    scene->objects = NULL;
+}
+
+static void free_one_light(t_light *light)
+{
+    if (!light) return;
+
+    // Si en el futuro tuvieras mallocs dentro de light, libéralos aquí.
+    // Ejemplo:
+    // if (light->shadow_map)
+    //     free(light->shadow_map);
+
+    free(light);
+}
+
+void free_scene_lights(t_scene *scene)
+{
+    if (!scene->lights) return;
+
+    for (size_t i = 0; scene->lights[i]; ++i) {
+        free_one_light(scene->lights[i]);
+    }
+    free(scene->lights);
+    scene->lights = NULL;
+}
 void cleanup_program(t_data *data)
 {
     // Clean up all object nodes, their materials, and object data
-    if (data->scene.objects)
-        ft_lstclear(&data->scene.objects, free_object_and_data);
+    // if (data->scene.objects)
+    //     ft_lstclear(&data->scene.objects, free_object_and_data);
+    // Objetos (array NULL-terminado)
+    free_scene_objects(&data->scene);
 
     // Clean up all light nodes
-    if (data->scene.lights)
-        ft_lstclear(&data->scene.lights, free);
+    // if (data->scene.lights)
+    //     ft_lstclear(&data->scene.lights, free);
+    // Objetos (array NULL-terminado)
+    free_scene_lights(&data->scene);
 
     // Clean up MLX image and MLX instance
     if (data->mlx.img.img_ptr)

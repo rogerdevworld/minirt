@@ -17,7 +17,7 @@ L 0.0,30.0,50.0 0.8 255,255,255
 # La escala del tablero es 1.0 (unidades del mundo real)
 # El ratio de espejo es 0.0 (no es un espejo)
 # Los valores especulares son intensidad 0.0 (no es brillante) y brillo 0.0
-sp 0.0,0.0,0.0 12.0 M C 255,255,255 0,0,0 1.0 0.0 0.0 0.0
+sp 0.0,0.0,0.0 12.0 255,255,255 0,0,0 1.0 0.0 0.0 0.0
 
 # pl - Plano
 # El plano tiene un material especular muy alto para que se vea brillante.
