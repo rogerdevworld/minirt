@@ -207,13 +207,6 @@ typedef struct s_hyperboloid
     double              height;
 }                       t_hyperboloid;
 
-// typedef struct s_hyperb
-// {
-// 	t_vec3			position;
-// 	t_vec3			axis;
-// 	double			radius;
-// 	double			height;
-// }					t_hyperb;
 
 typedef struct s_parab
 {
@@ -222,15 +215,7 @@ typedef struct s_parab
 	double			focal_lenght;
 	double			height;
 }					t_parab;
-// Objeto genérico
-// typedef struct s_object
-// {
-// 	t_object_type	type;
-// 	t_vec3			color;
-// 	void			*data;
-// 	t_specular		specular;
-// 	float			mirror_ratio;
-// }					t_object;
+
 // Objeto genérico - Ahora más limpio con la nueva estructura de material
 typedef struct s_object
 {
@@ -320,6 +305,7 @@ int                     intersect_plane(t_ray *ray, t_plane *pl, t_hit_record *r
 int                     intersect_cylinder(t_ray *ray, t_cylinder *cy, t_hit_record *rec);
 int                     intersect_cone(t_ray *ray, t_cone *co, t_hit_record *rec);
 int                     intersect_hyperboloid(t_ray *ray, t_hyperboloid *hb, t_hit_record *rec);
+int						intersect_paraboloid(t_ray *ray, t_parab *pb, t_hit_record *rec);
 
 // --- 9. Funciones del Parser (incluye bonificaciones) ---
 void				apply_object_modifiers(t_object *obj, char **tokens, int start_idx);
@@ -361,7 +347,8 @@ t_sphere                sphere_init(t_vec3 center, double radius);
 t_plane                 plane_init(t_vec3 position, t_vec3 normal);
 t_cylinder              cylinder_init(t_vec3 position, t_vec3 axis, double radius, double height);
 t_cone                  cone_init(t_vec3 position, t_vec3 axis, double radius, double height);
-t_hyperboloid           hyperboloid_init(t_vec3 position, t_vec3 axis, double radius_a, double radius_b, double height);
+// t_hyperboloid           hyperboloid_init(t_vec3 position, t_vec3 axis, double radius_a, double radius_b, double height);
+t_hyperboloid	hyperboloid_init(t_vec3 position, t_vec3 axis);
 
 // --- 11. Funciones a Mover a Libft / Utilidades Generales ---
 

@@ -32,7 +32,14 @@ pl 0,-15,0 0,1,0 255,255,255 mir:1.0
 # Brillo especular con intensidad 0.7 y brillo 50.
 cy 0,0,-20 0,1,0 6.0 30.0 255,255,0 mir:0.4 spc:0.7,50
 
-# Cono (cn): position, axis, radius, height, color
+# Hiperboloide (hy): posición, eje, radios, altura, color
+# Hiperboloide azul con radios diferentes y altura 25
+hp -15,0,-25 0,1,0 5.0 3.0 25.0 0,0,200
+
+# Paraboloide (pb): posición, eje, focal_length, altura, color
+# Paraboloide verde con foco 4.0 y altura 20
+pb 15,0,-30 0,1,0 4.0 20.0 0,200,0
+
 
 # Cono: Un cono simple con un color rojo
 cn 20,0,-15 0,1,0 7.0 15.0 255,0,0

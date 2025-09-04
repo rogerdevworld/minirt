@@ -59,17 +59,14 @@ t_cone	cone_init(t_vec3 position, t_vec3 axis, double radius, double height)
 	return (cn);
 }
 
-// Inicializa un hiperboloide.
-// Asegura que el eje esté normalizado.
-t_hyperboloid	hyperboloid_init(t_vec3 position, t_vec3 axis, double radius_a,
-		double radius_b, double height)
+t_hyperboloid	hyperboloid_init(t_vec3 position, t_vec3 axis)
 {
 	t_hyperboloid	hp;
 
 	hp.position = position;
 	hp.axis = vec3_normalize(axis);
-	hp.radius_a = radius_a;
-	hp.radius_b = radius_b;
-	hp.height = height;
+	hp.radius_a = 0.0;
+	hp.radius_b = 0.0;
+	hp.height = 0.0;
 	return (hp);
 }
