@@ -9,39 +9,7 @@
 /*   Updated: 2025/08/12 22:24:40 by jaacosta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../../include/minirt.h"
-
-void	init_scene(t_scene *scene)
-{
-	scene->width = 0;
-	scene->height = 0;
-	scene->has_camera = 0;
-	scene->has_ambient = 0;
-	scene->lights = NULL;
-	scene->objects = NULL;
-	scene->ambient.ratio = 0.0;
-	scene->ambient.color = vec3_init(0, 0, 0);
-	scene->camera.fov = 0.0;
-	scene->camera.orientation = vec3_init(0, 0, 0);
-	scene->camera.position = vec3_init(0, 0, 0);
-}
-
-// Function to free token array
-void	free_tokens(char **tokens)
-{
-	int	i;
-
-	i = 0;
-	if (!tokens)
-		return ;
-	while (tokens[i])
-	{
-		free(tokens[i]);
-		i++;
-	}
-	free(tokens);
-}
 
 int	open_filename(const char *filename)
 {
@@ -79,11 +47,37 @@ void	validate_file(int fd, const char *file_name)
 	}
 }
 
-void	parse_rt_file(t_scene *scene, const char *file_path)
+static void	parse_line(t_scene *scene, char *line)
 {
-	int		fd;
-	char	*line;
 	char	**tokens;
+
+	tokens = ft_split(line, ' ');
+	if (!tokens)
+		ft_error_exit("MiniRT: Error: ft_split failed");
+	if (ft_strcmp(tokens[0], "A") == 0)
+		parse_ambient(scene, tokens);
+	else if (ft_strcmp(tokens[0], "C") == 0)
+		parse_camera(scene, tokens);
+	else if (ft_strcmp(tokens[0], "L") == 0)
+		parse_light(scene, tokens);
+	else if (ft_strcmp(tokens[0], "sp") == 0)
+		parse_sphere(scene, tokens);
+	else if (ft_strcmp(tokens[0], "pl") == 0)
+		parse_plane(scene, tokens);
+	else if (ft_strcmp(tokens[0], "cy") == 0)
+		parse_cylinder(scene, tokens);
+	else if (ft_strcmp(tokens[0], "cn") == 0)
+		parse_cone(scene, tokens);
+	else if (ft_strcmp(tokens[0], "pb") == 0)
+		parse_paraboloid(scene, tokens);
+	else if (ft_strcmp(tokens[0], "hp") == 0)
+		parse_hyperboloid(scene, tokens);
+	ft_free_str_array(tokens);
+}
+
+static int	open_and_validate_file(const char *file_path)
+{
+	int	fd;
 
 	if (!valid_extension_rt(file_path))
 		ft_error_exit("MiniRT: Error: the file must be of type '*.rt'");
@@ -91,34 +85,24 @@ void	parse_rt_file(t_scene *scene, const char *file_path)
 	validate_file(fd, file_path);
 	close(fd);
 	fd = open_filename(file_path);
-	while ((line = get_next_line(fd)) != NULL)
+	return (fd);
+}
+
+void	parse_rt_file(t_scene *scene, const char *file_path)
+{
+	int		fd;
+	char	*line;
+
+	fd = open_and_validate_file(file_path);
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
-		tokens = ft_split(line, ' ');
-		if (!tokens)
-			ft_error_exit("MiniRT: Error: ft_split failed");
-		if (ft_strcmp(tokens[0], "A") == 0)
-			parse_ambient(scene, tokens);
-		else if (ft_strcmp(tokens[0], "C") == 0)
-			parse_camera(scene, tokens);
-		else if (ft_strcmp(tokens[0], "L") == 0)
-			parse_light(scene, tokens);
-		else if (ft_strcmp(tokens[0], "sp") == 0)
-			parse_sphere(scene, tokens);
-		else if (ft_strcmp(tokens[0], "pl") == 0)
-			parse_plane(scene, tokens);
-		else if (ft_strcmp(tokens[0], "cy") == 0)
-			parse_cylinder(scene, tokens);
-		else if (ft_strcmp(tokens[0], "cn") == 0)
-			parse_cone(scene, tokens);
-		else if (ft_strcmp(tokens[0], "pb") == 0)
-			parse_paraboloid(scene, tokens);
-		else if (ft_strcmp(tokens[0], "hp") == 0)
-			parse_hyperboloid(scene, tokens);
-		ft_free_str_array(tokens);
+		parse_line(scene, line);
 		free(line);
+		line = get_next_line(fd);
 	}
 	close(fd);
 	if (!scene->has_camera || !scene->has_ambient)
 		ft_error_exit("MiniRT: Error: A camera and \
-			ambient light are required.");
+            ambient light are required.");
 }

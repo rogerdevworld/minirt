@@ -27,16 +27,25 @@ MLX_DIR = ./MLX42
 SRCS = \
     $(SRC_DIR)/main.c \
     $(SRC_DIR)/render.c \
-    $(SRC_DIR)/utils/init.c \
+	$(SRC_DIR)/clean/clean_data.c \
+	$(SRC_DIR)/clean/clean_data_2.c \
+	$(SRC_DIR)/inits/init_basics.c \
+	$(SRC_DIR)/inits/init_elements.c \
+	$(SRC_DIR)/inits/init_figures.c \
+	$(SRC_DIR)/inits/init_vec.c \
     $(SRC_DIR)/utils/ft_esc_cal.c \
     $(SRC_DIR)/utils/ft_vec_cal.c \
     $(SRC_DIR)/utils/nthreads.c \
     $(SRC_DIR)/windows/window.c \
     $(SRC_DIR)/parser/parser.c \
     $(SRC_DIR)/parser/parser_utils.c \
+    $(SRC_DIR)/parser/parser_utils_2.c \
+    $(SRC_DIR)/parser/parser_utils_3.c \
     $(SRC_DIR)/parser/parser_elements.c \
+    $(SRC_DIR)/parser/parser_elements_2.c \
     $(SRC_DIR)/assets/ft_ray.c \
-    $(SRC_DIR)/parser/parser_utils_materials.c
+    $(SRC_DIR)/parser/parser_utils_materials.c \
+    $(SRC_DIR)/parser/parser_utils_materials_2.c
 
 # --- Object Files ---
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
