@@ -11,98 +11,95 @@
 /* ************************************************************************** */
 #include "libft.h"
 
-static char *ft_strncpy(char *dest, const char *src, unsigned int n)
+static char	*ft_strncpy(char *dest, const char *src, unsigned int n)
 {
-    unsigned int    i;
+	unsigned int	i;
 
-    i = 0;
-    while (i < n && src[i] != '\0')
-    {
-        dest[i] = src[i];
-        i++;
-    }
-    while (i < n)
-    {
-        dest[i] = '\0';
-        i++;
-    }
-    return (dest);
+	i = 0;
+	while (i < n && src[i] != '\0')
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	while (i < n)
+	{
+		dest[i] = '\0';
+		i++;
+	}
+	return (dest);
 }
 
-static int  count_words(const char *s, char c)
+static int	count_words(const char *s, char c)
 {
-    int count;
+	int	count;
 
-    count = 0;
-    while (*s)
-    {
-        while (*s == c || *s == '\t')
-            s++;
-        if (*s)
-        {
-            count++;
-            // AÑADIDO: También se detiene en \t
-            while (*s && *s != c && *s != '\t')
-                s++;
-        }
-    }
-    return (count);
+	count = 0;
+	while (*s)
+	{
+		while (*s == c || *s == '\t')
+			s++;
+		if (*s)
+		{
+			count++;
+			while (*s && *s != c && *s != '\t')
+				s++;
+		}
+	}
+	return (count);
 }
 
-static char *ft_word_dup(const char *s, char c)
+static char	*ft_word_dup(const char *s, char c)
 {
-    unsigned int    len;
-    char            *word;
+	unsigned int	len;
+	char			*word;
 
-    len = 0;
-    // CORREGIDO: Revisa que s[len] no sea c Y no sea \t
-    while (s[len] && s[len] != c && s[len] != '\t')
-        len++;
-    word = (char *)malloc(sizeof(char) * (len + 1));
-    if (!word)
-        return (NULL);
-    ft_strncpy(word, s, len);
-    word[len] = '\0';
-    return (word);
+	len = 0;
+	while (s[len] && s[len] != c && s[len] != '\t')
+		len++;
+	word = (char *)malloc(sizeof(char) * (len + 1));
+	if (!word)
+		return (NULL);
+	ft_strncpy(word, s, len);
+	word[len] = '\0';
+	return (word);
 }
 
-static void ft_free_split(char **split)
+static void	ft_free_split(char **split)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (split[i])
-    {
-        free(split[i]);
-        i++;
-    }
-    free(split);
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
 }
 
-char    **ft_split(char const *s, char c)
+char	**ft_split(char const *s, char c)
 {
-    int     words;
-    char    **split;
-    int     i;
+	int		words;
+	char	**split;
+	int		i;
 
-    i = 0;
-    words = count_words(s, c);
-    split = (char **)malloc(sizeof(char *) * (words + 1));
-    if (!split)
-        return (NULL);
-    while (*s)
-    {
-        while (*s == c || *s == '\t')
-            s++;
-        if (*s)
-        {
-            split[i] = ft_word_dup(s, c);
-            if (!split[i++])
-                return (ft_free_split(split), NULL);
-            // AÑADIDO: También se detiene en \t
-            while (*s && *s != c && *s != '\t')
-                s++;
-        }
-    }
-    return (split[i] = NULL, split);
+	i = 0;
+	words = count_words(s, c);
+	split = (char **)malloc(sizeof(char *) * (words + 1));
+	if (!split)
+		return (NULL);
+	while (*s)
+	{
+		while (*s == c || *s == '\t')
+			s++;
+		if (*s)
+		{
+			split[i] = ft_word_dup(s, c);
+			if (!split[i++])
+				return (ft_free_split(split), NULL);
+			while (*s && *s != c && *s != '\t')
+				s++;
+		}
+	}
+	return (split[i] = NULL, split);
 }

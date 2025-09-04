@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   window.c                                           :+:      :+:    :+:   */
+/*   ft_vec_cal.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmarrero <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,35 +12,35 @@
 #include "../../include/minirt.h"
 
 // Suma de dos vectores.
-t_vec3  vec3_add(t_vec3 v1, t_vec3 v2)
+t_vec3	vec3_add(t_vec3 v1, t_vec3 v2)
 {
-    return (vec3_init(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z));
+	return (vec3_init(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z));
 }
 
 // Resta de dos vectores.
-t_vec3  vec3_sub(t_vec3 v1, t_vec3 v2)
+t_vec3	vec3_sub(t_vec3 v1, t_vec3 v2)
 {
-    return (vec3_init(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z));
+	return (vec3_init(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z));
 }
 
 // Multiplicación de un vector por un escalar.
-t_vec3  vec3_mul(t_vec3 v, double scalar)
+t_vec3	vec3_mul(t_vec3 v, double scalar)
 {
-    return (vec3_init(v.x * scalar, v.y * scalar, v.z * scalar));
+	return (vec3_init(v.x * scalar, v.y * scalar, v.z * scalar));
 }
 
 // División de un vector por un escalar.
-// Manejar división por cero si es necesario, aunque en ray tracing rara vez ocurre.
-t_vec3  vec3_div(t_vec3 v, double scalar)
+// Manejar división por cero si es necesario
+// aunque en ray tracing rara vez ocurre.
+t_vec3	vec3_div(t_vec3 v, double scalar)
 {
-    if (scalar == 0.0)
-        // Manejar error o devolver un vector nulo/infinito
-        return (vec3_init(0, 0, 0)); // o un valor que indique error
-    return (vec3_init(v.x / scalar, v.y / scalar, v.z / scalar));
+	if (scalar == 0.0)
+		return (vec3_init(0, 0, 0));
+	return (vec3_init(v.x / scalar, v.y / scalar, v.z / scalar));
 }
 
 // Multiplicación componente a componente de dos vectores (útil para colores).
-t_vec3  vec3_mult_vec(t_vec3 v1, t_vec3 v2)
+t_vec3	vec3_mult_vec(t_vec3 v1, t_vec3 v2)
 {
-    return (vec3_init(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z));
+	return (vec3_init(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z));
 }
