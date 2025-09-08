@@ -95,7 +95,7 @@ void	parse_paraboloid(t_scene *scene, char **tokens)
 	t_object	*obj;
 
 	if (ft_strarr_len(tokens) < 6)
-		ft_error_exit("Error: Cone format invalid");
+		ft_error_exit("Error: Paraboloid format invalid");
 	pb = malloc(sizeof(t_parab));
 	if (!pb)
 		ft_error_exit("Error: Memory allocation failed");
