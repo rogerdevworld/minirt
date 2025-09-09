@@ -58,23 +58,25 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
 {
     t_vec3      to_light;
     t_vec3      view_dir;
-    t_vec3      reflected_dir;
+    t_vec3      reflect_dir;
     double      spec_factor;
     t_color     specular_color;
 
-    if (!rec || !rec->object || !rec->object->material)
-        return (vec3_init(0, 0, 0));
     to_light = vec3_normalize(vec3_sub(light->position, rec->point));
     view_dir = vec3_normalize(vec3_mul(ray->direction, -1.0));
-    reflected_dir = vec3_reflect(to_light, rec->normal);
-    spec_factor = vec3_dot(view_dir, reflected_dir);
-    if (spec_factor > 0)
+    reflect_dir = vec3_reflect(vec3_mul(to_light, -1.0), rec->normal);
+    spec_factor = vec3_dot(view_dir, reflect_dir);
+    if (spec_factor > 0 && rec->object->material->specular.shininess > 0)
     {
         spec_factor = pow(spec_factor, rec->object->material->specular.shininess);
-        specular_color = vec3_mul(light->color, rec->object->material->specular.intensity * spec_factor);
-        return (specular_color);
+        double diff = vec3_dot(rec->normal, to_light);
+        if (diff > 0)
+        {
+            specular_color = vec3_mul(light->color, rec->object->material->specular.intensity * spec_factor * diff * light->brightness);
+            return specular_color;
+        }
     }
-    return (vec3_init(0, 0, 0));
+    return vec3_init(0, 0, 0);
 }
 
 // src/render/ft_light.c
@@ -634,6 +636,12 @@ int is_in_shadow(t_ray *shadow_ray, t_scene *scene, t_light *light)
             intersect_plane(shadow_ray, (t_plane *)objects[i]->data, &current_hit);
         else if (objects[i]->type == CYLINDER)
             intersect_cylinder(shadow_ray, (t_cylinder *)objects[i]->data, &current_hit);
+        else if (objects[i]->type == CONE) // <--- Add this back
+            intersect_cone(shadow_ray, (t_cone *)objects[i]->data, &current_hit);
+        else if (objects[i]->type == HYPERBOLOID) // <--- Add this back
+            intersect_hyperboloid(shadow_ray, (t_hyperboloid *)objects[i]->data, &current_hit);
+        else if (objects[i]->type == PARABOLOID) // <--- Add this back
+            intersect_paraboloid(shadow_ray, (t_parab *)objects[i]->data, &current_hit);
         if (current_hit.t > EPSILON && current_hit.t < light_dist)
             return (1);
         i++;

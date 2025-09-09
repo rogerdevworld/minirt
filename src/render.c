@@ -105,6 +105,10 @@ void *render_thread_func(void *arg)
                 {
                     // Genera un rayo para cada subpíxel
                     ray = generate_antialiased_ray(x, y, sub_x, sub_y, &data->scene);
+                    pthread_mutex_lock(&data->progress_mutex);
+                    data->ray_count++; // Incrementar el contador
+                    pthread_mutex_unlock(&data->progress_mutex);
+
                     rec = find_closest_hit(&ray, &data->scene);
                     
                     if (rec.object != NULL)
@@ -140,6 +144,8 @@ void    render_threaded(t_data *data)
     int i;
     int rows_per_thread;
     int start_row;
+    data->rendered_rows = 0;
+    data->ray_count = 0; // Inicializar el contador
 
     rows_per_thread = data->scene.height / data->num_threads;
 
@@ -184,5 +190,6 @@ void    render_threaded(t_data *data)
         pthread_join(threads[i], NULL);
         i++;
     }
+    printf("Total de rayos generados: %lu\n", data->ray_count);
     // No necesitas destruir el mutex aquí, ya lo haces en `cleanup_program`
 }

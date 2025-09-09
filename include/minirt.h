@@ -31,7 +31,9 @@
 #endif
 # define MAX_RECURSION_DEPTH 5
 #define	EISDIR		21
-#define SUBPIXEL_SAMPLES 2 
+
+
+#define SUBPIXEL_SAMPLES 16
 # define KEY_W XK_w            // Tecla 'W' para movimiento
 # define KEY_A XK_a            // Tecla 'A' para movimiento
 # define KEY_S XK_s            // Tecla 'S' para movimiento
@@ -47,6 +49,13 @@
 # define ERR_DUPLICATE_ELEMENT "Error\nDuplicate mandatory element (A, C).\n"
 # define ERR_INVALID_PARAMS "Error\nInvalid parameters for element.\n"
 # define ERR_MEMORY "Error\nMemory allocation failed.\n"
+
+#define WIDTH_8K 7680
+#define HEIGHT_8K 4320
+
+// También puedes tener otras resoluciones para pruebas
+#define WIDTH_4K 3840
+#define HEIGHT_4K 2160
 
 // --- 3. Estructuras de Datos Primarias ---
 
@@ -263,14 +272,14 @@ typedef struct s_mlx
 // Datos globales para la multihilo
 typedef struct s_data
 {
-	t_mlx			mlx;
-	t_scene			scene;
-	int				num_threads;
-	int				rendered_rows;
-	int				show_progress;
-	pthread_mutex_t	progress_mutex;
-}					t_data;
-
+    t_mlx           mlx;
+    t_scene         scene;
+    int             num_threads;
+    int             rendered_rows;
+    int             show_progress;
+    pthread_mutex_t progress_mutex;
+    unsigned long   ray_count; // Nuevo contador de rayos
+}                   t_data;
 // Datos específicos del hilo
 typedef struct s_thread_data
 {
