@@ -33,7 +33,7 @@
 #define	EISDIR		21
 
 
-#define SUBPIXEL_SAMPLES 16
+#define SUBPIXEL_SAMPLES 2
 # define KEY_W XK_w            // Tecla 'W' para movimiento
 # define KEY_A XK_a            // Tecla 'A' para movimiento
 # define KEY_S XK_s            // Tecla 'S' para movimiento
@@ -73,6 +73,13 @@ typedef struct s_vec3
 	double			z;
 }					t_vec3;
 
+typedef struct s_mat3
+{
+    t_vec3  c1; // Column 1
+    t_vec3  c2; // Column 2
+    t_vec3  c3; // Column 3
+} t_mat3;
+
 typedef t_vec3		t_color;
 
 // Rayo
@@ -110,20 +117,14 @@ typedef struct s_material
 {
     t_specular          specular;
     double              mirror_ratio;
-
-    // Un solo puntero para todas las texturas
-    mlx_texture_t                *texture;
-    bool has_texture;
-
+    bool             has_texture;
+    mlx_texture_t   *color_img;
+    bool             has_normal_map;
+    mlx_texture_t   *texture_img;
     int                 has_checkerboard;
     t_vec3              check_color1;
     t_vec3              check_color2;
     double              check_scale;
-    
-    // int                 has_bump_map;
-    // Un solo puntero y un enum para el bump map
-    // void                *bump_map_ptr;
-    // t_texture_type      bump_map_type;
 
 }                       t_material;
 
@@ -403,5 +404,16 @@ void	ft_free_str_array(char **arr);
 t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth);
 t_color get_texture_color(t_hit_record *rec);
 t_ray generate_antialiased_ray(int x, int y, int sub_x, int sub_y, t_scene *scene);
+// Add these prototypes to your main header file
+// You can group them logically
+t_vec3 get_normal_from_map(t_hit_record *rec, t_vec3 geom_normal);
+// At the top of your ft_ray.c file, after #include "../../include/minirt.h"
 
+// Prototypes for all the get_uv functions
+t_vec2 get_uv_sphere(t_hit_record *rec);
+t_vec2 get_uv_plane(t_hit_record *rec);
+t_vec2 get_uv_cylinder(t_hit_record *rec);
+t_vec2 get_uv_cone(t_hit_record *rec);
+t_vec2 get_uv_hyperboloid(t_hit_record *rec);
+t_vec2 get_uv_paraboloid(t_hit_record *rec);
 #endif // MINIRT_H

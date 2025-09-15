@@ -61,15 +61,22 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
     t_vec3      reflect_dir;
     double      spec_factor;
     t_color     specular_color;
+    t_vec3      effective_normal;
+
+    // Obtener la normal efectiva (lógica similar a calculate_light)
+    if (rec->object->material && rec->object->material->has_normal_map)
+        effective_normal = get_normal_from_map(rec, rec->normal);
+    else
+        effective_normal = rec->normal;
 
     to_light = vec3_normalize(vec3_sub(light->position, rec->point));
     view_dir = vec3_normalize(vec3_mul(ray->direction, -1.0));
-    reflect_dir = vec3_reflect(vec3_mul(to_light, -1.0), rec->normal);
+    reflect_dir = vec3_reflect(vec3_mul(to_light, -1.0), effective_normal);
     spec_factor = vec3_dot(view_dir, reflect_dir);
     if (spec_factor > 0 && rec->object->material->specular.shininess > 0)
     {
         spec_factor = pow(spec_factor, rec->object->material->specular.shininess);
-        double diff = vec3_dot(rec->normal, to_light);
+        double diff = vec3_dot(effective_normal, to_light);
         if (diff > 0)
         {
             specular_color = vec3_mul(light->color, rec->object->material->specular.intensity * spec_factor * diff * light->brightness);
@@ -79,6 +86,75 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
     return vec3_init(0, 0, 0);
 }
 
+// src/render/ft_normal_mapping.c
+#include "../../include/minirt.h"
+
+// Crea una base TBN a partir de la normal geométrica
+static t_mat3 create_tbn_matrix(t_vec3 normal)
+{
+    t_vec3 tangent;
+    t_vec3 bitangent;
+    t_vec3 c1 = vec3_init(0, 1, 0);
+
+    if (fabs(vec3_dot(normal, c1)) > 0.999)
+        c1 = vec3_init(1, 0, 0);
+    tangent = vec3_normalize(vec3_cross(normal, c1));
+    bitangent = vec3_normalize(vec3_cross(tangent, normal));
+    
+    // Devuelve la matriz TBN
+    t_mat3 tbn;
+    tbn.c1 = tangent;
+    tbn.c2 = bitangent;
+    tbn.c3 = normal;
+    return (tbn);
+}
+
+// Obtiene la normal de la textura y la convierte a espacio del mundo
+t_vec3 get_normal_from_map(t_hit_record *rec, t_vec3 geom_normal)
+{
+    t_vec2          uv;
+    mlx_texture_t   *normal_map;
+    int             x_tex;
+    int             y_tex;
+    int             index;
+    t_vec3          new_normal;
+    t_mat3          tbn;
+
+    normal_map = rec->object->material->texture_img;
+    if (!normal_map || normal_map->width <= 0 || normal_map->height <= 0)
+        return (geom_normal);
+
+    if (rec->object->type == SPHERE)
+        uv = get_uv_sphere(rec);
+    else if (rec->object->type == PLANE)
+        uv = get_uv_plane(rec);
+    else if (rec->object->type == CYLINDER)
+        uv = get_uv_cylinder(rec);
+    else if (rec->object->type == CONE)
+        uv = get_uv_cone(rec);
+    else if (rec->object->type == HYPERBOLOID)
+        uv = get_uv_hyperboloid(rec);
+    else if (rec->object->type == PARABOLOID)
+        uv = get_uv_paraboloid(rec);
+    else
+        return (geom_normal);
+
+    x_tex = (int)(uv.x * (normal_map->width - 1));
+    y_tex = (int)(uv.y * (normal_map->height - 1));
+    index = (y_tex * normal_map->width + x_tex) * 4;
+
+    // Remapear los valores de color de [0, 255] a [-1.0, 1.0]
+    new_normal.x = (double)normal_map->pixels[index] / 127.5 - 1.0;
+    new_normal.y = (double)normal_map->pixels[index + 1] / 127.5 - 1.0;
+    new_normal.z = (double)normal_map->pixels[index + 2] / 127.5 - 1.0;
+    new_normal = vec3_normalize(new_normal);
+
+    // Convertir la normal de espacio tangente a espacio del mundo
+    tbn = create_tbn_matrix(geom_normal);
+    new_normal = vec3_add(vec3_add(vec3_mul(tbn.c1, new_normal.x), vec3_mul(tbn.c2, new_normal.y)), vec3_mul(tbn.c3, new_normal.z));
+    return (vec3_normalize(new_normal));
+}
+
 // src/render/ft_light.c
 t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth)
 {
@@ -86,9 +162,17 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
     t_color ambient_color;
     t_light **lights = (t_light **)scene->lights;
     int     i = 0;
+    t_vec3 effective_normal;
 
     if (rec->object == NULL)
         return (scene->background_color);
+
+    // Obtener la normal efectiva, si existe un mapa de normales
+    if (rec->object->material && rec->object->material->has_normal_map)
+        effective_normal = get_normal_from_map(rec, rec->normal);
+    else
+        effective_normal = rec->normal;
+
     t_color object_color = get_object_color(rec);
     ambient_color = vec3_mult_vec(scene->ambient.color, object_color);
     ambient_color = vec3_mul(ambient_color, scene->ambient.ratio);
@@ -97,14 +181,15 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
     {
         t_vec3 to_light = vec3_normalize(vec3_sub(lights[i]->position, rec->point));
         t_ray shadow_ray;
-        shadow_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
+        // Usar la normal efectiva para el rayo de sombra
+        shadow_ray.origin = vec3_add(rec->point, vec3_mul(effective_normal, EPSILON));
         shadow_ray.direction = to_light;
         if (is_in_shadow(&shadow_ray, scene, lights[i]))
         {
             i++;
             continue;
         }
-        double dot_prod = vec3_dot(rec->normal, to_light);
+        double dot_prod = vec3_dot(effective_normal, to_light);
         if (dot_prod > 0)
         {
             t_color diffuse_contribution = vec3_mult_vec(lights[i]->color, object_color);
@@ -121,8 +206,9 @@ t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth
     if (rec->object->material && rec->object->material->mirror_ratio > 0.0 && depth < MAX_RECURSION_DEPTH)
     {
         t_ray reflected_ray;
-        reflected_ray.origin = vec3_add(rec->point, vec3_mul(rec->normal, EPSILON));
-        reflected_ray.direction = vec3_reflect(ray->direction, rec->normal);
+        // Usar la normal efectiva para la reflexión
+        reflected_ray.origin = vec3_add(rec->point, vec3_mul(effective_normal, EPSILON));
+        reflected_ray.direction = vec3_reflect(ray->direction, effective_normal);
         t_hit_record reflected_rec = find_closest_hit(&reflected_ray, scene);
         t_color reflected_color;
         if (reflected_rec.object != NULL)
@@ -155,8 +241,8 @@ t_vec2 get_uv_plane(t_hit_record *rec)
         local_x_axis = vec3_normalize(vec3_cross(pl->normal, vec3_init(1, 0, 0)));
     t_vec3 local_y_axis = vec3_normalize(vec3_cross(local_x_axis, pl->normal));
     t_vec3 local_point = vec3_sub(rec->point, pl->position);
-    double u = vec3_dot(local_point, local_x_axis) / 20.0; 
-    double v = vec3_dot(local_point, local_y_axis) / 20.0;
+    double u = vec3_dot(local_point, local_x_axis) / 5.0; 
+    double v = vec3_dot(local_point, local_y_axis) / 5.0;
     u = u - floor(u);
     v = v - floor(v);
     return (vec2_init(u, v));
@@ -235,11 +321,15 @@ t_color get_texture_color(t_hit_record *rec)
     int             y_tex;
     int             index;
 
-    if (!rec->object->material || !rec->object->material->texture)
+    // Check if the object has a color texture
+    if (!rec->object->material || !rec->object->material->has_texture)
         return (rec->object->color);
-    texture = rec->object->material->texture;
+
+    // Use the color_img for the texture
+    texture = rec->object->material->color_img;
     if (texture->width <= 0 || texture->height <= 0)
         return (rec->object->color);
+
     if (rec->object->type == SPHERE)
         uv = get_uv_sphere(rec);
     else if (rec->object->type == PLANE)
@@ -254,11 +344,13 @@ t_color get_texture_color(t_hit_record *rec)
         uv = get_uv_paraboloid(rec);
     else
         return (rec->object->color);
+
     uv.x = fmax(0.0, fmin(1.0, uv.x));
     uv.y = fmax(0.0, fmin(1.0, uv.y));
     x_tex = (int)(uv.x * (texture->width - 1));
     y_tex = (int)(uv.y * (texture->height - 1));
     index = (y_tex * texture->width + x_tex) * 4;
+
     t_color tex_color;
     tex_color.x = (double)texture->pixels[index] / 255.0;
     tex_color.y = (double)texture->pixels[index + 1] / 255.0;

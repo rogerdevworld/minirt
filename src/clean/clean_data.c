@@ -12,26 +12,33 @@
 #include "../../include/minirt.h"
 
 // Libera UN objeto completo (material, data, y el propio objeto)
-static void	free_one_object(t_object *obj)
+static void free_one_object(t_object *obj)
 {
-	if (!obj)
-		return ;
-	if (obj->material)
-	{
-		if (obj->material->texture)
-		{
-			mlx_delete_texture(obj->material->texture);
-			obj->material->texture = NULL;
-		}
-		free(obj->material);
-		obj->material = NULL;
-	}
-	if (obj->data)
-	{
-		free(obj->data);
-		obj->data = NULL;
-	}
-	free(obj);
+    if (!obj)
+        return ;
+    if (obj->material)
+    {
+        // Free the color texture if it exists
+        if (obj->material->color_img)
+        {
+            mlx_delete_texture(obj->material->color_img);
+            obj->material->color_img = NULL;
+        }
+        // Free the normal map texture if it exists
+        if (obj->material->texture_img)
+        {
+            mlx_delete_texture(obj->material->texture_img);
+            obj->material->texture_img = NULL;
+        }
+        free(obj->material);
+        obj->material = NULL;
+    }
+    if (obj->data)
+    {
+        free(obj->data);
+        obj->data = NULL;
+    }
+    free(obj);
 }
 
 void	free_scene_objects(t_scene *scene)
