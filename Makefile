@@ -26,7 +26,7 @@ MLX_DIR = ./MLX42
 # List all your .c files here. This list MUST be updated manually.
 SRCS = \
     $(SRC_DIR)/main.c \
-    $(SRC_DIR)/render.c \
+    $(SRC_DIR)/engine/render.c \
 	$(SRC_DIR)/clean/clean_data.c \
 	$(SRC_DIR)/clean/clean_data_2.c \
 	$(SRC_DIR)/inits/init_basics.c \
@@ -100,6 +100,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 # Create object directories if they don't exist
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)/render
 
 # --- Clean Targets ---
 clean:

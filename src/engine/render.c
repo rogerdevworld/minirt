@@ -169,8 +169,8 @@ void    render_threaded(t_data *data)
             pthread_mutex_destroy(&data->progress_mutex);
             exit(1);
         }
-        ft_printf("row per threads: %i, start: %i, end: %i\n", rows_per_thread,
-            thread_data[i].start_row, thread_data[i].end_row);
+        //ft_printf("row per threads: %i, start: %i, end: %i\n", rows_per_thread,
+        //    thread_data[i].start_row, thread_data[i].end_row);
         start_row = thread_data[i].end_row;
         i++;
     }
@@ -190,6 +190,6 @@ void    render_threaded(t_data *data)
         pthread_join(threads[i], NULL);
         i++;
     }
-    printf("Total de rayos generados: %lu\n", data->ray_count);
+    //printf("Total de rayos generados: %lu\n", data->ray_count);
     // No necesitas destruir el mutex aquí, ya lo haces en `cleanup_program`
 }
