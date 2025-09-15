@@ -24,9 +24,6 @@ int	color_to_int(t_color color)
 	return (0xFF000000 | (r << 16) | (g << 8) | b);
 }
 
-// Dentro de tu archivo de renderizado
-#include "../include/minirt.h"
-
 void *render_thread_func(void *arg)
 {
     t_thread_data   *thread_data;
@@ -113,8 +110,6 @@ void	render_threaded(t_data *data)
 		start_row = thread_data[i].end_row;
 		i++;
 	}
-
-	// --- Bucle para imprimir el progreso en la consola ---
 	while (data->rendered_rows < data->scene.height)
 	{
 		printf("\rRenderizando: %.2f%% completado...",
