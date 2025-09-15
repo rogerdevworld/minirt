@@ -143,13 +143,22 @@ typedef struct s_ambient_light
     t_vec3 color;
 } t_ambient_light;
 
+typedef enum e_movement_type
+{
+    MOVEMENT_NONE,
+    MOVEMENT_CIRCLE,
+    MOVEMENT_TRIANGLE,
+    MOVEMENT_LINE
+} t_movement_type;
+
 typedef struct s_light
 {
-    t_vec3 position;
-    double brightness;
-    t_vec3 color;
+    t_vec3  position;
+    double  brightness;
+    t_color color;       // Corregido a t_color
+    bool    is_moving;   // Nuevo campo para luces en movimiento
+	t_movement_type movement_type;
 } t_light;
-
 // Tipos de objetos geométricos (incluye bonificaciones)
 typedef enum e_object_type
 {
@@ -234,6 +243,7 @@ typedef struct s_scene
     int has_camera;
     int has_ambient;
     t_color background_color;
+	int     num_lights;
 } t_scene;
 
 // Minilibx y la imagen
@@ -273,6 +283,10 @@ typedef struct s_data
     pthread_mutex_t progress_mutex;
     unsigned long ray_count;
 	t_mouse_state   mouse_state;
+	bool    auto_rotate_active;
+    double  rotation_angle;
+    t_vec3  rotation_center;
+	double  light_move_time;
 } t_data;
 
 // Datos específicos del hilo

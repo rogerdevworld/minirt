@@ -58,4 +58,5 @@ void	add_light_to_scene(t_scene *scene, t_light *light)
 	new_lights[count] = light;
 	new_lights[count + 1] = NULL;
 	scene->lights = new_lights;
+	scene->num_lights++;
 }

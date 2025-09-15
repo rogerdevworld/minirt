@@ -46,25 +46,56 @@ void	parse_camera(t_scene *scene, char **tokens)
 }
 
 // Parser de Luz (L)
-void	parse_light(t_scene *scene, char **tokens)
-{
-	t_light	*light;
-	t_vec3	color;
-	double	brightness;
+// src/parser/parser_elements.c
 
-	if (ft_strarr_len(tokens) != 4)
-		ft_error_exit("Error: Light format invalid");
-	light = (t_light *)malloc(sizeof(t_light));
-	if (!light)
-		ft_error_exit("Error: Memory allocation failed");
-	light->position = parse_vec3(tokens[1]);
-	brightness = ft_atod(tokens[2]);
-	if (brightness < 0.0 || brightness > 1.0)
-		ft_error_exit("Error: brightness must be betwen 0.0 and 1.0");
-	light->brightness = brightness;
-	color = parse_vec3_color(tokens[3]);
-	light->color = color;
-	add_light_to_scene(scene, light);
+#include "../../include/minirt.h"
+
+void    parse_light(t_scene *scene, char **tokens)
+{
+    t_light *light;
+    int     num_tokens;
+
+    num_tokens = ft_strarr_len(tokens);
+    // Un L debe tener al menos 4 tokens (L, pos, brillo, color)
+    // Y un máximo de 6 (L, pos, brillo, color, moving, tipo)
+    if (num_tokens < 4 || num_tokens > 6)
+        ft_error_exit("Error: Light format invalid.");
+    
+    light = (t_light *)malloc(sizeof(t_light));
+    if (!light)
+        ft_error_exit("Error: Memory allocation failed.");
+
+    light->position = parse_vec3(tokens[1]);
+    light->brightness = ft_atod(tokens[2]);
+    if (light->brightness < 0.0 || light->brightness > 1.0)
+        ft_error_exit("Error: brightness must be between 0.0 and 1.0.");
+    light->color = parse_vec3_color(tokens[3]);
+    
+    // Asignar el tipo de movimiento y asegurarse de que el token exista
+    light->movement_type = MOVEMENT_NONE;
+    if (num_tokens >= 5)
+    {
+        if (ft_strcmp(tokens[4], "moving") == 0)
+        {
+            if (num_tokens == 6)
+            {
+                if (ft_strcmp(tokens[5], "circle") == 0)
+                    light->movement_type = MOVEMENT_CIRCLE;
+                else if (ft_strcmp(tokens[5], "triangle") == 0)
+                    light->movement_type = MOVEMENT_TRIANGLE;
+                else if (ft_strcmp(tokens[5], "line") == 0)
+                    light->movement_type = MOVEMENT_LINE;
+                else
+                    ft_error_exit("Error: Unrecognized light movement type.");
+            }
+            else
+                ft_error_exit("Error: 'moving' light requires a movement type.");
+        }
+        else
+            ft_error_exit("Error: Unrecognized light option.");
+    }
+    
+    add_light_to_scene(scene, light);
 }
 
 // Parser de Luz Ambiental (A)
