@@ -31,7 +31,7 @@
 #endif
 # define MAX_RECURSION_DEPTH 5
 #define EISDIR 21
-#define SUBPIXEL_SAMPLES 1
+#define SUBPIXEL_SAMPLES 2
 # define KEY_W XK_w
 # define KEY_A XK_a
 # define KEY_S XK_s

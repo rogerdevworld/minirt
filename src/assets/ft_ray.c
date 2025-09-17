@@ -118,26 +118,25 @@ t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
 }
 
 // src/render/ft_normal_mapping.c
-#include "../../include/minirt.h"
 
-// Crea una base TBN a partir de la normal geométrica
 static t_mat3 create_tbn_matrix(t_vec3 normal)
 {
     t_vec3 tangent;
     t_vec3 bitangent;
-    t_vec3 c1 = vec3_init(0, 1, 0);
+    t_vec3 up = vec3_init(0.0, 1.0, 0.0);
 
-    if (fabs(vec3_dot(normal, c1)) > 0.999)
-        c1 = vec3_init(1, 0, 0);
-    tangent = vec3_normalize(vec3_cross(normal, c1));
-    bitangent = vec3_normalize(vec3_cross(tangent, normal));
-    
-    // Devuelve la matriz TBN
+    // Elige un vector 'up' que no sea paralelo a la normal
+    if (fabs(vec3_dot(normal, up)) > 0.999)
+        up = vec3_init(1.0, 0.0, 0.0);
+
+    tangent = vec3_normalize(vec3_cross(up, normal));
+    bitangent = vec3_normalize(vec3_cross(normal, tangent));
+
     t_mat3 tbn;
     tbn.c1 = tangent;
     tbn.c2 = bitangent;
     tbn.c3 = normal;
-    return (tbn);
+    return tbn;
 }
 
 // Obtiene la normal de la textura y la convierte a espacio del mundo
@@ -272,8 +271,8 @@ t_vec2 get_uv_plane(t_hit_record *rec)
         local_x_axis = vec3_normalize(vec3_cross(pl->normal, vec3_init(1, 0, 0)));
     t_vec3 local_y_axis = vec3_normalize(vec3_cross(local_x_axis, pl->normal));
     t_vec3 local_point = vec3_sub(rec->point, pl->position);
-    double u = vec3_dot(local_point, local_x_axis) / 5.0; 
-    double v = vec3_dot(local_point, local_y_axis) / 5.0;
+    double u = vec3_dot(local_point, local_x_axis) / 10.0; 
+    double v = vec3_dot(local_point, local_y_axis) / 10.0;
     u = u - floor(u);
     v = v - floor(v);
     return (vec2_init(u, v));

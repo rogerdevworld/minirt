@@ -1473,3 +1473,6 @@ Ya sabemos que el rayo chocó con el plano verde en el punto $(0, 0, 10)$ y la n
 4.  **Asignar el color al píxel:** El color final del píxel es el resultado de la iluminación. Si no se encontró ninguna intersección, el píxel se colorea con el color de fondo.
 
 Este proceso, que parece largo para un solo píxel, se repite millones de veces para cada píxel de la pantalla, lo que genera la imagen completa.
+
+bibligrafia:
+[text](https://circuitoelectrico.com/calculo-iluminacion/graficos-diagramas-iluminacion/)
