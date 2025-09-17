@@ -30,6 +30,7 @@
 # define M_PI 3.14159265358979323846
 #endif
 # define MAX_RECURSION_DEPTH 5
+#define MOUSE_MOVE_THRESHOLD 0.5
 #define EISDIR 21
 #define SUBPIXEL_SAMPLES 2
 # define KEY_W XK_w
@@ -409,4 +410,10 @@ int get_num_processors(void);
 void mouse_move_hook(double x, double y, void *param);
 // In src/windows/../../include/minirt.h
 void mouse_press_hook(mouse_key_t button, action_t action, modifier_key_t modifier, void* param);
+t_color calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray);
+t_color get_object_color(t_hit_record *rec);
+void animate_lights(void *param);
+void auto_rotate(void *param);
+double  vec3_length_squared(t_vec3 v);
+
 #endif

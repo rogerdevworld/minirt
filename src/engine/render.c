@@ -27,54 +27,6 @@ int	color_to_int(t_color color)
 	return ((r << 24) | (g << 16) | (b << 8) | a);
 }
 
-// normal 
-// void *render_thread_func(void *arg)
-// {
-//     t_thread_data   *thread_data;
-//     t_data          *data;
-//     int             y;
-//     int             x;
-//     t_ray           ray;
-//     t_hit_record    rec;
-//     t_color         final_color;
-
-//     thread_data = (t_thread_data *)arg;
-//     data = thread_data->global_data;
-//     y = thread_data->start_row;
-//     while (y < thread_data->end_row)
-//     {
-//         x = 0;
-//         while (x < data->scene.width)
-//         {
-//             // 1. Generar el rayo para el píxel (x, y)
-//             ray = generate_ray(x, y, &data->scene);
-//             // 2. Encontrar la colisión más cercana
-//             rec = find_closest_hit(&ray, &data->scene);
-//             // 3. Calcular el color final del píxel
-//             if (rec.object != NULL)
-//             {
-//                 final_color = calculate_light(&rec, &data->scene, &ray, 0);
-//             }
-//             else
-//             {
-//                 final_color = data->scene.background_color; 
-//             }
-            
-//             // 4. Convertir y pintar el píxel con la función de la nueva lib
-//             int mlx_color = color_to_int(final_color);
-//             // mlx_put_pixel es la forma correcta para MLX42
-//             mlx_put_pixel(data->mlx.img.img_ptr, x, y, mlx_color);
-//             x++;
-//         }
-//         pthread_mutex_lock(&data->progress_mutex);
-//         data->rendered_rows++;
-//         pthread_mutex_unlock(&data->progress_mutex);
-        
-//         y++;
-//     }
-//     return (NULL);
-// }
-
 // 4k
 void *render_thread_func(void *arg)
 {

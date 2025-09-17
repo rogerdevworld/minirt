@@ -1,18 +1,4 @@
-/* ************************************************************************** */
-/* */
-/* :::      ::::::::   */
-/* window.c                                           :+:      :+:    :+:   */
-/* +:+ +:+         +:+     */
-/* By: rmarrero <marvin@42.fr>                    +#+  +:+       +#+        */
-/* +#+#+#+#+#+   +#+           */
-/* Created: 2025/02/19 18:34:31 by rmarrero          #+#    #+#             */
-/* Updated: 2025/02/19 19:07:39 by rmarrero         ###   ########.fr       */
-/* */
-/* ************************************************************************** */
-
 #include "../../include/minirt.h"
-
-#define MOUSE_MOVE_THRESHOLD 0.5
 
 t_vec3 rotate_vector(t_vec3 v, t_vec3 axis, double angle)
 {
@@ -81,8 +67,7 @@ void mouse_move_hook(double x, double y, void *param)
 void mouse_press_hook(mouse_key_t button, action_t action, modifier_key_t modifier, void* param)
 {
     t_data *data = (t_data *)param;
-    (void)modifier; // Suppress unused parameter warning
-
+    (void)modifier;
     if (button == MLX_MOUSE_BUTTON_LEFT)
     {
         if (action == MLX_PRESS)
@@ -146,9 +131,6 @@ void    auto_rotate(void *param)
 }
 
 // src/windows/window.c
-
-#include "../../include/minirt.h"
-
 void    animate_lights(void *param)
 {
     t_data  *data = (t_data *)param;

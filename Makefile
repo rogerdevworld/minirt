@@ -23,16 +23,15 @@ LIBFT_DIR = ./src/libft
 MLX_DIR = ./MLX42
 
 # --- Source Files ---
-# List all your .c files here. This list MUST be updated manually.
 SRCS = \
     $(SRC_DIR)/main.c \
     $(SRC_DIR)/engine/render.c \
-	$(SRC_DIR)/clean/clean_data.c \
-	$(SRC_DIR)/clean/clean_data_2.c \
-	$(SRC_DIR)/inits/init_basics.c \
-	$(SRC_DIR)/inits/init_elements.c \
-	$(SRC_DIR)/inits/init_figures.c \
-	$(SRC_DIR)/inits/init_vec.c \
+    $(SRC_DIR)/clean/clean_data.c \
+    $(SRC_DIR)/clean/clean_data_2.c \
+    $(SRC_DIR)/inits/init_basics.c \
+    $(SRC_DIR)/inits/init_elements.c \
+    $(SRC_DIR)/inits/init_figures.c \
+    $(SRC_DIR)/inits/init_vec.c \
     $(SRC_DIR)/utils/ft_esc_cal.c \
     $(SRC_DIR)/utils/ft_vec_cal.c \
     $(SRC_DIR)/utils/nthreads.c \
@@ -43,9 +42,21 @@ SRCS = \
     $(SRC_DIR)/parser/parser_utils_3.c \
     $(SRC_DIR)/parser/parser_elements.c \
     $(SRC_DIR)/parser/parser_elements_2.c \
-    $(SRC_DIR)/assets/ft_ray.c \
     $(SRC_DIR)/parser/parser_utils_materials.c \
-    $(SRC_DIR)/parser/parser_utils_materials_2.c
+    $(SRC_DIR)/parser/parser_utils_materials_2.c \
+    $(SRC_DIR)/render/ft_ray.c \
+    $(SRC_DIR)/render/ft_color.c \
+    $(SRC_DIR)/render/ft_normal_mapping.c \
+    $(SRC_DIR)/render/ft_specular_light.c \
+    $(SRC_DIR)/render/intersect/ft_cone.c \
+    $(SRC_DIR)/render/intersect/ft_cylinder.c \
+    $(SRC_DIR)/render/intersect/ft_hyperboloid.c \
+    $(SRC_DIR)/render/intersect/ft_paraboloid.c \
+    $(SRC_DIR)/render/intersect/ft_plane.c \
+    $(SRC_DIR)/render/intersect/ft_sphere.c \
+    $(SRC_DIR)/render/light/ft_light.c \
+    $(SRC_DIR)/render/mapping/ft_texture.c \
+    $(SRC_DIR)/render/mapping/ft_uv_mapping.c
 
 # --- Object Files ---
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))

@@ -1,0 +1,23 @@
+#include "../../include/minirt.h"
+
+// src/render/ft_color.c
+t_color get_object_color(t_hit_record *rec)
+{
+    if (!rec->object->material)
+        return (rec->object->color);
+    if (rec->object->material->has_texture)
+        return (get_texture_color(rec));
+    else if (rec->object->material->has_checkerboard)
+    {
+        t_vec3 local_point = rec->point;
+        int pattern_x = (int)floor(local_point.x / rec->object->material->check_scale);
+        int pattern_y = (int)floor(local_point.y / rec->object->material->check_scale);
+        int pattern_z = (int)floor(local_point.z / rec->object->material->check_scale);
+        if ((pattern_x + pattern_y + pattern_z) % 2 == 0)
+            return (rec->object->material->check_color1);
+        else
+            return (rec->object->material->check_color2);
+    }
+    else
+        return (rec->object->color);
+}
