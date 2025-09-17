@@ -43,14 +43,12 @@ static void	update_hit_record(t_ray *ray, t_sphere *sp, t_hit_record *rec,
 	point = ray_at(*ray, rec->t);
 	rec->point = point;
 	normal = vec3_normalize(vec3_sub(point, sp->center));
-	// Ajusta la normal si es necesario
 	if (vec3_dot(ray->direction, normal) > 0)
 		rec->normal = vec3_mul(normal, -1.0);
 	else
 		rec->normal = normal;
 }
 
-// src/intersect/ft_sphere.c
 int	intersect_sphere(t_ray *ray, t_sphere *sp, t_hit_record *rec)
 {
 	t_vec3	oc;
