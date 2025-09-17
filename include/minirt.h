@@ -31,6 +31,8 @@
 #endif
 # define MAX_RECURSION_DEPTH 5
 #define MOUSE_MOVE_THRESHOLD 0.5
+#define MOVE_SPEED 0.5
+#define ROTATION_SPEED 0.05
 #define EISDIR 21
 #define SUBPIXEL_SAMPLES 2
 # define KEY_W XK_w
@@ -415,5 +417,7 @@ t_color get_object_color(t_hit_record *rec);
 void animate_lights(void *param);
 void auto_rotate(void *param);
 double  vec3_length_squared(t_vec3 v);
-
+void    render_threaded(t_data *data);
+void *render_thread_func(void *arg);
+void    ft_zoom(t_data *data, double zoom_factor);
 #endif

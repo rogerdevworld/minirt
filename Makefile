@@ -25,17 +25,24 @@ MLX_DIR = ./MLX42
 # --- Source Files ---
 SRCS = \
     $(SRC_DIR)/main.c \
-    $(SRC_DIR)/engine/render.c \
+    $(SRC_DIR)/render/render.c \
+    $(SRC_DIR)/render/thread.c \
+    $(SRC_DIR)/render/animation/animate_lights.c \
+    $(SRC_DIR)/render/animation/auto_rotate.c \
     $(SRC_DIR)/clean/clean_data.c \
     $(SRC_DIR)/clean/clean_data_2.c \
     $(SRC_DIR)/inits/init_basics.c \
     $(SRC_DIR)/inits/init_elements.c \
+    $(SRC_DIR)/inits/init_color.c \
     $(SRC_DIR)/inits/init_figures.c \
     $(SRC_DIR)/inits/init_vec.c \
     $(SRC_DIR)/utils/ft_esc_cal.c \
     $(SRC_DIR)/utils/ft_vec_cal.c \
     $(SRC_DIR)/utils/nthreads.c \
+    $(SRC_DIR)/utils/ft_rotate_vector.c \
     $(SRC_DIR)/windows/window.c \
+    $(SRC_DIR)/windows/hook.c \
+    $(SRC_DIR)/windows/mouse.c \
     $(SRC_DIR)/parser/parser.c \
     $(SRC_DIR)/parser/parser_utils.c \
     $(SRC_DIR)/parser/parser_utils_2.c \
@@ -47,7 +54,7 @@ SRCS = \
     $(SRC_DIR)/render/ft_ray.c \
     $(SRC_DIR)/render/ft_color.c \
     $(SRC_DIR)/render/ft_normal_mapping.c \
-    $(SRC_DIR)/render/ft_specular_light.c \
+    $(SRC_DIR)/render/light/ft_specular_light.c \
     $(SRC_DIR)/render/intersect/ft_cone.c \
     $(SRC_DIR)/render/intersect/ft_cylinder.c \
     $(SRC_DIR)/render/intersect/ft_hyperboloid.c \
@@ -99,7 +106,22 @@ $(NAME): $(OBJS)
 	@make -C $(LIBFT_DIR)
 	@echo "$(BLUE)Linking $(NAME)...$(RESET)"
 	$(CC) $(CFLAGS) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
-	@echo "$(GREEN)MiniRT compiled successfully! 🎉$(RESET)"
+	@echo "                                                                                "
+	@echo "                                                                                "
+	@echo "# **************************************************************************** #"
+	@echo "#                                                                              #"
+	@echo "#                                                         :::      ::::::::    #"
+	@echo "#    MiniRT                                             :+:      :+:    :+:    #"
+	@echo "#                                                     +:+ +:+         +:+      #"
+	@echo "#    By: rmarrero rmarrero@student.42barcelona.com  +#+  +:+       +#+         #"
+	@echo "#                                                 +#+#+#+#+#+   +#+            #"
+	@echo "#    Created: 2024/09/16 12:58:52 by rmarrero          #+#    #+#              #"
+	@echo "#    Updated: 2025/07/29 13:04:23 by rmarrero         ###   ########.fr        #"
+	@echo "#                                                                              #"
+	@echo "# **************************************************************************** #"
+	@echo "                                                                                "
+	@echo "                                                                                "
+	@echo "$(RESET)"
 
 # --- Compilation Rule ---
 # Rule to compile a .c file into a .o file
