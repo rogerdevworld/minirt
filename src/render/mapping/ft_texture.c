@@ -9,11 +9,8 @@ t_color	get_texture_color(t_hit_record *rec)
 	int y_tex;
 	int index;
 
-	// Check if the object has a color texture
 	if (!rec->object->material || !rec->object->material->has_texture)
 		return (rec->object->color);
-
-	// Use the color_img for the texture
 	texture = rec->object->material->color_img;
 	if (texture->width <= 0 || texture->height <= 0)
 		return (rec->object->color);
@@ -32,7 +29,6 @@ t_color	get_texture_color(t_hit_record *rec)
 		uv = get_uv_paraboloid(rec);
 	else
 		return (rec->object->color);
-
 	uv.x = fmax(0.0, fmin(1.0, uv.x));
 	uv.y = fmax(0.0, fmin(1.0, uv.y));
 	x_tex = (int)(uv.x * (texture->width - 1));
