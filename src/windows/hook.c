@@ -48,6 +48,16 @@
 // 	}
 // }
 
+void	key_hook(mlx_key_data_t keydata, void *param)
+{
+	t_data	*data;
+
+	data = (t_data *)param;
+	if (keydata.key == MLX_KEY_ESCAPE && keydata.action == MLX_PRESS)
+		mlx_close_window(data->mlx.mlx_ptr);
+
+}
+
 // void	mouse_move_hook(double x, double y, void *param)
 // {
 // 	t_data	*data;

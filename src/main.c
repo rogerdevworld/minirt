@@ -29,7 +29,6 @@ int	init_data(t_data *data)
 }
 
 // moving
-// mlx_key_hook(data.mlx.mlx_ptr, key_hook, &data);
 int	main(int argc, char **argv)
 {
 	t_data	data;
@@ -42,6 +41,7 @@ int	main(int argc, char **argv)
 	if (mlx_setup(&data) != 0)
 		return (cleanup_program(&data), 1);
 	render_threaded(&data);
+	mlx_key_hook(data.mlx.mlx_ptr, key_hook, &data);
 	mlx_loop(data.mlx.mlx_ptr);
 	cleanup_program(&data);
 	return (0);

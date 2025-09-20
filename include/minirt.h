@@ -455,6 +455,10 @@ double	ft_factorial(int n);
 double	ft_sin(double x);
 double	ft_cos(double x);
 double	ft_tan(double x);
-
+double	ft_asin(double x);
+double	ft_floor(double x);
+double	ft_atan2(double y, double x);
+double vec2_dot(t_vec2 v1, t_vec2 v2);
+double vec2_length(t_vec2 v);
 
 #endif
