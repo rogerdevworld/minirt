@@ -19,24 +19,6 @@ double	ft_factorial(int n)
 	return (n * ft_factorial(n - 1));
 }
 
-// Simplified Taylor series implementation for sine
-double	ft_sin(double x)
-{
-	double	result;
-	double	term;
-	int		i;
-
-	result = 0.0;
-	i = 0;
-	while (i < 10)
-	{
-		term = ft_pow(-1, i) * ft_pow(x, 2 * i + 1) / ft_factorial(2 * i + 1);
-		result += term;
-		i++;
-	}
-	return (result);
-}
-
 // Approximates the cosine of x using a Taylor series.
 double	ft_cos(double x)
 {
@@ -56,32 +38,6 @@ double	ft_cos(double x)
 		i++;
 	}
 	return (result);
-}
-
-// Calculates the tangent of x using ft_sin and ft_cos.
-double	ft_tan(double x)
-{
-	double	cos_val;
-
-	cos_val = ft_cos(x);
-	if (cos_val == 0.0)
-		return (INFINITY);
-	return (ft_sin(x) / cos_val);
-}
-
-double	ft_atan2(double y, double x)
-{
-	if (x > 0)
-		return (ft_atan(y / x));
-	if (x < 0 && y >= 0)
-		return (ft_atan(y / x) + M_PI);
-	if (x < 0 && y < 0)
-		return (ft_atan(y / x) - M_PI);
-	if (x == 0 && y > 0)
-		return (M_PI / 2);
-	if (x == 0 && y < 0)
-		return (-M_PI / 2);
-	return (0.0);
 }
 
 // Approximates the arc sine of x using its series expansion

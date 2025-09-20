@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "../../../include/minirt.h"
 
-double vec2_length(t_vec2 v)
+double	vec2_length(t_vec2 v)
 {
-    return (ft_sqrt(vec2_dot(v, v)));
+	return (ft_sqrt(vec2_dot(v, v)));
 }

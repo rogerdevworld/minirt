@@ -56,10 +56,19 @@ SRCS = \
 	$(SRC_DIR)/render/light/ft_light.c \
 	$(SRC_DIR)/render/light/ft_specular_light.c \
 	$(SRC_DIR)/render/mapping/ft_texture.c \
-	$(SRC_DIR)/render/mapping/ft_uv_mapping.c \
+	$(SRC_DIR)/render/mapping/get_uv_cone.c \
+	$(SRC_DIR)/render/mapping/get_uv_cylinder.c \
+	$(SRC_DIR)/render/mapping/get_uv_hyperboloid.c \
+	$(SRC_DIR)/render/mapping/get_uv_paraboloid.c \
+	$(SRC_DIR)/render/mapping/get_uv_plane.c \
+	$(SRC_DIR)/render/mapping/get_uv_sphere.c \
 	$(SRC_DIR)/utils/nthreads.c \
 	$(SRC_DIR)/utils/ray_at.c \
 	$(SRC_DIR)/vector/cal.c \
+	$(SRC_DIR)/vector/ft_tan.c \
+	$(SRC_DIR)/vector/ft_atan.c \
+	$(SRC_DIR)/vector/ft_atan2.c \
+	$(SRC_DIR)/vector/ft_abs.c \
 	$(SRC_DIR)/vector/ft_fmin.c \
 	$(SRC_DIR)/vector/ft_fmod.c \
 	$(SRC_DIR)/vector/ft_pow.c \

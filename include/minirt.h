@@ -460,5 +460,6 @@ double	ft_floor(double x);
 double	ft_atan2(double y, double x);
 double vec2_dot(t_vec2 v1, t_vec2 v2);
 double vec2_length(t_vec2 v);
-
+double	ft_atan(double x);
+double ft_abs(double num);
 #endif
