@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../../include/minirt.h"
 
 // Nueva versión: esta función devuelve 1 si es un entero válido, 0 si no.

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "libft.h"
 
 /* dejare el ft_printf para manejo de errores 

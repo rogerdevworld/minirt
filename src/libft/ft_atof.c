@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "libft.h"
 
 static double	ft_atoi_part(const char **str, int *sign)

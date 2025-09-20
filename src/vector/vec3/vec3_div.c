@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_vec.c                                         :+:      :+:    :+:   */
+/*   vec3_div.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,25 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
-// Inicializa una estructura de vector 2D
-t_vec2	vec2_init(double x, double y)
+t_vec3	vec3_div(t_vec3 v, double scalar)
 {
-	t_vec2	vec;
-
-	vec.x = x;
-	vec.y = y;
-	return (vec);
-}
-
-// Inicializa un vector 3D con los valores dados.
-t_vec3	vec3_init(double x, double y, double z)
-{
-	t_vec3	v;
-
-	v.x = x;
-	v.y = y;
-	v.z = z;
-	return (v);
+	if (scalar == 0.0)
+		return (vec3_init(0, 0, 0));
+	return (vec3_init(v.x / scalar, v.y / scalar, v.z / scalar));
 }

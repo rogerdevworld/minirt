@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #ifndef MINIRT_H
 # define MINIRT_H
 
@@ -302,6 +303,34 @@ typedef struct s_thread_data
     t_data *global_data;
 } t_thread_data;
 
+// --- Function Prototypes ---
+
+// Math Functions
+double			ft_fmin(double x, double y);
+double			ft_fmod(double x, double y);
+double			ft_pow(double base, double exp);
+
+// Vector 2 Functions
+t_vec2			vec2_init(double x, double y);
+t_vec2			vec2_normalize(t_vec2 v);
+
+// Vector 3 Functions
+t_vec3			vec3_init(double x, double y, double z);
+t_vec3			vec3_cross(t_vec3 v1, t_vec3 v2);
+t_vec3			vec3_add(t_vec3 v1, t_vec3 v2);
+t_vec3			vec3_sub(t_vec3 v1, t_vec3 v2);
+t_vec3			vec3_mul(t_vec3 v, double scalar);
+t_vec3			vec3_div(t_vec3 v, double scalar);
+t_vec3			vec3_mult_vec(t_vec3 v1, t_vec3 v2);
+double			vec3_dot(t_vec3 v1, t_vec3 v2);
+t_vec3			vec3_cross(t_vec3 v1, t_vec3 v2);
+double			vec3_length(t_vec3 v);
+double			vec3_length_squared(t_vec3 v);
+t_vec3			vec3_normalize(t_vec3 v);
+t_vec3			vec3_reflect(t_vec3 v, t_vec3 n);
+
+t_vec3			rotate_vector(t_vec3 v, t_vec3 axis, double angle);
+
 // --- 6. Funciones de Renderizado y MLX ---
 int mlx_setup(t_data *data);
 int close_window(t_data *data);
@@ -422,4 +451,10 @@ void    render_threaded(t_data *data);
 void *render_thread_func(void *arg);
 void    ft_zoom(t_data *data, double zoom_factor);
 void	ft_error_exit(const char *msg);
+double	ft_factorial(int n);
+double	ft_sin(double x);
+double	ft_cos(double x);
+double	ft_tan(double x);
+
+
 #endif

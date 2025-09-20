@@ -9,6 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../include/minirt.h"
 
 // Validadcion para los valores doubles que deben ser positivos

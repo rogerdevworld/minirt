@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../../include/minirt.h"
 
 // Añade un objeto de forma dinámica a la escena

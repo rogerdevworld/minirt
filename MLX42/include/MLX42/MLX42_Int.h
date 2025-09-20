@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 
+
 #ifndef MLX42_INT_H
 # define MLX42_INT_H
 # define LODEPNG_NO_COMPILE_ALLOCATORS

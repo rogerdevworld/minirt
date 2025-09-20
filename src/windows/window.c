@@ -17,7 +17,6 @@
 // mlx_cursor_hook(data->mlx.mlx_ptr, mouse_move_hook, data);
 // mlx_mouse_hook(data->mlx.mlx_ptr, mouse_press_hook, data);
 // mlx_loop_hook(data->mlx.mlx_ptr, auto_rotate, data);
-// mlx_loop_hook(data->mlx.mlx_ptr, animate_lights, data);
 int	mlx_setup(t_data *data)
 {
 	data->mlx.mlx_ptr = mlx_init(data->scene.width, data->scene.height,
@@ -26,6 +25,7 @@ int	mlx_setup(t_data *data)
 		return (1);
 	data->mlx.img.img_ptr = mlx_new_image(data->mlx.mlx_ptr, data->scene.width,
 			data->scene.height);
+	mlx_loop_hook(data->mlx.mlx_ptr, animate_lights, data);
 	if (!data->mlx.img.img_ptr)
 	{
 		mlx_terminate(data->mlx.mlx_ptr);

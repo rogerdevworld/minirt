@@ -9,7 +9,6 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../include/minirt.h"
 
 int	init_data(t_data *data)
@@ -31,7 +30,6 @@ int	init_data(t_data *data)
 
 // moving
 // mlx_key_hook(data.mlx.mlx_ptr, key_hook, &data);
-
 int	main(int argc, char **argv)
 {
 	t_data	data;

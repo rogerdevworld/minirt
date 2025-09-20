@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../../include/minirt.h"
 
 // Inicializa un rayo con un origen y una dirección.

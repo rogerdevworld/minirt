@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../../include/minirt.h"
 
 // Libera UN objeto completo (material, data, y el propio objeto)

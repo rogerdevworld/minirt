@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 
+
 #include "MLX42/MLX42_Int.h"
 
 // BUG: Linux may experience a red hue instead due to endianness
