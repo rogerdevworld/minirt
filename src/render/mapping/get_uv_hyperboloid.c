@@ -18,8 +18,6 @@ t_vec2	get_uv_hyperboloid(t_hit_record *rec)
 	t_vec3			local_point;
 	t_vec3			temp_axis;
 	t_vec3			p;
-	double			u;
-	double			v;
 
 	hp = (t_hyperboloid *)rec->object->data;
 	local_point = vec3_sub(rec->point, hp->position);
@@ -28,8 +26,7 @@ t_vec2	get_uv_hyperboloid(t_hit_record *rec)
 		temp_axis = vec3_normalize(vec3_cross(hp->axis, vec3_init(0, 1, 0)));
 	p = vec3_sub(local_point, vec3_mul(hp->axis, vec3_dot(local_point,
 					hp->axis)));
-	u = atan2(vec3_dot(p, vec3_cross(hp->axis, temp_axis)), vec3_dot(p,
-				temp_axis)) / (2.0 * M_PI) + 0.5;
-	v = (vec3_dot(local_point, hp->axis) + hp->height / 2.0) / hp->height;
-	return (vec2_init(u, v));
+	return (vec2_init(atan2(vec3_dot(p, vec3_cross(hp->axis, temp_axis)),
+				vec3_dot(p, temp_axis)) / (2.0 * M_PI) + 0.5,
+			(vec3_dot(local_point, hp->axis) + hp->height / 2.0) / hp->height));
 }

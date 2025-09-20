@@ -13,10 +13,12 @@
 
 double	ft_atan(double x)
 {
-	double result = 0.0;
-	int i = 0;
-	int sign;
+	double	result;
+	int		i;
+	int		sign;
 
+	result = 0.0;
+	i = 0;
 	if (x > 1.0 || x < -1.0)
 	{
 		return (0.0);

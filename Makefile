@@ -66,6 +66,7 @@ SRCS = \
 	$(SRC_DIR)/utils/ray_at.c \
 	$(SRC_DIR)/vector/cal.c \
 	$(SRC_DIR)/vector/ft_tan.c \
+	$(SRC_DIR)/vector/ft_asin.c \
 	$(SRC_DIR)/vector/ft_atan.c \
 	$(SRC_DIR)/vector/ft_atan2.c \
 	$(SRC_DIR)/vector/ft_abs.c \
@@ -100,7 +101,7 @@ HEADERS = -I$(INC_DIR) -I$(MLX_DIR)/include
 # --- Compiler Flags ---
 # -Werror -Wextra -Wall: Mandatory flags for 42 projects
 # -Ofast: Optional optimization flag
-CFLAGS = -fsanitize=address,leak -g -O3 -march=native -flto#-Wall -Wextra -Werror -Ofast 
+CFLAGS =  -Ofast -fsanitize=address,leak -g -O3 -march=native -flto #-Wall -Wextra -Werror
 
 # --- Library Flags for MLX42 ---
 # -L$(LIBFT_DIR) -lft: Link your Libft

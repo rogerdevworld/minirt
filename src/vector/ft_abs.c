@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
-double ft_abs(double num)
+double	ft_abs(double num)
 {
-    if (num < 0.0)
-    {
-        return (num * -1.0);
-    }
-    return (num);
+	if (num < 0.0)
+	{
+		return (num * -1.0);
+	}
+	return (num);
 }

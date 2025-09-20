@@ -40,27 +40,6 @@ double	ft_cos(double x)
 	return (result);
 }
 
-// Approximates the arc sine of x using its series expansion
-double	ft_asin(double x)
-{
-	double	result;
-	double	term;
-	double	i;
-
-	if (x < -1.0 || x > 1.0)
-		return (NAN);
-	result = 0.0;
-	term = x;
-	i = 1.0;
-	while (ft_abs(term) > 1e-15)
-	{
-		result += term;
-		term = term * (ft_pow(i, 2) / (i + 1) / (i + 2)) * ft_pow(x, 2);
-		i += 2;
-	}
-	return (result);
-}
-
 // ft_floor: Returns the largest integer value less than or equal to x.
 double	ft_floor(double x)
 {

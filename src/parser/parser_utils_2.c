@@ -9,8 +9,6 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 #include "../../include/minirt.h"
 
 // Nueva versión: esta función devuelve 1 si es un entero válido, 0 si no.

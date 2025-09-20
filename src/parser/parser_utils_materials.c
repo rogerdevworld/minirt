@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../../include/minirt.h"
 
 int	valid_extension_rt(const char *filename)
@@ -20,8 +19,7 @@ int	valid_extension_rt(const char *filename)
 	len = 0;
 	while (filename[len] != '\0')
 		len++;
-	return (len > 3 && filename[len - 3] == '.'
-		&& filename[len - 2] == 'r'
+	return (len > 3 && filename[len - 3] == '.' && filename[len - 2] == 'r'
 		&& filename[len - 1] == 't');
 }
 
@@ -58,22 +56,22 @@ void	parse_checkboard(char *token, t_material *material)
 
 int	validate_texture_extension(const char *file_name)
 {
-	int		len;
+	int	len;
 
 	if (!file_name)
 		return (0);
 	len = 0;
 	while (file_name[len])
 		len++;
-	if (len >= 4 && file_name[len - 4] == '.'
-		&& (file_name[len - 3] == 'p') || (file_name[len - 3] == 'P')
-		&& (file_name[len - 2] == 'n') || (file_name[len - 2] == 'N')
-		&& (file_name[len - 1] == 'g') || (file_name[len - 1] == 'G'))
+	if ((len >= 4 && file_name[len - 4] == '.') && (file_name[len - 3] == 'p')
+		|| (file_name[len - 3] == 'P') && (file_name[len - 2] == 'n')
+		|| (file_name[len - 2] == 'N') && (file_name[len - 1] == 'g')
+		|| (file_name[len - 1] == 'G'))
 		return (1);
-	if (len >= 4 && file_name[len - 4] == '.'
-		&& (file_name[len - 3] == 'x') || (file_name[len - 3] == 'X')
-		&& (file_name[len - 2] == 'p') || (file_name[len - 2] == 'P')
-		&& (file_name[len - 1] == 'm') || (file_name[len - 1] == 'M'))
+	if (len >= 4 && file_name[len - 4] == '.' && (file_name[len - 3] == 'x')
+		|| (file_name[len - 3] == 'X') && (file_name[len - 2] == 'p')
+		|| (file_name[len - 2] == 'P') && (file_name[len - 1] == 'm')
+		|| (file_name[len - 1] == 'M'))
 		return (1);
 	return (0);
 }

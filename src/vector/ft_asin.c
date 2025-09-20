@@ -11,42 +11,23 @@
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
-// ft_atan: Approximates the arctangent of x using a Taylor series.
-double	ft_atan(double x)
+// Approximates the arc sine of x using its series expansion
+double	ft_asin(double x)
 {
 	double	result;
-	int		i;
-	int		sign;
+	double	term;
+	double	i;
 
+	if (x < -1.0 || x > 1.0)
+		return (NAN);
 	result = 0.0;
-	i = 0;
-	if (x > 1.0 || x < -1.0)
+	term = x;
+	i = 1.0;
+	while (ft_abs(term) > 1e-15)
 	{
-		return (0.0);
-	}
-	while (i < 100)
-	{
-		if (i % 2 == 0)
-			sign = 1;
-		else
-			sign = -1;
-		result += sign * ft_pow(x, 2 * i + 1) / (2 * i + 1);
-		i++;
+		result += term;
+		term = term * (ft_pow(i, 2) / (i + 1) / (i + 2)) * ft_pow(x, 2);
+		i += 2;
 	}
 	return (result);
-}
-
-double	ft_atan2(double y, double x)
-{
-	if (x > 0)
-		return (ft_atan(y / x));
-	if (x < 0 && y >= 0)
-		return (ft_atan(y / x) + M_PI);
-	if (x < 0 && y < 0)
-		return (ft_atan(y / x) - M_PI);
-	if (x == 0 && y > 0)
-		return (M_PI / 2);
-	if (x == 0 && y < 0)
-		return (-M_PI / 2);
-	return (0.0);
 }

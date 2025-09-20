@@ -36,7 +36,7 @@
 #define MOVE_SPEED 0.5
 #define ROTATION_SPEED 0.05
 #define EISDIR 21
-#define SUBPIXEL_SAMPLES 2
+#define SUBPIXEL_SAMPLES 1
 # define KEY_W XK_w
 # define KEY_A XK_a
 # define KEY_S XK_s

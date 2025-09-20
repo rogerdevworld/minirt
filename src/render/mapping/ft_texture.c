@@ -11,6 +11,23 @@
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
+t_vec2	get_texture_uv(t_hit_record *rec)
+{
+	if (rec->object->type == SPHERE)
+		return (get_uv_sphere(rec));
+	else if (rec->object->type == PLANE)
+		return (get_uv_plane(rec));
+	else if (rec->object->type == CYLINDER)
+		return (get_uv_cylinder(rec));
+	else if (rec->object->type == CONE)
+		return (get_uv_cone(rec));
+	else if (rec->object->type == HYPERBOLOID)
+		return (get_uv_hyperboloid(rec));
+	else if (rec->object->type == PARABOLOID)
+		return (get_uv_paraboloid(rec));
+	return ((t_vec2){0.0, 0.0});
+}
+
 // src/render/ft_texture.c
 t_color	get_texture_color(t_hit_record *rec)
 {
@@ -24,20 +41,7 @@ t_color	get_texture_color(t_hit_record *rec)
 	texture = rec->object->material->color_img;
 	if (texture->width <= 0 || texture->height <= 0)
 		return (rec->object->color);
-	if (rec->object->type == SPHERE)
-		uv = get_uv_sphere(rec);
-	else if (rec->object->type == PLANE)
-		uv = get_uv_plane(rec);
-	else if (rec->object->type == CYLINDER)
-		uv = get_uv_cylinder(rec);
-	else if (rec->object->type == CONE)
-		uv = get_uv_cone(rec);
-	else if (rec->object->type == HYPERBOLOID)
-		uv = get_uv_hyperboloid(rec);
-	else if (rec->object->type == PARABOLOID)
-		uv = get_uv_paraboloid(rec);
-	else
-		return (rec->object->color);
+	uv = get_texture_uv(rec);
 	uv.x = fmax(0.0, fmin(1.0, uv.x));
 	uv.y = fmax(0.0, fmin(1.0, uv.y));
 	index = ((int)(uv.y * (texture->height - 1) * texture->width + (int)(uv.x
