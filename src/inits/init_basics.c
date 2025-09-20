@@ -27,33 +27,26 @@ void	init_scene(t_scene *scene)
 	scene->camera.position = vec3_init(0, 0, 0);
 }
 
-t_material  *create_material(void)
+t_material	*create_material(void)
 {
-    t_material  *material;
+	t_material	*material;
 
-    material = malloc(sizeof(t_material));
-    if (!material)
-        ft_error_exit("Error: Memory allocation for material failed");
-
-    // Initialize all members to 0/NULL to ensure a clean state
-    ft_memset(material, 0, sizeof(t_material));
-
-    // You can also explicitly set specific values for clarity
-    material->specular.intensity = 0.0f;
-    material->specular.shininess = 0;
-    material->mirror_ratio = 0.0;
-    material->has_checkerboard = 0;
-    material->check_color1 = (t_vec3){0, 0, 0};
-    material->check_color2 = (t_vec3){0, 0, 0};
-    material->check_scale = 1.0;
-    material->has_texture = false;
-    material->has_normal_map = false;
-
-    // Initialize both texture pointers
-    material->color_img = NULL;
-    material->texture_img = NULL;
-
-    return (material);
+	material = malloc(sizeof(t_material));
+	if (!material)
+		ft_error_exit("Error: Memory allocation for material failed");
+	ft_memset(material, 0, sizeof(t_material));
+	material->specular.intensity = 0.0f;
+	material->specular.shininess = 0;
+	material->mirror_ratio = 0.0;
+	material->has_checkerboard = 0;
+	material->check_color1 = (t_vec3){0, 0, 0};
+	material->check_color2 = (t_vec3){0, 0, 0};
+	material->check_scale = 1.0;
+	material->has_texture = false;
+	material->has_normal_map = false;
+	material->color_img = NULL;
+	material->texture_img = NULL;
+	return (material);
 }
 
 t_object	*create_object(t_object_type type, void *data, t_vec3 color)
