@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   animate_lights.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/23 14:22:49 by rmarrero          #+#    #+#             */
+/*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../../include/minirt.h"
 
 // Maneja la animación de la luz en un movimiento circular
@@ -56,9 +67,9 @@ static void	animate_triangular(t_light *light, double time)
 // Función principal de animación de luces
 void	animate_lights(void *param)
 {
-	t_data *data;
-	t_light **lights;
-	int i;
+	t_data	*data;
+	t_light	**lights;
+	int		i;
 
 	data = (t_data *)param;
 	if (!data->scene.lights || data->scene.num_lights == 0)

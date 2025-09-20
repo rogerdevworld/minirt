@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_vec_cal.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmarrero <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/19 18:34:31 by rmarrero          #+#    #+#             */
-/*   Updated: 2025/02/19 19:07:39 by rmarrero         ###   ########.fr       */
+/*   Created: 2025/07/23 14:22:49 by rmarrero          #+#    #+#             */
+/*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../include/minirt.h"
 
 // Suma de dos vectores.

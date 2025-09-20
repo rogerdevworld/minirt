@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_normal_mapping.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/23 14:22:49 by rmarrero          #+#    #+#             */
+/*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../../include/minirt.h"
 
 // src/render/ft_normal_mapping.c
@@ -9,7 +20,6 @@ t_mat3	create_tbn_matrix(t_vec3 normal)
 	t_mat3	tbn;
 
 	up = vec3_init(0.0, 1.0, 0.0);
-	// Elige un vector 'up' que no sea paralelo a la normal
 	if (fabs(vec3_dot(normal, up)) > 0.999)
 		up = vec3_init(1.0, 0.0, 0.0);
 	tangent = vec3_normalize(vec3_cross(up, normal));

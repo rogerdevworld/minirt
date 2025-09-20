@@ -1,14 +1,15 @@
 /* ************************************************************************** */
-/* */
-/* :::      ::::::::   */
-/* minirt.h                                           :+:      :+:    :+:   */
-/* +:+ +:+         +:+     */
-/* By: rmarrero <marvin@42.fr>                    +#+  +:+       +#+        */
-/* +#+#+#+#+#+   +#+           */
-/* Created: 2025/07/23 14:24:12 by rmarrero          #+#    #+#             */
-/* Updated: 2025/07/23 14:24:32 by rmarrero         ###   ########.fr       */
-/* */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minirt.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/23 14:22:49 by rmarrero          #+#    #+#             */
+/*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
+
 #ifndef MINIRT_H
 # define MINIRT_H
 
@@ -420,4 +421,5 @@ double  vec3_length_squared(t_vec3 v);
 void    render_threaded(t_data *data);
 void *render_thread_func(void *arg);
 void    ft_zoom(t_data *data, double zoom_factor);
+void	ft_error_exit(const char *msg);
 #endif

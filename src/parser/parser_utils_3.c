@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils_3.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaacosta <jaacosta@student.42barcelon      +#+  +:+       +#+        */
+/*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 22:25:08 by jaacosta          #+#    #+#             */
-/*   Updated: 2025/08/12 22:25:11 by jaacosta         ###   ########.fr       */
+/*   Created: 2025/07/23 14:22:49 by rmarrero          #+#    #+#             */
+/*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../../include/minirt.h"
 
 // Añade un objeto de forma dinámica a la escena

@@ -49,6 +49,7 @@ SRCS = \
     $(SRC_DIR)/parser/parser_utils_3.c \
     $(SRC_DIR)/parser/parser_elements.c \
     $(SRC_DIR)/parser/parser_elements_2.c \
+    $(SRC_DIR)/parser/ft_error.c \
     $(SRC_DIR)/parser/parser_utils_materials.c \
     $(SRC_DIR)/parser/parser_utils_materials_2.c \
     $(SRC_DIR)/render/ft_ray.c \
