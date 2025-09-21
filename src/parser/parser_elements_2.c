@@ -49,6 +49,8 @@ void	parse_camera(t_scene *scene, char **tokens)
 // Parser de Luz (L)
 void	parse_light_movement(t_light *light, char **tokens, int num_tokens)
 {
+	if (ft_strcmp(tokens[4], "") == 0)
+		return ;
 	if (ft_strcmp(tokens[4], "moving") == 0)
 	{
 		if (num_tokens == 6)
