@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
-// Calculates the contribution of reflected light from a surface
 t_color	calculate_reflection(t_hit_record *rec, t_scene *scene, t_ray *ray,
 		int depth)
 {
@@ -36,7 +35,6 @@ t_color	calculate_reflection(t_hit_record *rec, t_scene *scene, t_ray *ray,
 	return (vec3_mul(reflected_color, rec->object->material->mirror_ratio));
 }
 
-// Calculates the diffuse light contribution from a single light source
 t_color	calculate_diffuse_light(t_hit_record *rec, t_light *light,
 		t_vec3 effective_normal, t_vec3 to_light)
 {
@@ -54,20 +52,26 @@ t_color	calculate_diffuse_light(t_hit_record *rec, t_light *light,
 	return (vec3_init(0, 0, 0));
 }
 
-// Determines if a point is in shadow relative to a light source
 int	is_in_shadow(t_ray *ray, t_scene *scene, t_light *light)
 {
 	t_hit_record	current_hit;
 	double			light_dist;
+	t_vec3			shadow_ray_origin;
+	t_ray			shadow_ray;
 
-	light_dist = vec3_length(vec3_sub(light->position, ray->origin));
-	current_hit = find_closest_hit(ray, scene);
-	if (current_hit.t > EPSILON && current_hit.t < light_dist)
+	shadow_ray_origin = vec3_add(ray->origin, vec3_mul(ray->direction,
+				EPSILON));
+	light_dist = vec3_length(vec3_sub(light->position, shadow_ray_origin));
+	shadow_ray.origin = shadow_ray_origin;
+	shadow_ray.direction = vec3_normalize(vec3_sub(light->position,
+				shadow_ray_origin));
+	current_hit = find_closest_hit(&shadow_ray, scene);
+	if (current_hit.object != NULL && current_hit.t > EPSILON
+		&& current_hit.t < light_dist)
 		return (1);
 	return (0);
 }
 
-// Dispatches the correct intersection function based on object type
 void	get_object_intersection(t_object *obj, t_ray *ray, t_hit_record *rec)
 {
 	rec->t = -1.0;
@@ -85,7 +89,6 @@ void	get_object_intersection(t_object *obj, t_ray *ray, t_hit_record *rec)
 		intersect_paraboloid(ray, (t_parab *)obj->data, rec);
 }
 
-// Main function to calculate the final color of a hit point
 t_color	calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray,
 		int depth)
 {
@@ -109,7 +112,7 @@ t_color	calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray,
 	return (clamp_color(final_color));
 }
 
-// src/render/ft_light.c
+// // src/render/ft_light.c
 // t_color	calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray,
 // 		int depth)
 // {
@@ -191,7 +194,7 @@ t_color	calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray,
 // 	return (final_color);
 // }
 
-// src/render/ft_light.c
+// // src/render/ft_light.c
 // int	is_in_shadow(t_ray *shadow_ray, t_scene *scene, t_light *light)
 // {
 // 	t_hit_record	current_hit;

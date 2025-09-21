@@ -23,8 +23,6 @@ t_ray generate_antialiased_ray(int x, int y, int sub_x, int sub_y, t_scene *scen
     double  fov_rad;
     double  x_coord_normalized;
     double  y_coord_normalized;
-    double  jitter_x;
-    double  jitter_y;
 
     ray.origin = scene->camera.position;
     fov_rad = scene->camera.fov * M_PI / 180.0;
@@ -32,10 +30,8 @@ t_ray generate_antialiased_ray(int x, int y, int sub_x, int sub_y, t_scene *scen
     camera_up = vec3_init(0.0, 1.0, 0.0);
     camera_right = vec3_normalize(vec3_cross(scene->camera.orientation, camera_up));
     camera_up = vec3_normalize(vec3_cross(camera_right, scene->camera.orientation));
-    jitter_x = ((double)sub_x + 0.5) / SUBPIXEL_SAMPLES;
-    jitter_y = ((double)sub_y + 0.5) / SUBPIXEL_SAMPLES;
-    x_coord_normalized = ((double)x + jitter_x) / scene->width - 0.5;
-    y_coord_normalized = 0.5 - ((double)y + jitter_y) / scene->height;
+    x_coord_normalized = ((double)x + ((double)sub_x + 0.5) / SUBPIXEL_SAMPLES) / scene->width - 0.5;
+    y_coord_normalized = 0.5 - ((double)y + ((double)sub_y + 0.5) / SUBPIXEL_SAMPLES) / scene->height;
     viewport_center = vec3_add(scene->camera.position, vec3_mul(scene->camera.orientation, 1.0));
     ray.direction = vec3_add(vec3_add(viewport_center, vec3_mul(camera_right, 2.0 * tan(fov_rad / 2.0) * aspect_ratio * x_coord_normalized)), vec3_mul(camera_up, 2.0 * tan(fov_rad / 2.0) * y_coord_normalized));
     ray.direction = vec3_sub(ray.direction, ray.origin);

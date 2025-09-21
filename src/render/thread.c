@@ -63,4 +63,3 @@ void	render_threaded(t_data *data)
 }
 
 // printf("Total de rayos generados: %lu\n", data->ray_count);
-// No necesitas destruir el mutex aquí, ya lo haces en `cleanup_program`
