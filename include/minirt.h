@@ -36,7 +36,7 @@
 #define MOVE_SPEED 0.5
 #define ROTATION_SPEED 0.05
 #define EISDIR 21
-#define SUBPIXEL_SAMPLES 1
+#define SUBPIXEL_SAMPLES 2
 # define KEY_W XK_w
 # define KEY_A XK_a
 # define KEY_S XK_s
@@ -303,6 +303,33 @@ typedef struct s_thread_data
     t_data *global_data;
 } t_thread_data;
 
+
+// Struct for passing multiple context variables to functions
+typedef struct s_light_context
+{
+	t_hit_record	*rec;
+	t_scene			*scene;
+	t_ray			*ray;
+	t_vec3			effective_normal;
+}					t_light_context;
+
+t_color	calculate_direct_lighting(t_hit_record *rec, t_scene *scene, t_ray *ray,
+		t_vec3 effective_normal);
+t_color	get_light_contribution(t_light_context *ctx, t_light *light);
+t_vec3	get_effective_normal(t_hit_record *rec);
+t_color	clamp_color(t_color color);
+t_color	calculate_ambient_light(t_hit_record *rec, t_scene *scene);
+t_color	calculate_diffuse_light(t_hit_record *rec, t_light *light,
+		t_vec3 effective_normal, t_vec3 to_light);
+
+// src/intersect/ft_cone.c
+typedef struct s_cone_params
+{
+	t_vec3		oc;
+	double		a;
+	double		b;
+	double		c;
+}				t_cone_params;
 // --- Function Prototypes ---
 
 // Math Functions
@@ -462,4 +489,6 @@ double vec2_dot(t_vec2 v1, t_vec2 v2);
 double vec2_length(t_vec2 v);
 double	ft_atan(double x);
 double ft_abs(double num);
+t_vec2	get_texture_uv(t_hit_record *rec);
+
 #endif

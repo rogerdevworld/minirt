@@ -54,6 +54,7 @@ SRCS = \
 	$(SRC_DIR)/render/intersect/ft_plane.c \
 	$(SRC_DIR)/render/intersect/ft_sphere.c \
 	$(SRC_DIR)/render/light/ft_light.c \
+	$(SRC_DIR)/render/light/ft_light_utils.c \
 	$(SRC_DIR)/render/light/ft_specular_light.c \
 	$(SRC_DIR)/render/mapping/ft_texture.c \
 	$(SRC_DIR)/render/mapping/get_uv_cone.c \

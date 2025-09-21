@@ -44,8 +44,8 @@ t_color	get_texture_color(t_hit_record *rec)
 	uv = get_texture_uv(rec);
 	uv.x = fmax(0.0, fmin(1.0, uv.x));
 	uv.y = fmax(0.0, fmin(1.0, uv.y));
-	index = ((int)(uv.y * (texture->height - 1) * texture->width + (int)(uv.x
-					* (texture->width - 1)))) * 4;
+	index = ((int)(uv.y * (texture->height - 1)) * texture->width + (int)(uv.x
+				* (texture->width - 1))) * 4;
 	tex_color.x = (double)texture->pixels[index] / 255.0;
 	tex_color.y = (double)texture->pixels[index + 1] / 255.0;
 	tex_color.z = (double)texture->pixels[index + 2] / 255.0;
