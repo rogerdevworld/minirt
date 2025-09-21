@@ -36,6 +36,8 @@
 #define MOVE_SPEED 0.5
 #define ROTATION_SPEED 0.05
 #define EISDIR 21
+
+// -- quality 4k 8k  -- //
 #define SUBPIXEL_SAMPLES 2
 # define KEY_W XK_w
 # define KEY_A XK_a
