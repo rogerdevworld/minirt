@@ -55,7 +55,6 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 	data = (t_data *)param;
 	if (keydata.key == MLX_KEY_ESCAPE && keydata.action == MLX_PRESS)
 		mlx_close_window(data->mlx.mlx_ptr);
-
 }
 
 // void	mouse_move_hook(double x, double y, void *param)
@@ -83,7 +82,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 // 			data->scene.camera.forward = vec3_normalize(
 //                  data->scene.camera.orientation);
 // 			data->scene.camera.right = vec3_normalize(
-//                      vec3_cross(data->scene.camera.forward, 
+//                      vec3_cross(data->scene.camera.forward,
 //                      (t_vec3){0, 1, 0}));
 // 			data->scene.camera.up = vec3_normalize(vec3_cross(
 //                      data->scene.camera.right,

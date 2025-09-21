@@ -9,8 +9,6 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// src/ft_ray.c
 #include "../../include/minirt.h"
 
 t_ray generate_antialiased_ray(int x, int y, int sub_x, int sub_y, t_scene *scene)

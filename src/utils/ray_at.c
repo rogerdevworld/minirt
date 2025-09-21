@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "../../include/minirt.h"
 
-t_vec3  ray_at(t_ray r, double t)
+t_vec3	ray_at(t_ray r, double t)
 {
-    return (vec3_add(r.origin, vec3_mul(r.direction, t)));
+	return (vec3_add(r.origin, vec3_mul(r.direction, t)));
 }

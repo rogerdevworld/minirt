@@ -330,6 +330,14 @@ typedef struct s_cone_params
 	double		b;
 	double		c;
 }				t_cone_params;
+
+typedef struct s_subpixel_data
+{
+	int	x;
+	int	y;
+	int	sub_x;
+	int	sub_y;
+}	t_subpixel_data;
 // --- Function Prototypes ---
 
 // Math Functions
