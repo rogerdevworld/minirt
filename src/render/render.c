@@ -17,8 +17,7 @@ t_color	calculate_subpixel_color(t_data *data, t_subpixel_data sp)
 	t_hit_record	rec;
 	t_color			subpixel_color;
 
-	ray = generate_antialiased_ray(sp.x, sp.y, sp.sub_x, sp.sub_y,
-			&data->scene);
+	ray = generate_antialiased_ray(sp, &data->scene);
 	pthread_mutex_lock(&data->progress_mutex);
 	data->ray_count++;
 	pthread_mutex_unlock(&data->progress_mutex);
@@ -53,29 +52,34 @@ t_color	render_pixel(int x, int y, t_data *data)
 	return (final_color);
 }
 
+void	render_row(t_data *data, int y)
+{
+	t_color	final_color;
+	int		x;
+
+	x = 0;
+	while (x < data->scene.width)
+	{
+		final_color = render_pixel(x, y, data);
+		final_color = vec3_mul(final_color, 1.0 / (double)(SUBPIXEL_SAMPLES
+					* SUBPIXEL_SAMPLES));
+		mlx_put_pixel(data->mlx.img.img_ptr, x, y, color_to_int(final_color));
+		x++;
+	}
+}
+
 void	*render_thread_func(void *arg)
 {
 	t_thread_data	*thread_data;
 	t_data			*data;
-	t_color			final_color;
 	int				y;
-	int				x;
 
 	thread_data = (t_thread_data *)arg;
 	data = thread_data->global_data;
 	y = thread_data->start_row;
 	while (y < thread_data->end_row)
 	{
-		x = 0;
-		while (x < data->scene.width)
-		{
-			final_color = render_pixel(x, y, data);
-			final_color = vec3_mul(final_color, 1.0 / (double)(SUBPIXEL_SAMPLES
-						* SUBPIXEL_SAMPLES));
-			mlx_put_pixel(data->mlx.img.img_ptr, x, y,
-				color_to_int(final_color));
-			x++;
-		}
+		render_row(data, y);
 		pthread_mutex_lock(&data->progress_mutex);
 		data->rendered_rows++;
 		pthread_mutex_unlock(&data->progress_mutex);

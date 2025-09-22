@@ -49,6 +49,7 @@ SRCS = \
 	$(SRC_DIR)/render/animation/auto_rotate.c \
 	$(SRC_DIR)/render/intersect/ft_cone.c \
 	$(SRC_DIR)/render/intersect/ft_cylinder.c \
+	$(SRC_DIR)/render/intersect/ft_cylinder_utils.c \
 	$(SRC_DIR)/render/intersect/ft_hyperboloid.c \
 	$(SRC_DIR)/render/intersect/ft_paraboloid.c \
 	$(SRC_DIR)/render/intersect/ft_plane.c \

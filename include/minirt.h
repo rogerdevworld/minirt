@@ -340,6 +340,45 @@ typedef struct s_subpixel_data
 	int	sub_x;
 	int	sub_y;
 }	t_subpixel_data;
+
+typedef struct s_ray_data
+{
+    t_vec3  camera_right;
+    t_vec3  camera_up;
+    double  fov_rad;
+    double  aspect_ratio;
+    double  x_coord_normalized;
+    double  y_coord_normalized;
+    t_vec3  viewport_center;
+}   t_ray_data;
+
+typedef struct s_thread_init_data
+{
+	t_thread_data	*td;
+	int				i;
+	int				rows_per_thread;
+	int				*start_row;
+}					t_thread_init_data;
+
+typedef struct s_hit_params
+{
+    t_ray       *ray;
+    t_cylinder  *cy;
+    t_vec3      oc;
+}   t_hit_params;
+
+typedef struct s_closest_hit_data
+{
+    t_hit_record    side_hit;
+    t_hit_record    cap_hit;
+    int             side_found;
+    int             cap_found;
+}   t_closest_hit_data;
+
+t_vec3	calculate_quadratic_coeffs(t_ray *ray, t_vec3 oc,
+		t_cylinder *cy);
+int	check_hit_and_update_rec(t_hit_params *params, t_hit_record *rec,
+		double t_side);
 // --- Function Prototypes ---
 
 // Math Functions
@@ -386,7 +425,7 @@ int color_to_int(t_color color);
 t_vec3 apply_bump_map(t_hit_record *rec, t_object *obj);
 t_color calculate_light(t_hit_record *rec, t_scene *scene, t_ray *ray, int depth);
 t_color get_texture_color(t_hit_record *rec);
-t_ray generate_antialiased_ray(int x, int y, int sub_x, int sub_y, t_scene *scene);
+t_ray	generate_antialiased_ray(t_subpixel_data sp, t_scene *scene);
 t_vec3 get_normal_from_map(t_hit_record *rec, t_vec3 geom_normal);
 t_vec2 get_uv_sphere(t_hit_record *rec);
 t_vec2 get_uv_plane(t_hit_record *rec);
