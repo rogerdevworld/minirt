@@ -66,15 +66,6 @@ SRCS = \
 	$(SRC_DIR)/render/mapping/get_uv_sphere.c \
 	$(SRC_DIR)/utils/nthreads.c \
 	$(SRC_DIR)/utils/ray_at.c \
-	$(SRC_DIR)/vector/cal.c \
-	$(SRC_DIR)/vector/ft_tan.c \
-	$(SRC_DIR)/vector/ft_asin.c \
-	$(SRC_DIR)/vector/ft_atan.c \
-	$(SRC_DIR)/vector/ft_atan2.c \
-	$(SRC_DIR)/vector/ft_abs.c \
-	$(SRC_DIR)/vector/ft_fmin.c \
-	$(SRC_DIR)/vector/ft_fmod.c \
-	$(SRC_DIR)/vector/ft_pow.c \
 	$(SRC_DIR)/vector/vec2/vec2_init.c \
 	$(SRC_DIR)/vector/vec2/vec2_normalize.c \
 	$(SRC_DIR)/vector/vec3/ft_rotate_vector.c \

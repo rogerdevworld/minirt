@@ -527,17 +527,6 @@ void    render_threaded(t_data *data);
 void *render_thread_func(void *arg);
 void    ft_zoom(t_data *data, double zoom_factor);
 void	ft_error_exit(const char *msg);
-double	ft_factorial(int n);
-double	ft_sin(double x);
-double	ft_cos(double x);
-double	ft_tan(double x);
-double	ft_asin(double x);
-double	ft_floor(double x);
-double	ft_atan2(double y, double x);
-double vec2_dot(t_vec2 v1, t_vec2 v2);
-double vec2_length(t_vec2 v);
-double	ft_atan(double x);
-double ft_abs(double num);
 t_vec2	get_texture_uv(t_hit_record *rec);
 
 #endif

@@ -24,7 +24,7 @@ t_color	get_object_color(t_hit_record *rec)
 	else if (rec->object->material->has_checkerboard)
 	{
 		local_point = rec->point;
-		if (((int)ft_floor(local_point.x / rec->object->material->check_scale)
+		if (((int)floor(local_point.x / rec->object->material->check_scale)
 				+ (int)floor(local_point.y / rec->object->material->check_scale)
 				+ (int)floor(local_point.z
 					/ rec->object->material->check_scale)) % 2 == 0)
