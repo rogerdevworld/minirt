@@ -1,5 +1,5 @@
 # Camera with a good view
-C 0,0,10 0,0,-1 90
+C   0,5,30   0,-0.5,-1   90
 
 # Ambient Light
 A 0.8 242,240,235
@@ -12,4 +12,4 @@ sp -2,0,0 1.0 255,0,0 mir:1.0
 sp 2,0,4 1.0 255,0,0 
 
 pl 0,10,0 0,-1,0 135,206,235
-pl 0,-1,0 0,1,0 232,44,23 tex:scene/texture/water_color.png bmp:scene/texture/water_normal.png
+pl 0,-1,0 0,1,0 255,255,255 tex:scene/texture/water_color.png bmp:scene/texture/water_normal.png

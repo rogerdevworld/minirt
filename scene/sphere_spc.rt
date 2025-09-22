@@ -1,0 +1,22 @@
+# Configuración de la escena
+C   -15,5,30          0,0,-1          50
+A   0.1             255,255,255
+L   0,10,10         0.8             255,255,255
+#L   0,5,15          0.5             255,255,255
+
+# --- Plano de Fondo Blanco ---
+pl  0,0,-10         0,0,1           255,255,255
+
+# --- Esferas con Brillo Especular (fila de abajo) ---
+sp -32,0,0  2.5 0,0,255 spc:0.1,80
+sp -24,0,0  2.5 0,0,255 spc:0.2,80
+sp -16,0,0  2.5 0,0,255 spc:0.3,80
+sp -8,0,0   2.5 0,0,255 spc:0.4,80
+sp 0,0,0    2.5 0,0,255 spc:0.5,80
+
+# --- Esferas con Brillo Especular (fila de arriba) ---
+sp -32,6,0  2.5 0,0,255 spc:0.6,80
+sp -24,6,0  2.5 0,0,255 spc:0.7,80
+sp -16,6,0  2.5 0,0,255 spc:0.8,80
+sp -8,6,0   2.5 0,0,255 spc:0.9,80
+sp 0,6,0    2.5 0,0,255 spc:1.0,80 
