@@ -103,8 +103,7 @@ HEADERS = -I$(INC_DIR) -I$(MLX_DIR)/include
 # --- Compiler Flags ---
 # -Werror -Wextra -Wall: Mandatory flags for 42 projects
 # -Ofast: Optional optimization flag
-CFLAGS =  -Ofast -fsanitize=address,leak -g -O3 -march=native -flto #-Wall -Wextra -Werror
-
+CFLAGS =-Ofast -fsanitize=address,leak -g -O3 -march=native -flto #-Wall -Wextra -Werror 
 # --- Library Flags for MLX42 ---
 # -L$(LIBFT_DIR) -lft: Link your Libft
 # -L$(MLX_DIR)/build: Set the library path for MLX42
@@ -130,7 +129,7 @@ libmlx:
 	@make -C $(MLX_DIR)/build -j4
 
 # Link all object files and libraries to create the final executable
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) Makefile include/minirt.h
 	@echo "$(YELLOW)Compiling and linking Libft...$(RESET)"
 	@make -C $(LIBFT_DIR)
 	@echo "$(BLUE)Linking $(NAME)...$(RESET)"
