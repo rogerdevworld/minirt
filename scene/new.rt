@@ -1,0 +1,31 @@
+# Camera with a good view
+C 0,0,10 0,0,-1 90
+
+# Ambient Light
+A 0.1 255,255,255
+
+# Light
+L -10,10,0 0.8 255,255,255
+
+# A red sphere with a bump map and specular highlight
+# El color es 255,0,0
+# usa un mapa de relieve (bump map) en la ruta "scene/bmp.xpm"
+# y tiene propiedades especulares con intensidad 0.5 y brillo 10.
+sp -2,0,0 1.0 255,0,0 bmp:scene/bmp.xpm spc:0.5,10
+
+# A blue plane with a checkerboard texture
+# El color del objeto es azul (0,0,255)
+# usa una textura de tablero de ajedrez (checkerboard)
+# con los colores blanco y un gris muy oscuro y una escala de 5.0.
+pl 0,-1,0 0,1,0 0,0,255 chk:255,255,255;10,10,10;5.0
+
+# A mirrored sphere
+# El color del objeto es verde (0,255,0)
+# es un espejo perfecto (mir) con un ratio de 1.0.
+sp 2,0,0 1.0 0,255,0 mir:1.0
+
+# Another sphere with a checkerboard texture
+# El color del objeto es blanco (255,255,255)
+# usa una textura de tablero de ajedrez con los colores blanco y negro
+# y una escala de 0.5.
+sp 6,0,-15 3 255,255,255 chk:255,255,255;0,0,0;0.5

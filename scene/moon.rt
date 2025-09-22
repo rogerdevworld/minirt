@@ -1,0 +1,30 @@
+# Archivo: scene/horizon_light.rt
+
+# ---------- Configuración de la Escena ----------
+# Cámara (C): Mueve la cámara hacia atrás y la inclina para ver la escena desde arriba.
+# Se ha ajustado el FOV a 120 para una vista más amplia.
+C   0,5,30   0,-0.5,-1   90
+
+# Luz Ambiental (A): Establece un fondo claro para que no haya zonas completamente oscuras.
+A   0.9         255,255,255
+
+# Luces (L): Dos fuentes de luz para crear sombras interesantes y destacar los objetos.
+#L   -10,10,20   0.9         255,255,255
+L   0,-10,0     1.0         200,200,255 moving circle
+L   0,-10,10000     1.0         255,255,255 moving circle
+
+# Luz desde el horizonte (L):
+# Esta luz se encuentra a la misma altura que el plano (-10) y lejos en el eje Z (30),
+# simulando la luz del sol o la luna al atardecer.
+L   0,-10,30    0.8         255,200,150
+
+# ---------- Objetos y Propiedades Avanzadas ----------
+
+# Plano de Suelo (pl): Con textura de agua y reflexión.
+pl  0,-10,0     0,1,0       255,255,255 tex:scene/texture/water_color.png bmp:scene/texture/water_normal.png
+#spc:0.3,50
+pl  0,10,0     0,1,0       0,0,0 
+#chk:255,255,255;0,0,0;2.0
+
+# Esfera (sp): Un objeto reflectante que refleja la escena, incluyendo la luz del horizonte.
+sp  0,-10,-10000   500.0         170,170,170 mir:0.3

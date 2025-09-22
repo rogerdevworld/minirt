@@ -1,0 +1,18 @@
+# Definiciones de la escena
+A 0.8 255,0,255
+
+C 0,0,-20 0,0,1 60
+L 0,10,-10 0.8 255,255,255
+L 5,0,-10 0.8 255,255,255
+
+sp -2,0,5 2 255,0,0 mir:0.0
+
+# Esfera 2: Semi-reflectante (mir: 0.5)
+sp 0,0,5 2 0,255,0 mir:0.5
+
+# Esfera 3: Espejo perfecto (mir: 1.0)
+sp 2,0,5 2 0,0,255 mir:1.0
+
+# Un plano para que las esferas se reflejen en él
+pl 0,2,0 0,1,0 255,255,255 chk:255,255,255;0,0,0;2.0 mir:1.0
+pl 0,-2,0 0,1,0 200,200,200 chk:255,255,255;0,0,0;2.0 mir:1.0
