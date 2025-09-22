@@ -71,31 +71,30 @@ static void	parse_basic_modifiers(t_object *obj, char **tokens, int *i)
 static void	parse_texture_modifier(t_object *obj, char *token)
 {
 	char	*path;
+	void	**img_ptr;
+	bool	*flag_ptr;
 
 	if (ft_strncmp(token, "bmp:", 4) == 0)
 	{
-		path = ft_strtrim(token + 4, " \t\n\r");
-		obj->material->texture_img = mlx_load_png(path);
-		if (!obj->material->texture_img)
-		{
-			free(path);
-			ft_error_exit("Error: Failed to load PNG bump map.");
-		}
-		obj->material->has_normal_map = true;
-		free(path);
+		img_ptr = (void **)&obj->material->texture_img;
+		flag_ptr = &obj->material->has_normal_map;
 	}
-	if (ft_strncmp(token, "tex:", 4) == 0)
+	else if (ft_strncmp(token, "tex:", 4) == 0)
 	{
-		path = ft_strtrim(token + 4, " \t\n\r");
-		obj->material->color_img = mlx_load_png(path);
-		if (!obj->material->color_img)
-		{
-			free(path);
-			ft_error_exit("Error: Failed to load PNG texture.");
-		}
-		obj->material->has_texture = true;
-		free(path);
+		img_ptr = (void **)&obj->material->color_img;
+		flag_ptr = &obj->material->has_texture;
 	}
+	else
+		return ;
+	path = ft_strtrim(token + 4, " \t\n\r");
+	*img_ptr = mlx_load_png(path);
+	if (!*img_ptr)
+	{
+		free(path);
+		ft_error_exit("Error: Failed to load PNG texture.");
+	}
+	*flag_ptr = true;
+	free(path);
 }
 
 void	apply_object_modifiers(t_object *obj, char **tokens, int start_idx)
