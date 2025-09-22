@@ -3,14 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
+/*   By: rmarrero <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 14:22:49 by rmarrero          #+#    #+#             */
-/*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
+/*   Created: 2024/09/13 06:48:32 by rmarrero          #+#    #+#             */
+/*   Updated: 2024/09/27 13:42:57 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 #include "libft.h"
 
 void	*ft_memmove(void *dest, const void *src, size_t n)

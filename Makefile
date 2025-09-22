@@ -168,7 +168,6 @@ clean:
 	@echo "$(YELLOW)Cleaning object files...$(RESET)"
 	@$(RM) $(OBJ_DIR)
 	@make clean -C $(LIBFT_DIR)
-	# The MLX42 build directory is removed here, no need to run 'make clean'
 	@$(RM) -rf $(MLX_DIR)/build
 
 fclean: clean

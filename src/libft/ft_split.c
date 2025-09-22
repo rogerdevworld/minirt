@@ -3,14 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmarrero  <marvin@42.fr>                   +#+  +:+       +#+        */
+/*   By: rmarrero <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 14:22:49 by rmarrero          #+#    #+#             */
-/*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
+/*   Created: 2024/09/12 17:43:29 by rmarrero          #+#    #+#             */
+/*   Updated: 2024/11/10 23:52:13 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 #include "libft.h"
 
 static char	*ft_strncpy(char *dest, const char *src, unsigned int n)
@@ -38,12 +36,12 @@ static int	count_words(const char *s, char c)
 	count = 0;
 	while (*s)
 	{
-		while (*s == c || *s == '\t')
+		while (*s == c)
 			s++;
 		if (*s)
 		{
 			count++;
-			while (*s && *s != c && *s != '\t')
+			while (*s && *s != c)
 				s++;
 		}
 	}
@@ -56,7 +54,7 @@ static char	*ft_word_dup(const char *s, char c)
 	char			*word;
 
 	len = 0;
-	while (s[len] && s[len] != c && s[len] != '\t')
+	while (s[len] && s[len] != c)
 		len++;
 	word = (char *)malloc(sizeof(char) * (len + 1));
 	if (!word)
@@ -92,14 +90,14 @@ char	**ft_split(char const *s, char c)
 		return (NULL);
 	while (*s)
 	{
-		while (*s == c || *s == '\t')
+		while (*s == c)
 			s++;
 		if (*s)
 		{
 			split[i] = ft_word_dup(s, c);
 			if (!split[i++])
 				return (ft_free_split(split), NULL);
-			while (*s && *s != c && *s != '\t')
+			while (*s && *s != c)
 				s++;
 		}
 	}
