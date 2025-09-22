@@ -1,0 +1,18 @@
+# Camera
+# C   posición_x,y,z   orientación_x,y,z   FOV
+C   -20.0,0.0,0.0      1.0,0.0,0.0         70
+
+# Ambient Light
+# A   ratio_luz   color_r,g,b
+A   0.1         255,255,255
+
+# Light
+# L   posición_x,y,z   brillo   color_r,g,b
+L   -5.0,5.0,5.0       0.9      255,255,255
+
+# Paraboloid
+# pb  posición_x,y,z   eje_x,y,z   focal   altura   color_r,g,b   [modificadores]
+pb  0.0,0.0,0.0      0.0,1.0,0.0   2.0     5.0      0,150,255     spc:0.5,20 mir:0.5
+
+# Esfera para comparación
+sp  0.0,0.0,5.0      1.0            255,255,255

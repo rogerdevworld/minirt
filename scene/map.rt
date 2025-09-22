@@ -1,0 +1,47 @@
+# Archivo: scene/test_museum.rt
+
+# ---------- Configuración de la Escena ----------
+# Cámara (C): Mueve la cámara hacia atrás y la inclina para ver la escena desde arriba.
+C   0,5,30   0,-0.5,-1   90
+
+# Luz Ambiental (A): Establece un fondo claro para que no haya zonas completamente oscuras.
+A   0.2         255,255,255
+
+# Luces (L): Dos fuentes de luz para crear sombras interesantes y destacar los objetos.
+L   -10,10,20   0.9         255,255,255
+L   20,15,-10   0.4         200,200,255
+#moving circle
+# Luz de relleno azulada.
+
+# ---------- Objetos y Propiedades Avanzadas ----------
+
+# Plano de Suelo (pl): Con tablero de ajedrez y reflexión.
+# La textura de tablero de ajedrez es ideal para mostrar la reflexión.
+#pl  0,-10,0     0,1,0       255,255,255 mir:0.9 chk:255,255,255;50,50,50;5.0 
+pl  0,-10,0     0,1,0       255,255,255 mir:0.7 tex:scene/texture/water_color.png bmp:scene/texture/water_normal.png spc:0.3,50
+#pl  0,-10,0     0,1,0       255,255,255 mir:0.5 chk:255,255,255;0,0,0;2.0
+
+# Esfera 1 (sp): Textura y Mapa de Normales
+# Muestra cómo una textura de ladrillos con su mapa de normales
+# crea un efecto de relieve.
+sp  -15,0,0     5.0         180,50,50    tex:scene/texture/ladrillo_color.png bmp:scene/texture/ladrillo_normal.png spc:0.3,50
+
+# Esfera 2 (sp): Espejo Perfecto
+# Un objeto puramente reflectante que refleja toda la escena.
+sp  0,0,-10     5.0         210,210,210  mir:1.0
+
+# Cilindro (cy): Reflexión y Brillo Especular
+# Muestra un efecto de brillo metálico y reflexión parcial (mir:0.4).
+cy  15,0,0      0,1,0       4.0          20.0        255,255,0    mir:0.4 tex:scene/texture/ar_color.png bmp:scene/texture/ar_normal.png spc:0.3,50
+
+# Cono (cn): Con brillo
+# Un cono simple con un color rojo y un poco de brillo para destacar.
+cn  -20,-5,-15  0,1,0       5.0          15.0        255,0,0      spc:0.5,30 mir:0.7 tex:scene/texture/piscine_color.png bmp:scene/texture/piscine_normal.png spc:0.3,50
+
+# Hiperboloide (hy):
+# Muestra una de las superficies avanzadas con un color azul.
+hy  -30,0,-20   0,1,0       4.0          2.0          25.0       0,0,200    tex:scene/texture/madera_color.png bmp:scene/texture/madera_normal.png spc:0.3,50
+
+# Paraboloide (pb):
+# Muestra otra de las superficies avanzadas con un color verde.
+pb  20,-5,-15   0,1,0       3.0          20.0        0,200,0    tex:scene/texture/madera_color.png bmp:scene/texture/madera_normal.png spc:0.3,50

@@ -1,0 +1,30 @@
+# Camera
+C 5,10,20 0,-0.5,-1 100
+
+# Ambient Light
+A 0.1 255,255,255
+
+# Point Light
+L 0,20,5 0.7 255,255,255
+
+# Mirror Floor
+pl 0,-1,0 0,1,0 200,200,200 mir:1.0
+
+# Ceiling with a clear color
+pl 0,50,0 0,-1,0 135,206,235
+
+# Sphere with Ladrillo (Brick) Texture
+sp -10,5,-5 5 255,255,255 tex:scene/texture/ladrillo_color.png bmp:scene/texture/ladrillo_normal.png
+
+# Sphere with Grass Texture
+sp 10,5,-5 5 255,255,255 tex:scene/texture/grass_color.png bmp:scene/texture/grass_normal.png
+
+# Sphere with Madera (Wood) Texture
+sp -20,5,-5 5 255,255,255 tex:scene/texture/madera_color.png bmp:scene/texture/madera_normal.png
+
+# Sphere with Espejo (Mirror) Material
+sp 20,5,-5 5 255,255,255 mir:1.0
+
+# Another Sphere with Mirror Material
+sp 30,5,-5 5 255,255,255 tex:scene/texture/techo_color.png bmp:scene/texture/techo_normal.png
+sp -30,5,-5 5 255,255,255 tex:scene/texture/baldosa_color_black.png bmp:scene/texture/baldosa_normal.png

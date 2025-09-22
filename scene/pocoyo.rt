@@ -1,0 +1,54 @@
+# Pocoyo (aproximación con primitivas)
+# Archivo: scene/pocoyo.rt
+
+# Ambient & Camera
+A 0.20 255,255,255
+C 0,2.4,6 0,0,-1 60
+
+# Lights
+L 5,6,6 0.85 255,255,255
+L -4,4,3 0.35 255,200,200
+
+# Ground plane (con checker para contraste)
+#pl 0,-3,0 0,1,0 200,200,200 chk:220,220,220;180,180,180;4.0 mir:0.9
+
+# ---------- Pocoyó ----------
+# Head (piel)
+sp 0,1.40,0 0.55 255,224,189 spc:0.2,30
+
+# Body (chaleco azul)
+cy 0,0.20,0 0,1,0 0.60 0.90 0,102,204 spc:0.1,8
+
+# Hat (brim as thin cylinder + top sphere)
+cy 0,1.05,0 0,1,0 0.70 0.08 0,102,204
+sp 0,1.28,0 0.22 0,102,204
+
+# Eyes (blanco)
+sp -0.18,1.45,0.48 0.12 255,255,255
+sp  0.18,1.45,0.48 0.12 255,255,255
+# Pupils (negro, un poco delante)
+sp -0.18,1.45,0.62 0.05 0,0,0
+sp  0.18,1.45,0.62 0.05 0,0,0
+# Mouth (pequeña esfera para sonrisa)
+sp 0,1.20,0.52 0.08 0,0,0
+
+# Arms (mangas azules) + manos (piel)
+cy -0.95,0.20,0 0,1,0 0.12 0.60 0,102,204
+cy  0.95,0.20,0 0,1,0 0.12 0.60 0,102,204
+sp -1.05,-0.10,0 0.12 255,224,189
+sp  1.05,-0.10,0 0.12 255,224,189
+
+# Legs (azul) + pies (oscuro)
+cy -0.25,-1.00,0 0,1,0 0.18 1.00 0,102,204
+cy  0.25,-1.00,0 0,1,0 0.18 1.00 0,102,204
+sp -0.25,-1.60,0 0.13 40,40,40
+sp  0.25,-1.60,0 0.13 40,40,40
+
+# Small back detail (to make body feel 3D)
+sp 0,0.50,-0.30 0.25 0,80,165 spc:0.05,5
+
+# Optional: subtle mirror on ground
+pl 0,-3,0 0,1,0 200,200,200 mir:1.0
+
+# End of scene
+

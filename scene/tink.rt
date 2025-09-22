@@ -1,0 +1,23 @@
+# Archivo: scene/test_museum.rt
+
+# ---------- Configuración de la Escena ----------
+# Cámara (C): Mueve la cámara hacia atrás y la inclina para ver la escena desde arriba.
+C   0,5,30   0,-0.5,-1   90
+
+# Luz Ambiental (A): Establece un fondo claro para que no haya zonas completamente oscuras.
+A   0.2         255,255,255
+
+# Luces (L): Dos fuentes de luz para crear sombras interesantes y destacar los objetos.
+L   -10,10,20   0.9         255,255,255
+L   20,15,-10   1.0         200,200,255 moving circle
+# Luz de relleno azulada.
+
+# ---------- Objetos y Propiedades Avanzadas ----------
+
+# Plano de Suelo (pl): Con tablero de ajedrez y reflexión.
+# La textura de tablero de ajedrez es ideal para mostrar la reflexión.
+#pl  0,-10,0     0,1,0       255,255,255 mir:0.9 chk:255,255,255;50,50,50;5.0 
+#pl  0,10,0     0,1,0       255,255,255 tex:scene/texture/sky_color.png bmp:scene/texture/sky_color.png
+pl  0,-10,0     0,1,0       255,255,255 mir:0.7 tex:scene/texture/baldosa_color_black.png bmp:scene/texture/baldosa_normal.png spc:0.3,50
+
+sp  -15,0,0     5.0         180,50,50    tex:scene/texture/ladrillo_color.png bmp:scene/texture/ladrillo_normal.png spc:0.3,50
