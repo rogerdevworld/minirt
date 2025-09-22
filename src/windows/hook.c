@@ -21,7 +21,7 @@
 // 		mlx_close_window(data->mlx.mlx_ptr);
 // 	if (keydata.key == MLX_KEY_R && keydata.action == MLX_PRESS)
 // 	{
-// 		ft_printf("R\n");
+// 		printf("R\n");
 // 		data->auto_rotate_active = !data->auto_rotate_active;
 // 	}
 // 	move_dir = vec3_init(0, 0, 0);

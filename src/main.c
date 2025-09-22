@@ -24,7 +24,7 @@ int	init_data(t_data *data)
 	data->rotation_angle = 0.0;
 	data->rotation_center = vec3_init(0, 0, 0);
 	if (pthread_mutex_init(&data->progress_mutex, NULL) != 0)
-		return (ft_printf("MiniRT: Error: Bad Init Mutex\n"), 1);
+		return (printf("MiniRT: Error: Bad Init Mutex\n"), 1);
 	return (0);
 }
 
@@ -34,7 +34,7 @@ int	main(int argc, char **argv)
 	t_data	data;
 
 	if (argc != 2)
-		return (ft_printf("Usage: ./minirt <scene.rt>\n"), 1);
+		return (printf("Usage: ./minirt <scene.rt>\n"), 1);
 	if (init_data(&data) != 0)
 		return (1);
 	parse_rt_file(&data.scene, argv[1]);

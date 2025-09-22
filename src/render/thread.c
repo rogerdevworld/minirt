@@ -42,7 +42,7 @@ void	create_and_run_threads(t_data *data, pthread_t *threads,
 		if (pthread_create(&threads[init_d.i], NULL, render_thread_func,
 				&thread_data[init_d.i]) != 0)
 		{
-			ft_printf("Error\nFallo al crear el hilo %d.\n", init_d.i);
+			printf("Error\nFallo al crear el hilo %d.\n", init_d.i);
 			while (--init_d.i >= 0)
 				pthread_join(threads[init_d.i], NULL);
 			pthread_mutex_destroy(&data->progress_mutex);
@@ -126,7 +126,7 @@ void	render_threaded(t_data *data)
 // 		if (pthread_create(&threads[i], NULL, render_thread_func,
 // 				&thread_data[i]) != 0)
 // 		{
-// 			ft_printf("Error\nFallo al crear el hilo %d.\n", i);
+// 			printf("Error\nFallo al crear el hilo %d.\n", i);
 // 			while (--i >= 0)
 // 				pthread_join(threads[i], NULL);
 // 			pthread_mutex_destroy(&data->progress_mutex);
