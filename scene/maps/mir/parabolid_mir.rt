@@ -1,0 +1,31 @@
+# Archivo de configuración de escena (.rt)
+
+# ---------- Configuración de la Escena ----------
+# Cámara (C): Define la posición, orientación y campo de visión (FOV).
+# C   posición_x,y,z      orientación_x,y,z   FOV
+C   -20,2,30              0,0,-1              80
+
+# Luz Ambiental (A): Establece la iluminación de fondo.
+# A   ratio_luz           color_r,g,b
+A   0.1                   255,255,255
+
+# Luces (L): Definen las fuentes de luz direccionales.
+# L   posición_x,y,z      brillo              color_r,g,b
+L   -20,2,30            0.8                 255,255,255
+
+# --- Plano de Fondo Blanco ---
+# pl  posición_x,y,z      normal_x,y,z        color_r,g,b  [modificadores]
+pl  0,0,-10                 0,0,1               255,255,255
+
+# --- Paraboloides con Mir (Reflejo) ---
+# pb  posicion_x,y,z      eje_x,y,z   focal  altura   color_r,g,b  [modificadores]
+pb  -50,8,0               0,1,0       2.0    4.0      0,200,0      mir:0.1
+pb  -35,8,0               0,1,0       2.0    4.0      0,200,0      mir:0.2
+pb  -20,8,0               0,1,0       2.0    4.0      0,200,0      mir:0.3
+pb  -5,8,0                0,1,0       2.0    4.0      0,200,0      mir:0.4
+pb  10,8,0                0,1,0       2.0    4.0      0,200,0      mir:0.5
+pb  -50,0,0               0,1,0       2.0    4.0      0,200,0      mir:0.6
+pb  -35,0,0               0,1,0       2.0    4.0      0,200,0      mir:0.7
+pb  -20,0,0               0,1,0       2.0    4.0      0,200,0      mir:0.8
+pb  -5,0,0                0,1,0       2.0    4.0      0,200,0      mir:0.9
+pb  10,0,0                0,1,0       2.0    4.0      0,200,0      mir:1.0

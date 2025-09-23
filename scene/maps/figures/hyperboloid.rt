@@ -1,0 +1,11 @@
+# Camera (C): Centrada y mirando al origen
+C   0,0,-15      0,0,1       120
+
+# Ambient Light (A): Un fondo claro
+A   0.2         255,255,255
+
+# Lights (L): Dos fuentes de luz
+L   -10,10,5    0.9         255,255,255
+
+# Hiperboloide (hy): El único objeto en la escena, movido al origen para que la cámara lo capture
+hp 0,0,0        0,1,0       4.0         2.0         25.0        255,255,255

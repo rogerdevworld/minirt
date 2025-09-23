@@ -1,15 +1,20 @@
-# Camera with a good view
-C 0,0,10 0,0,-1 90
+# Archivo: scene/test_museum.rt
 
-# Ambient Light
-A 0.8 242,240,235
+# ---------- Configuración de la Escena ----------
+# Cámara (C): Mueve la cámara hacia atrás y la inclina para ver la escena desde arriba.
+C   0,5,30   0,-0.5,-1   90
 
-# Light
-L -10,10,0 0.8 242,240,235
-L 0,5,0 0.8 255,255,255
+# Luz Ambiental (A): Establece un fondo claro para que no haya zonas completamente oscuras.
+A   0.9         255,255,255
 
-sp -2,0,0 1.0 255,0,0 mir:1.0
-sp 2,0,4 1.0 255,0,0 
+# Luces (L): Dos fuentes de luz para crear sombras interesantes y destacar los objetos.
+L   -10,10,20   0.9         255,255,255
+L   20,15,-10   0.4         200,200,255
+#moving circle
+# Luz de relleno azulada.
 
-pl 0,10,0 0,-1,0 135,206,235
-pl 0,-1,0 0,1,0 232,44,23 tex:scene/texture/water_color.png bmp:scene/texture/water_normal.png
+# ---------- Objetos y Propiedades Avanzadas ----------
+
+# Plano de Suelo (pl): Con tablero de ajedrez y reflexión.
+pl  0,-10,0     0,1,0       255,255,255 mir:0.4 tex:scene/texture/water_color.png bmp:scene/texture/water_normal.png spc:0.3,50
+pl  0,10,0                 0,1,0               0,120,245     #chk:255,255,255;0,0,128;5.0

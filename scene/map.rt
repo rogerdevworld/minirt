@@ -40,7 +40,7 @@ cn  -20,-5,-15  0,1,0       5.0          15.0        255,0,0      spc:0.5,30 mir
 
 # Hiperboloide (hy):
 # Muestra una de las superficies avanzadas con un color azul.
-hy  -30,0,-20   0,1,0       4.0          2.0          25.0       0,0,200    tex:scene/texture/madera_color.png bmp:scene/texture/madera_normal.png spc:0.3,50
+hp  -30,0,-20   0,1,0       4.0          2.0          25.0       0,0,200    tex:scene/texture/madera_color.png bmp:scene/texture/madera_normal.png spc:0.3,50
 
 # Paraboloide (pb):
 # Muestra otra de las superficies avanzadas con un color verde.

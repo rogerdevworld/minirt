@@ -1,0 +1,15 @@
+# Ambient Light
+# A   ratio_luz   color_r,g,b
+A 0.2 				255,255,255
+
+# Camera
+# C   posicion_x,y,z   orientacion_x,y,z   FOV
+C 0,2,-10 			0,0,1		70
+
+# Light
+# L   posicion_x,y,z   brillo    color_r,g,b
+L -10,10,15 		0.5			255,255,255
+
+# Cone
+# co  posicion_x,y,z   eje_x,y,z   diametro   altura   color_r,g,b
+cn 0,-5,15          0,1,0       6.0        12.0     255,255,255
