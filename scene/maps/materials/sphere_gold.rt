@@ -2,9 +2,9 @@ A 0.4 				255,255,255
 
 C 0,-10,0 			0,0,1		70
 
-# L -10,10,15 		0.5			255,0,0
-# L 10,10,15			0.7			0,255,0
+L -10,10,15 		0.5			255,255,255
+L 10,10,15			0.7			255,255,255
 L 0,10,30			0.6			255,255,255
 
 # pl 0,-16,0			0,-1,0		255,255,255
-sp 0,-8,30			6			255,255,255 mir:0.2 spc:1.0,100 tex:scene/texture/gold_color.png bmp:scene/texture/gold_normal.png
+sp 0,-8,30			6			255,255,255 spc:1.0,100 tex:scene/texture/gold_color.png bmp:scene/texture/gold_normal.png
