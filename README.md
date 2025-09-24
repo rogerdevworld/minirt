@@ -35,44 +35,96 @@ For example, to render the basic scene, you would use the following command:
 
 Scene files are plain text files that define the elements of a 3D scene, such as the camera, lights, and objects. The project includes a variety of examples to test different features.
 
-### **Basic Shape Scenes**
+## 🖼️ Example Scenes
 
+### **Basic Shape Scenes**
 These scenes are ideal for testing the rendering of individual shapes with basic lighting and camera settings.
 
-  * **`cone.rt`**: Renders a simple cone.
-  * **`cylinder.rt`**: Displays a simple cylinder.
-  * **`hyperboloid.rt`**: Contains a hyperboloid, one of the more complex conic shapes.
-  * **`paraboloide.rt`**: Presents a paraboloid.
-  * **`plane.rt`**: Renders a plane, useful for checking lighting and shadows.
-  * **`sphere.rt`**: The most basic and essential scene for testing lighting and shadows on a round shape.
+- **`cone.rt`** → Renders a simple cone.  
+  ![cone](./scene/views/cone.png)
+
+- **`cylinder.rt`** → Displays a simple cylinder.  
+  ![cylinder](./scene/views/cylinder.png)
+
+- **`hyperboloid.rt`** → Contains a hyperboloid, one of the more complex conic shapes.  
+  ![hyperboloid](./scene/views/hyperboloid.png)
+
+- **`paraboloide.rt`** → Presents a paraboloid.  
+  ![paraboloid](./scene/views/paraboloide.png)
+
+- **`plane.rt`** → Renders a plane, useful for checking lighting and shadows.  
+  ![plane](./scene/views/plane.png)
+
+- **`sphere.rt`** → The most basic and essential scene for testing lighting and shadows on a round shape.  
+  ![sphere](./scene/views/sphere.png)
+
+---
 
 ### **Advanced Material Scenes**
+These scenes focus on testing advanced material properties like **mirror (`mir`)** and **specular (`spc`)** reflections.
 
-These scenes focus on testing advanced material properties like mirror (`mir`) and specular (`spc`) reflections.
+- **`sphere_mir.rt`** → Contains a sphere with **mirror** properties.  
+  ![sphere_mir](./scene/views/sphere_mir.png)
 
-  * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
-  ![rt Image](./scene/views/sphere_mir.png)
-  * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
-  ![rt Image](./scene/views/sphere_mir.png)
-  * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
-  ![rt Image](./scene/views/sphere_mir.png)
-  * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
-  ![rt Image](./scene/views/sphere_mir.png)
-  * **`sphere_spc.rt`**: Shows a sphere with high **specular reflection**.
-  ![rt Image](./image.png)
+- **`cone_mir.rt`** → Cone with **mirror** reflection.  
+  ![cone_mir](./scene/views/cone_mir.png)
+
+- **`cylinder_mir.rt`** → Cylinder with **mirror** reflection.  
+  ![cylinder_mir](./scene/views/cylinder_mir.png)
+
+- **`parabolid_mir.rt`** → Paraboloid with **mirror** reflection.  
+  ![parabolid_mir](./scene/views/parabolid_mir.png)
+
+- **`hyperbolid_mir.rt`** → Hyperboloid with **mirror** reflection.  
+  ![hyperbolid_mir](./scene/views/hyperbolid_mir.png)
+
+- **`sphere_spc.rt`** → Shows a sphere with high **specular reflection**.  
+  ![sphere_spc](./scene/views/sphere_spc.png)
+
+- **`cone_spc.rt`** → Cone with **specular** highlights.  
+  ![cone_spc](./scene/views/cone_spc.png)
+
+- **`cylinder_spc.rt`** → Cylinder with **specular** reflection.  
+  ![cylinder_spc](./scene/views/cylinder_spc.png)
+
+- **`parabolid_spc.rt`** → Paraboloid with **specular** properties.  
+  ![parabolid_spc](./scene/views/parabolid_spc.png)
+
+---
 
 ### **Complex and Textured Scenes**
-
 These scenes combine multiple objects, lights, and textures to create detailed environments.
 
-  * **`basic.rt`**: A starter scene with one or two basic shapes and simple lighting.
-  * **`bonus_basic.rt`**: A version of the basic scene with extra features.
-  * **`ladrillo.rt`**: Likely applies a **brick texture** to an object.
-  * **`map.rt`**: A complex test map combining multiple shapes and textures.
-  * **`rock.rt`**: Uses a **rock texture** on a shape.
-  * **`special/room.rt`**: A full **room** scenario to test light and shadow interaction in a closed space.
-  * **`tink.rt`**: A scene using the **Tink** 3D model to test handling complex polygonal models.
-  * **`water.rt`**: Likely shows a surface with a **water texture**, including refraction or reflection effects.
+- **`basic.rt`** → A starter scene with one or two basic shapes and simple lighting.  
+  ![basic](./scene/views/basic.png)
+
+- **`bonus_basic.rt`** → A version of the basic scene with extra features.  
+  ![bonus_basic](./scene/views/bonus_basic.png)
+
+- **`ladrillo.rt`** → Applies a **brick texture** to an object.  
+  ![ladrillo](./scene/views/ladrillo.png)
+
+- **`map.rt`** → A complex test map combining multiple shapes and textures.  
+  ![map](./scene/views/map.png)
+
+- **`rock.rt`** → Uses a **rock texture** on a shape.  
+  ![rock](./scene/views/rock.png)
+
+- **`special/room.rt`** → A full **room** scenario to test light and shadow interaction in a closed space.  
+  ![room](./scene/views/room.png)
+
+- **`tink.rt`** → A scene using the **Tink** 3D model to test handling complex polygonal models.  
+  ![tink](./scene/views/tink.png)
+
+- **`water.rt`** → A surface with a **water texture**, including refraction or reflection effects.  
+  ![water](./scene/views/water.png)
+
+- **`mir.rt`** → A global scene showcasing multiple mirrored objects.  
+  ![mir](./scene/views/mir.png)
+
+- **`spc.rt`** → Scene showcasing multiple specular highlights.  
+  ![spc](./scene/views/spc.png)
+
 
 -----
 
