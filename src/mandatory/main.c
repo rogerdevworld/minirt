@@ -9,8 +9,19 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../include/minirt.h"
+#include "../../include/minirt.h"
 
+/**
+ * @brief Initializes the main data structure for the program.
+ *
+ * @details This function sets up the default values for the scene,
+ * including dimensions and thread-related properties. It also
+ * initializes a mutex for thread synchronization.
+ *
+ * @param data A pointer to the main data structure `t_data`.
+ *
+ * @return 0 on success, or 1 if the mutex initialization fails.
+ */
 int	init_data(t_data *data)
 {
 	init_scene(&data->scene);
@@ -28,7 +39,20 @@ int	init_data(t_data *data)
 	return (0);
 }
 
-// moving
+/**
+ * @brief Main function for the MiniRT program.
+ *
+ * @details This function handles the program's lifecycle, including
+ * argument validation, data initialization, scene parsing, rendering,
+ * and event loop management. It ensures proper cleanup upon exit.
+ *
+ * @param argc The number of command-line arguments.
+ * @param argv An array of strings containing the command-line arguments.
+ * The second argument is expected to be the scene file path.
+ *
+ * @return 0 on successful execution, 1 on error (e.g., incorrect arguments,
+ * parsing issues, or MLX setup failure).
+ */
 int	main(int argc, char **argv)
 {
 	t_data	data;
