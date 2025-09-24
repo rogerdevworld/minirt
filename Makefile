@@ -16,7 +16,7 @@ CC = gcc
 RM = rm -rf
 
 # --- Directories ---
-SRC_DIR = ./src
+SRC_DIR = ./src/mandatory
 OBJ_DIR = ./.obj
 INC_DIR = ./include
 LIBFT_DIR = ./src/libft
@@ -94,7 +94,7 @@ HEADERS = -I$(INC_DIR) -I$(MLX_DIR)/include
 # --- Compiler Flags ---
 # -Werror -Wextra -Wall: Mandatory flags for 42 projects
 # -Ofast: Optional optimization flag
-CFLAGS = -Wall -Wextra -Werror -Ofast -fsanitize=address,leak -g -O3 -march=native -flto #-Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror -Ofast -fsanitize=address,leak -g -O3 -march=native -flto #
 # --- Library Flags for MLX42 ---
 # -L$(LIBFT_DIR) -lft: Link your Libft
 # -L$(MLX_DIR)/build: Set the library path for MLX42
