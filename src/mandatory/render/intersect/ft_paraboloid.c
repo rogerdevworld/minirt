@@ -11,6 +11,24 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
+/**
+ * @brief Calculates the quadratic coefficients for ray-paraboloid intersection.
+ *
+ * @details This function computes the A, B, and C coefficients of the quadratic
+ * equation used to find the intersection point of a ray with a paraboloid. The
+ * calculation involves projecting the ray's direction and origin-to-center 
+ vector
+ * onto a plane perpendicular to the paraboloid's axis, using the paraboloid's
+ * focal length and the dot products of the vectors.
+ *
+ * @param ray A pointer to the ray being cast.
+ * @param pb A pointer to the paraboloid object.
+ * @param oc The vector from the paraboloid's position to the ray's origin.
+ * @param axis_norm The normalized axis of the paraboloid.
+ *
+ * @return A `t_vec3` struct where the x, y, and z components represent the
+ * A, B, and C coefficients, respectively.
+ */
 static t_vec3	calculate_abc(t_ray *ray, t_parab *pb, t_vec3 oc,
 		t_vec3 axis_norm)
 {
@@ -32,6 +50,24 @@ static t_vec3	calculate_abc(t_ray *ray, t_parab *pb, t_vec3 oc,
 	return (coeffs);
 }
 
+/**
+ * @brief Solves the quadratic equation and finds the closest valid intersection.
+ *
+ * @details This function solves the quadratic equation using the provided
+ * coefficients to find potential intersection distances (t1, t2). It then
+ * validates these distances. A hit is considered valid only if its `t` value
+ * is positive (`> EPSILON`) and if the corresponding point lies within the
+ * paraboloid's finite height (between 0.0 and `pb->height`). The function
+ * returns the first valid and closest `t` value found.
+ *
+ * @param coeffs A `t_vec3` containing the A, B, and C coefficients.
+ * @param ray A pointer to the ray.
+ * @param pb A pointer to the paraboloid object.
+ * @param axis_norm The normalized axis of the paraboloid.
+ *
+ * @return The closest positive intersection distance (`t`) that is within the
+ * paraboloid's height, or -1.0 if no valid intersection is found.
+ */
 static double	solve_quadratic(t_vec3 coeffs, t_ray *ray, t_parab *pb,
 		t_vec3 axis_norm)
 {
@@ -62,6 +98,23 @@ static double	solve_quadratic(t_vec3 coeffs, t_ray *ray, t_parab *pb,
 	return (-1.0);
 }
 
+/**
+ * @brief Calculates and updates the surface normal at a hit point.
+ *
+ * @details This function calculates the normal vector at the intersection point
+ * on the paraboloid's surface. The normal is derived from the gradient of the
+ * paraboloid's implicit function. It projects the hit point's vector relative
+ * to the paraboloid's position onto its axis to determine the normal, and
+ * ensures the final normal vector is normalized and points away from the ray's
+ * origin.
+ *
+ * @param ray A pointer to the ray that hit the paraboloid.
+ * @param pb A pointer to the paraboloid object.
+ * @param rec A pointer to the `t_hit_record` to be updated.
+ * @param axis_norm The normalized axis of the paraboloid.
+ *
+ * @return void.
+ */
 static void	update_paraboloid_normal(t_ray *ray, t_parab *pb, t_hit_record *rec,
 		t_vec3 axis_norm)
 {
@@ -79,6 +132,22 @@ static void	update_paraboloid_normal(t_ray *ray, t_parab *pb, t_hit_record *rec,
 		rec->normal = vec3_mul(rec->normal, -1.0);
 }
 
+/**
+ * @brief Determines if a ray intersects a paraboloid and records the hit.
+ *
+ * @details This is the main function for ray-paraboloid intersection. It
+ * orchestrates the process by first calculating the quadratic coefficients
+ * with `calculate_abc`, solving for the intersection distance (`t`) using
+ * `solve_quadratic`, and finally, if a valid hit is found, updating the
+ * hit record with the precise intersection point and surface normal using
+ * `update_paraboloid_normal`.
+ *
+ * @param ray A pointer to the ray.
+ * @param pb A pointer to the paraboloid object.
+ * @param rec A pointer to the `t_hit_record` to store intersection details.
+ *
+ * @return 1 if a valid intersection is found, 0 otherwise.
+ */
 int	intersect_paraboloid(t_ray *ray, t_parab *pb, t_hit_record *rec)
 {
 	t_vec3	oc;
