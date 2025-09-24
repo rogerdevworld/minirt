@@ -11,6 +11,28 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
+/**
+ * @brief Determines if a ray intersects the sides of a cylinder.
+ *
+ * @details This function calculates the potential intersection points 
+ of a ray with
+ * the infinite surface of a cylinder's side. It uses the quadratic 
+ equation coefficients
+ * previously computed to find up to two intersection points (t values). 
+ It then
+ * calls `check_hit_and_update_rec` for each point to validate if it 
+ falls within
+ * the finite height of the cylinder and to update the hit record if 
+ a valid
+ * intersection is found.
+ *
+ * @param ray A pointer to the ray being cast.
+ * @param cy A pointer to the cylinder object.
+ * @param rec A pointer to the hit record to be updated.
+ *
+ * @return 1 if a valid intersection on the cylinder's side is found, 
+ 0 otherwise.
+ */
 static int	intersect_sides(t_ray *ray, t_cylinder *cy, t_hit_record *rec)
 {
 	t_vec3			oc;
@@ -36,6 +58,27 @@ static int	intersect_sides(t_ray *ray, t_cylinder *cy, t_hit_record *rec)
 	return (0);
 }
 
+/**
+ * @brief Calculates the intersection point of a ray with one of the 
+ cylinder's caps.
+ *
+ * @details This function treats a cylinder cap as a flat plane. 
+ It calculates the
+ * intersection distance (`t`) between the ray and the plane that 
+ contains the cap.
+ * It then performs an additional check to verify if the intersection 
+ point lies
+ * within the circular boundary of the cap by comparing the distance 
+ from the
+ * intersection point to the cap's center with the cylinder's radius.
+ *
+ * @param ray A pointer to the ray.
+ * @param cy A pointer to the cylinder.
+ * @param cap_center The center point of the cylinder's cap (top or bottom).
+ *
+ * @return The intersection distance (`t`) if a valid hit is found on 
+ the cap, otherwise -1.0.
+ */
 static double	calculate_cap_intersection(t_ray *ray, t_cylinder *cy,
 		t_vec3 cap_center)
 {
@@ -55,6 +98,26 @@ static double	calculate_cap_intersection(t_ray *ray, t_cylinder *cy,
 	return (t);
 }
 
+/**
+ * @brief Determines if a ray intersects the top or bottom caps of a cylinder.
+ *
+ * @details This function separately calculates the intersection distances for
+ * the top and bottom caps of the cylinder using `calculate_cap_intersection`. 
+ It
+ * then compares the results to find the closest valid intersection point, 
+ if any.
+ * If a valid hit is found, it updates the hit record with the intersection 
+ point
+ * and the appropriate normal vector (which is the cylinder's axis).
+ *
+ * @param ray A pointer to the ray.
+ * @param cy A pointer to the cylinder.
+ * @param t_cap A pointer to a double to store the closest cap 
+ intersection distance.
+ * @param rec A pointer to the hit record to be updated.
+ *
+ * @return 1 if a valid intersection on a cap is found, 0 otherwise.
+ */
 static int	intersect_caps(t_ray *ray, t_cylinder *cy, double *t_cap,
 		t_hit_record *rec)
 {
@@ -85,6 +148,24 @@ static int	intersect_caps(t_ray *ray, t_cylinder *cy, double *t_cap,
 	return (0);
 }
 
+/**
+ * @brief Selects the closest valid intersection from multiple candidates.
+ *
+ * @details This function compares two potential hits on an object 
+ (e.g., from the
+ * sides and the caps of a cylinder) and selects the one that is 
+ closest to the ray's
+ * origin. It prioritizes the closest hit, ensuring the renderer 
+ correctly handles
+ * cases where a ray intersects multiple parts of the same object.
+ *
+ * @param rec A pointer to the main hit record to be updated with the 
+ closest hit.
+ * @param hit_data A structure containing hit records for different 
+ parts of the object.
+ *
+ * @return void.
+ */
 static void	select_closest_hit(t_hit_record *rec, t_closest_hit_data hit_data)
 {
 	if (hit_data.side_found && hit_data.cap_found)
@@ -100,6 +181,25 @@ static void	select_closest_hit(t_hit_record *rec, t_closest_hit_data hit_data)
 		*rec = hit_data.cap_hit;
 }
 
+/**
+ * @brief Determines if a ray intersects a cylinder and records the hit.
+ *
+ * @details This is the main function for ray-cylinder intersection. 
+ It divides the
+ * problem into two sub-problems: intersecting with the cylinder's side and
+ * intersecting with its caps. It calls `intersect_sides` and `intersect_caps`
+ * to find potential hits on both parts. If at least one hit is found, 
+ it calls
+ * `select_closest_hit` to determine the single, closest intersection 
+ point and
+ * updates the final hit record.
+ *
+ * @param ray A pointer to the ray.
+ * @param cy A pointer to the cylinder object.
+ * @param rec A pointer to the hit record to store the intersection details.
+ *
+ * @return 1 if any part of the cylinder is hit, 0 otherwise.
+ */
 int	intersect_cylinder(t_ray *ray, t_cylinder *cy, t_hit_record *rec)
 {
 	t_closest_hit_data	hit_data;
