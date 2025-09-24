@@ -1,0 +1,32 @@
+# Archivo de configuración de escena (.rt)
+
+# ---------- Configuración de la Escena ----------
+# Cámara (C): Define la posición, orientación y campo de visión (FOV).
+# C   posición_x,y,z      orientación_x,y,z   FOV
+C   -10,2,20              0,0,-1              50
+
+# Luz Ambiental (A): Establece la iluminación de fondo.
+# A   ratio_luz           color_r,g,b
+A   0.2                   255,255,255
+
+# Luces (L): Definen las fuentes de luz direccionales.
+# L   posición_x,y,z      brillo              color_r,g,b
+L   -10,2,20              0.8                 255,255,255
+# L   20,15,5               0.8                 255,255,255
+
+# --- Plano de Fondo Blanco ---
+# pl  posición_x,y,z      normal_x,y,z        color_r,g,b  [modificadores]
+pl  0,0,-10                   0,0,1                 255,255,255
+
+# --- Esferas con Mir (Reflejo) ---
+# sp  posición_x,y,z        diametro          color_r,g,b  [modificadores]
+sp  -18,4,0                   1.5             255,0,0      tex:scene/texture/ar_color.png nm:scene/texture/ar_normal.png
+sp  -14,4,0                   1.5             255,0,0      tex:scene/texture/baldosa_color_black.png nm:scene/texture/baldosa_normal.png
+sp  -10,4,0                   1.5             255,0,0      tex:scene/texture/cuero_color.png nm:scene/texture/cuero_normal.png
+sp  -6,4,0                    1.5             255,0,0      tex:scene/texture/gold_color.png nm:scene/texture/gold_normal.png
+sp  -2,4,0                    1.5             255,0,0      tex:scene/texture/ladrillo_color.png nm:scene/texture/ladrillo_normal.png
+sp  -18,0,0                   1.5             255,0,0      tex:scene/texture/madera_color.png nm:scene/texture/madera_normal.png
+sp  -14,0,0                   1.5             255,0,0      spc:1.0,100  tex:scene/texture/oxido_color.png nm:scene/texture/oxido_normal.png
+sp  -10,0,0                   1.5             255,0,0      tex:scene/texture/piscine_color.png nm:scene/texture/piscine_normal.png
+sp  -6,0,0                    1.5             255,0,0      tex:scene/texture/rock_color.png nm:scene/texture/rock_normal.png
+sp  -2,0,0                    1.5             255,0,0      tex:scene/texture/techo_color.png nm:scene/texture/techo_normal.png

@@ -1,0 +1,31 @@
+# Archivo de configuración de escena (.rt)
+
+# ---------- Configuración de la Escena ----------
+# Cámara (C): Define la posición, orientación y campo de visión (FOV).
+# C   posición_x,y,z      orientación_x,y,z   FOV
+C   -20,2,20              0,0,-1              70
+
+# Luz Ambiental (A): Establece la iluminación de fondo.
+# A   ratio_luz           color_r,g,b
+A   0.1                   255,255,255
+
+# Luces (L): Definen las fuentes de luz direccionales.
+# L   posición_x,y,z      brillo              color_r,g,b
+L   -13,2,20              0.8                 255,255,255
+
+# --- Plano de Fondo Blanco ---
+# pl  posición_x,y,z      normal_x,y,z        color_r,g,b  [modificadores]
+pl  0,0,-10                   0,0,1                 255,255,255
+
+# --- Conos con Texturas y Mir (Reflejo) ---
+# cn  posición_x,y,z        eje_x,y,z         diametro altura    color_r,g,b  [modificadores]
+cn  -40,5,0                 0,1,0               1.5    3.0   255,0,0      mir:0.1 tex:scene/texture/gold_color.png nm:scene/texture/gold_normal.png
+cn  -30,5,0                 0,1,0               1.5    3.0   255,0,0      mir:0.2 tex:scene/texture/cuero_color.png nm:scene/texture/cuero_normal.png
+cn  -20,5,0                 0,1,0               1.5    3.0   255,0,0      mir:0.3 tex:scene/texture/ladrillo_color.png nm:scene/texture/ladrillo_normal.png
+cn  -10,5,0                 0,1,0               1.5    3.0   255,0,0      mir:0.4 tex:scene/texture/baldosa_color_black.png nm:scene/texture/baldosa_normal.png
+cn  0,5,0                   0,1,0               1.5    3.0   255,0,0      mir:0.5 tex:scene/texture/oxido_color.png nm:scene/texture/oxido_normal.png
+cn  -40,0,0                 0,1,0               1.5    3.0   255,0,0      mir:0.6 tex:scene/texture/grass_color.png nm:scene/texture/grass_normal.png
+cn  -30,0,0                 0,1,0               1.5    3.0   255,0,0      mir:0.7 tex:scene/texture/madera_color.png nm:scene/texture/madera_normal.png
+cn  -20,0,0                 0,1,0               1.5    3.0   255,0,0      mir:0.8 tex:scene/texture/rock_color.png nm:scene/texture/rock_normal.png
+cn  -10,0,0                 0,1,0               1.5    3.0   255,0,0      mir:0.9 tex:scene/texture/piscine_color.png nm:scene/texture/piscine_normal.png
+cn  0,0,0                   0,1,0               1.5    3.0   255,0,0      mir:1.0 tex:scene/texture/techo_color.png nm:scene/texture/techo_normal.png
