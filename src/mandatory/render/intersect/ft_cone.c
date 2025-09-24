@@ -11,6 +11,24 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
+/**
+ * @brief Calculates the coefficients of the quadratic equation 
+ for ray-cone intersection.
+ *
+ * @details This function determines the quadratic coefficients 
+ (A, B, C) required to solve for the
+ * intersection of a ray with a cone. It uses a parametric equation 
+ derived from the cone's
+ * geometry. The coefficients are based on the ray's origin and 
+ direction, the cone's
+ * position and axis, and its radius and height.
+ *
+ * @param ray A pointer to the ray being cast.
+ * @param cn A pointer to the cone object.
+ *
+ * @return A `t_cone_params` structure containing the calculated 
+ coefficients.
+ */
 t_cone_params	get_cone_quadratic(t_ray *ray, t_cone *cn)
 {
 	t_cone_params	p;
@@ -27,6 +45,26 @@ t_cone_params	get_cone_quadratic(t_ray *ray, t_cone *cn)
 	return (p);
 }
 
+/**
+ * @brief Solves the quadratic equation for a ray-cone intersection.
+ *
+ * @details This function calculates the two possible intersection 
+ distances (t1 and t2)
+ * using the quadratic formula. It then validates these distances 
+ against the cone's
+ * height to ensure the intersection point lies on the finite part 
+ of the cone's surface.
+ * It returns the smallest valid positive distance, or -1.0 if no 
+ valid intersection is found.
+ *
+ * @param ray A pointer to the ray.
+ * @param cn A pointer to the cone.
+ * @param p The quadratic parameters (a, b, c) calculated by 
+ `get_cone_quadratic`.
+ *
+ * @return The smallest positive intersection distance (t) or 
+ -1.0 if there is no intersection.
+ */
 double	get_cone_t(t_ray *ray, t_cone *cn, t_cone_params p)
 {
 	double	disc;
@@ -53,6 +91,25 @@ double	get_cone_t(t_ray *ray, t_cone *cn, t_cone_params p)
 	return (-1.0);
 }
 
+/**
+ * @brief Determines if a ray intersects a cone and records the hit.
+ *
+ * @details This is the primary function for ray-cone intersection. 
+ It first calculates
+ * the quadratic coefficients using `get_cone_quadratic`, then solves for the
+ * intersection distance `t` using `get_cone_t`. If a valid 
+ intersection is found,
+ * it populates the `t_hit_record` struct with the intersection distance, the
+ * exact hit point, and the surface normal at that point. It ensures the normal
+ * is correctly oriented relative to the ray's direction for accurate shading.
+ *
+ * @param ray A pointer to the ray.
+ * @param cn A pointer to the cone object.
+ * @param rec A pointer to the `t_hit_record` structure to store 
+ the intersection details.
+ *
+ * @return 1 if an intersection is found, 0 otherwise.
+ */
 int	intersect_cone(t_ray *ray, t_cone *cn, t_hit_record *rec)
 {
 	t_cone_params	p;
