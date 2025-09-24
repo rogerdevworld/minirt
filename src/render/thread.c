@@ -28,7 +28,6 @@ void	create_and_run_threads(t_data *data, pthread_t *threads,
 		t_thread_data *thread_data)
 {
 	t_thread_init_data	init_d;
-	int					rows_per_thread;
 	int					start_row;
 
 	init_d.td = thread_data;

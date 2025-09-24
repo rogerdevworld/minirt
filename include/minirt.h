@@ -398,6 +398,7 @@ t_vec3				vec3_mult_vec(t_vec3 v1, t_vec3 v2);
 double				vec3_dot(t_vec3 v1, t_vec3 v2);
 t_vec3				vec3_cross(t_vec3 v1, t_vec3 v2);
 double				vec3_length(t_vec3 v);
+double				vec2_length(t_vec2 v);
 double				vec3_length_squared(t_vec3 v);
 t_vec3				vec3_normalize(t_vec3 v);
 t_vec3				vec3_reflect(t_vec3 v, t_vec3 n);

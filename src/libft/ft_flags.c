@@ -34,8 +34,8 @@ void	is_flag(char c, va_list args, int *length, int *flag)
 
 int	ft_validation(char c)
 {
-	if (c == 'c' || c == 'i' || c == 's' || c == 'p'\
-		|| c == 'u' || c == 'd' || c == 'x' || c == 'X' || c == '%')
+	if (c == 'c' || c == 'i' || c == 's' || c == 'p' || c == 'u' || c == 'd'
+		|| c == 'x' || c == 'X' || c == '%')
 		return (1);
 	return (-1);
 }
