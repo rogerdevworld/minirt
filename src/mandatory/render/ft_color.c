@@ -11,6 +11,46 @@
 /* ************************************************************************** */
 #include "../../../include/minirt.h"
 
+/**
+ * @brief Retrieves the final color of a hit point, considering 
+ textures and patterns.
+ *
+ * @details This function acts as a dispatcher for determining 
+ an object's color at a specific
+ * intersection point. It checks for a material on the object
+  and, in a prioritized order,
+ * decides which color source to use:
+ *
+ * 1. **Textures**: If the material has a texture 
+ (`has_texture` is true), the function
+ * calls `get_texture_color` to perform a texture lookup, 
+ which provides the most
+ * detailed color information.
+ *
+ * 2. **Checkerboard Pattern**: If there's no texture but a 
+ checkerboard pattern is enabled
+ * (`has_checkerboard` is true), the function calculates a 3D 
+ checkerboard pattern. It does
+ * this by taking the floor of the hit point's coordinates (x, y, z), 
+ scaled by a `check_scale`
+ * factor. The sum of these floored values is checked for parity 
+ (even or odd). An even
+ * sum returns `check_color1`, and an odd sum returns `check_color2`,
+ creating the alternating
+ * pattern.
+ *
+ * 3. **Default Color**: If neither a texture nor a checkerboard 
+ pattern is specified, the
+ * function returns the object's base color (`rec->object->color`), 
+ which is the simplest
+ * shading option.
+ *
+ * @param rec A pointer to the hit record containing the object 
+ and hit point.
+ *
+ * @return A `t_color` vector representing the final color of the 
+ object at the hit point.
+ */
 t_color	get_object_color(t_hit_record *rec)
 {
 	t_vec3	local_point;
