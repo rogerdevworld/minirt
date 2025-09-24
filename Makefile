@@ -88,6 +88,76 @@ SRCS = \
 # --- Object Files ---
 OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
+# --- bonus --- #
+B_NAME = minirt_bonus
+BSRC_DIR = ./src/bonus/
+B_OBJ_DIR = ./obj_bonus
+
+BSRCS = \
+	$(BSRC_DIR)/main_bonus.c \
+	$(BSRC_DIR)/clean/clean_data_bonus.c \
+	$(BSRC_DIR)/clean/clean_data_2_bonus.c \
+	$(BSRC_DIR)/inits/init_basics_bonus.c \
+	$(BSRC_DIR)/inits/init_color_bonus.c \
+	$(BSRC_DIR)/inits/init_elements_bonus.c \
+	$(BSRC_DIR)/inits/init_figures_bonus.c \
+	$(BSRC_DIR)/parser/ft_error_bonus.c \
+	$(BSRC_DIR)/parser/parser_bonus.c \
+	$(BSRC_DIR)/parser/parser_elements_2_bonus.c \
+	$(BSRC_DIR)/parser/parser_elements_bonus.c \
+	$(BSRC_DIR)/parser/parser_utils_2_bonus.c \
+	$(BSRC_DIR)/parser/parser_utils_3_bonus.c \
+	$(BSRC_DIR)/parser/parser_utils_bonus.c \
+	$(BSRC_DIR)/parser/parser_utils_materials_2_bonus.c \
+	$(BSRC_DIR)/parser/parser_utils_materials_bonus.c \
+	$(BSRC_DIR)/render/ft_color_bonus.c \
+	$(BSRC_DIR)/render/ft_normal_mapping_bonus.c \
+	$(BSRC_DIR)/render/ft_ray_bonus.c \
+	$(BSRC_DIR)/render/render_bonus.c \
+	$(BSRC_DIR)/render/thread_bonus.c \
+	$(BSRC_DIR)/render/animation/animate_lights_bonus.c \
+	$(BSRC_DIR)/render/animation/auto_rotate_bonus.c \
+	$(BSRC_DIR)/render/intersect/ft_cone_bonus.c \
+	$(BSRC_DIR)/render/intersect/ft_cylinder_bonus.c \
+	$(BSRC_DIR)/render/intersect/ft_cylinder_utils_bonus.c \
+	$(BSRC_DIR)/render/intersect/ft_hyperboloid_bonus.c \
+	$(BSRC_DIR)/render/intersect/ft_paraboloid_bonus.c \
+	$(BSRC_DIR)/render/intersect/ft_plane_bonus.c \
+	$(BSRC_DIR)/render/intersect/ft_sphere_bonus.c \
+	$(BSRC_DIR)/render/light/ft_light_bonus.c \
+	$(BSRC_DIR)/render/light/ft_light_utils_bonus.c \
+	$(BSRC_DIR)/render/light/ft_specular_light_bonus.c \
+	$(BSRC_DIR)/render/mapping/ft_texture_bonus.c \
+	$(BSRC_DIR)/render/mapping/get_uv_cone_bonus.c \
+	$(BSRC_DIR)/render/mapping/get_uv_cylinder_bonus.c \
+	$(BSRC_DIR)/render/mapping/get_uv_hyperboloid_bonus.c \
+	$(BSRC_DIR)/render/mapping/get_uv_paraboloid_bonus.c \
+	$(BSRC_DIR)/render/mapping/get_uv_plane_bonus.c \
+	$(BSRC_DIR)/render/mapping/get_uv_sphere_bonus.c \
+	$(BSRC_DIR)/utils/nthreads_bonus.c \
+	$(BSRC_DIR)/utils/ray_at_bonus.c \
+	$(BSRC_DIR)/vector/vec2/vec2_init_bonus.c \
+	$(BSRC_DIR)/vector/vec2/vec2_normalize_bonus.c \
+	$(BSRC_DIR)/vector/vec3/ft_rotate_vector_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_add_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_cross_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_div_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_dot_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_init_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_length_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_length_squared_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_mul_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_mult_vec_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_normalize_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_reflect_bonus.c \
+	$(BSRC_DIR)/vector/vec3/vec3_sub_bonus.c \
+	$(BSRC_DIR)/windows/hook_bonus.c \
+	$(BSRC_DIR)/windows/mouse_bonus.c \
+	$(BSRC_DIR)/windows/window_bonus.c
+
+# --- Bonus Objects ---
+BOBJS = $(patsubst $(BSRC_DIR)/%.c,$(B_OBJ_DIR)/%.o,$(BSRCS))
+
 # --- Header Files ---
 HEADERS = -I$(INC_DIR) -I$(MLX_DIR)/include
 
@@ -101,6 +171,29 @@ CFLAGS = -Wall -Wextra -Werror -Ofast -fsanitize=address,leak -g -O3 -march=nati
 # -lmlx42 -ldl -lglfw -pthread -lm: Link MLX42 and its dependencies
 LIBS = -L$(LIBFT_DIR) -lft -L$(MLX_DIR)/build -lmlx42 -ldl -lglfw -pthread -lm
 
+# --- libft --- #
+LIBFT = ./src/libft
+EX_LIB = $(LIBFT)/libft.a
+B_LIBFT = ./src/libft
+B_EX_LIB = $(B_LIBFT)/libft.a
+
+# Conditional compilation for bonus or mandatory
+ifdef BONUS
+    TARGET_NAME = $(B_NAME)
+    OBJECTS = $(BOBJS)
+    HEADER = ./include/minirt_bonus.h
+    LIB = $(B_EX_LIB)
+    CURRENT_SRC_DIR = $(BSRC_DIR)
+    CURRENT_OBJ_DIR = $(B_OBJ_DIR)
+else
+    TARGET_NAME = $(NAME)
+    OBJECTS = $(OBJS)
+    HEADER = ./include/minirt.h
+    LIB = $(EX_LIB)
+    CURRENT_SRC_DIR = $(SRC_DIR)
+    CURRENT_OBJ_DIR = $(OBJ_DIR)
+endif
+
 # --- Color Output ---
 GREEN  = \033[32m
 YELLOW = \033[33m
@@ -111,7 +204,16 @@ RESET  = \033[0m
 # --- Main Targets ---
 .PHONY: all clean fclean re libmlx
 
-all: libmlx $(NAME)
+#all: libmlx $(NAME)
+all: libs libmlx $(TARGET_NAME)
+
+libs:
+	@echo "$(GREEN)Compilando libft...$(RESET)"
+ifdef BONUS
+	@make -C $(B_LIBFT)
+else
+	@make -C $(LIBFT)
+endif
 
 # Target to compile MLX42
 libmlx:
@@ -149,21 +251,47 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
+# Rule to compile bonus a .c file into a .o file
+$(B_OBJ_DIR)/%.o: $(BSRC_DIR)/%.c | $(B_OBJ_DIR)
+	@echo "$(BLUE)Compiling $<...$(RESET)"
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+
+# $(NAME): $(OBJS) Makefile include/minirt.h
+# 	@echo "$(YELLOW)Compiling and linking Libft...$(RESET)"
+# 	@make -C $(LIBFT_DIR)
+# 	@echo "$(BLUE)Linking $(NAME)...$(RESET)"
+# 	$(CC) $(CFLAGS) $(OBJS) $(HEADERS) -o $(NAME) $(LIBS)
+
+
 # Create object directories if they don't exist
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(OBJ_DIR)/render
 
+$(B_OBJ_DIR):
+	@mkdir -p $(B_OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)/render
+
+$(TARGET_NAME): $(LIB) $(OBJECTS) $(HEADER)
+	@echo "$(GREEN)Compilando $(TARGET_NAME)...$(RESET)"
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(TARGET_NAME) $(LIB) $(LIBS)
+
+bonus:
+	@echo "$(GREEN)Compilando bonus...$(RESET)"
+	@$(MAKE) BONUS=1 all --no-print-directory
+
 # --- Clean Targets ---
 clean:
 	@echo "$(YELLOW)Cleaning object files...$(RESET)"
-	@$(RM) $(OBJ_DIR)
+	@$(RM) $(OBJ_DIR) $(B_OBJ_DIR)
 	@make clean -C $(LIBFT_DIR)
+	@make clean -C $(B_LIBFT) 2>/dev/null || true
 	@$(RM) -rf $(MLX_DIR)/build
 
 fclean: clean
 	@echo "$(YELLOW)Cleaning executable...$(RESET)"
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) $(B_NAME)
 	@make fclean -C $(LIBFT_DIR)
 	# The MLX42 build directory is removed here
 	@$(RM) -rf $(MLX_DIR)/build
