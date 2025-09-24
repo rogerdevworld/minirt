@@ -11,6 +11,20 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
+/**
+ * @brief Rotates a vector around a specified axis by a given angle.
+ *
+ * @details This function implements a rotation transformation using the
+ * Rodrigues' rotation formula. It calculates the new coordinates of a vector
+ * `v` after rotating it by `angle` radians around a normalized `axis`. The
+ * formula is optimized to avoid explicit matrix multiplication.
+ *
+ * @param v The vector to be rotated.
+ * @param axis The axis of rotation. This vector is normalized internally.
+ * @param angle The angle of rotation in radians.
+ *
+ * @return The new vector after the rotation has been applied.
+ */
 // t_vec3	rotate_vector(t_vec3 v, t_vec3 axis, double angle)
 // {
 // 	t_vec3	result;
