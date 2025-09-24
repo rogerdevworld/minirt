@@ -9,10 +9,27 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../../../include/minirt.h"
 
-// Nuevo parser para Hiperboloide (hp)
+/**
+ * @brief Parses and adds a hyperboloid to the scene.
+ *
+ * @details This function processes an array of string tokens to extract the
+ * necessary data for a hyperboloid object. It validates the number of tokens
+ * and performs memory allocation for the hyperboloid's data and the object
+ * wrapper. The function then parses the position, axis, radii, height,
+	and color
+ * from the tokens, and applies any optional modifiers before adding the object
+ * to the scene's list of objects.
+ *
+
+	* @param scene A pointer to the scene structure where the new 
+	object will be added.
+ * @param tokens A null-terminated array of strings containing the hyperboloid's
+ * properties.
+ *
+ * @return void.
+ */
 void	parse_hyperboloid(t_scene *scene, char **tokens)
 {
 	t_hyperboloid	*hb;
@@ -33,7 +50,21 @@ void	parse_hyperboloid(t_scene *scene, char **tokens)
 	add_object_to_scene(scene, obj);
 }
 
-// Parser de Cámara (C)
+/**
+ * @brief Parses and initializes the scene's camera.
+ *
+ * @details This function processes the tokens for a camera definition. It
+ * checks for the correct number of arguments and ensures that only one camera
+ * is defined in the scene file to prevent a fatal error. It parses the camera's
+ * position, orientation, and field of view (FOV) and stores them in the
+ * scene's camera structure.
+ *
+ * @param scene A pointer to the scene structure where the camera will be set.
+ * @param tokens A null-terminated array of strings containing the camera's
+ * properties.
+ *
+ * @return void.
+ */
 void	parse_camera(t_scene *scene, char **tokens)
 {
 	if (scene->has_camera)
@@ -46,7 +77,24 @@ void	parse_camera(t_scene *scene, char **tokens)
 	scene->has_camera = 1;
 }
 
-// Parser de Luz (L)
+/**
+ * @brief Parses and sets the movement type for a light source.
+ *
+ * @details This is a helper function that checks for optional light
+ * movement parameters in the tokens. It validates the keyword "moving" and
+ * then assigns the corresponding movement type (circle, triangle, or line)
+ * to the light structure. If the movement type is not recognized or the
+ * format is incorrect, the program will exit with an error.
+ *
+
+	* @param light A pointer to the light structure whose movement 
+	type will be set.
+ * @param tokens A null-terminated array of strings containing the light's
+ * properties.
+ * @param num_tokens The total number of tokens for the light definition.
+ *
+ * @return void.
+ */
 void	parse_light_movement(t_light *light, char **tokens, int num_tokens)
 {
 	if (ft_strcmp(tokens[4], "") == 0)
@@ -71,6 +119,25 @@ void	parse_light_movement(t_light *light, char **tokens, int num_tokens)
 		ft_error_exit("Error: Unrecognized light option.");
 }
 
+/**
+ * @brief Parses and adds a light source to the scene.
+ *
+ * @details This function processes the tokens for a light source. It
+ * validates the number of tokens, allocates memory for the new light, and
+ * parses its position, brightness, and color. It also validates that the
+ * brightness is within the acceptable range of 0.0 to 1.0. If optional
+ * movement parameters are present, it calls `parse_light_movement` to handle
+ * them before adding the light to the scene's list of lights.
+ *
+
+	* @param scene A pointer to the scene structure where the new 
+	light will be added.
+
+	* @param tokens A null-terminated array of strings containing 
+	the light's properties.
+ *
+ * @return void.
+ */
 void	parse_light(t_scene *scene, char **tokens)
 {
 	t_light	*light;
@@ -95,7 +162,27 @@ void	parse_light(t_scene *scene, char **tokens)
 	add_light_to_scene(scene, light);
 }
 
-// Parser de Luz Ambiental (A)
+/**
+ * @brief Parses and initializes the scene's ambient light.
+ *
+
+	* @details This function processes the tokens for the ambient light 
+	definition. It
+ * verifies the token count and checks if an ambient light has already been
+ * defined, which would result in a fatal error. It parses the ambient light's
+ * ratio and color, validating that the ratio is between 0.0 and 1.0 before
+ * updating the scene's ambient light structure.
+ *
+
+	* @param scene A pointer to the scene structure where the ambient 
+	light will be set.
+
+	* @param tokens A null-terminated array of strings containing the 
+	ambient light's
+ * properties.
+ *
+ * @return void.
+ */
 void	parse_ambient(t_scene *scene, char **tokens)
 {
 	t_vec3	color;
