@@ -11,6 +11,19 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
+/**
+ * @brief Animates a light in a circular path.
+ *
+ * @details This function updates a light's position to simulate 
+ circular movement
+ * around a fixed point. It uses sine and cosine functions to calculate the new
+ * X and Z coordinates based on a given time value.
+ *
+ * @param light A pointer to the light structure to animate.
+ * @param time The current time value used for the animation calculation.
+ *
+ * @return void.
+ */
 static void	animate_circular(t_light *light, double time)
 {
 	double	radius;
@@ -22,6 +35,18 @@ static void	animate_circular(t_light *light, double time)
 	light->position.z = radius * sin(time * speed);
 }
 
+/**
+ * @brief Animates a light in a linear back-and-forth path.
+ *
+ * @details This function moves a light along a straight line, bouncing it
+ * back and forth between two points. It uses a sine function to create a
+ * smooth, oscillating movement.
+ *
+ * @param light A pointer to the light structure to animate.
+ * @param time The current time value used for the animation calculation.
+ *
+ * @return void.
+ */
 static void	animate_linear(t_light *light, double time)
 {
 	double	start_pos;
@@ -37,6 +62,20 @@ static void	animate_linear(t_light *light, double time)
 				* speed));
 }
 
+/**
+ * @brief Animates a light in a triangular path.
+ *
+ * @details This function moves a light along the sides of an 
+ equilateral triangle.
+ * It uses a normalized time value to determine which side of the triangle the
+ * light is on and linearly interpolates its position between the two vertices
+ * of that side.
+ *
+ * @param light A pointer to the light structure to animate.
+ * @param time The current time value used for the animation calculation.
+ *
+ * @return void.
+ */
 static void	animate_triangular(t_light *light, double time)
 {
 	double	side_length;
@@ -61,6 +100,18 @@ static void	animate_triangular(t_light *light, double time)
 					normalized_time - 2.0));
 }
 
+/**
+ * @brief Main animation loop for moving lights.
+ *
+ * @details This function is a callback that updates the position of all lights
+ * in the scene that have a movement type assigned. It iterates through the list
+ * of lights, calls the appropriate animation function based on the light's
+ * `movement_type`, and then triggers a re-render of the scene.
+ *
+ * @param param A void pointer to the main data structure (`t_data`).
+ *
+ * @return void.
+ */
 void	animate_lights(void *param)
 {
 	t_data	*data;
