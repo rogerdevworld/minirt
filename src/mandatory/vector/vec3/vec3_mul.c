@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 t_vec3	vec3_mul(t_vec3 v, double scalar)
 {

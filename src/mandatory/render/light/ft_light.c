@@ -9,7 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 t_color	calculate_reflection(t_hit_record *rec, t_scene *scene, t_ray *ray,
 		int depth)

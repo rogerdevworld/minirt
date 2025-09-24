@@ -9,9 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
-// Intersecta el rayo con los lados del cilindro.
 static int	intersect_sides(t_ray *ray, t_cylinder *cy, t_hit_record *rec)
 {
 	t_vec3			oc;
@@ -37,7 +36,6 @@ static int	intersect_sides(t_ray *ray, t_cylinder *cy, t_hit_record *rec)
 	return (0);
 }
 
-// Calcula la intersección con una sola tapa del cilindro.
 static double	calculate_cap_intersection(t_ray *ray, t_cylinder *cy,
 		t_vec3 cap_center)
 {
@@ -57,7 +55,6 @@ static double	calculate_cap_intersection(t_ray *ray, t_cylinder *cy,
 	return (t);
 }
 
-// Intersecta el rayo con las tapas del cilindro.
 static int	intersect_caps(t_ray *ray, t_cylinder *cy, double *t_cap,
 		t_hit_record *rec)
 {

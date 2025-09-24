@@ -9,9 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
-// Calcula los coeficientes de la ecuación cuadrática del cilindro.
 t_vec3	calculate_quadratic_coeffs(t_ray *ray, t_vec3 oc, t_cylinder *cy)
 {
 	t_vec3	coeffs;
@@ -27,7 +26,6 @@ t_vec3	calculate_quadratic_coeffs(t_ray *ray, t_vec3 oc, t_cylinder *cy)
 	return (coeffs);
 }
 
-// Comprueba si un t_side es un hit válido y actualiza el registro de hit.
 int	check_hit_and_update_rec(t_hit_params *params, t_hit_record *rec,
 		double t_side)
 {

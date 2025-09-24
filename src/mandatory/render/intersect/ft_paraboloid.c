@@ -9,7 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 static t_vec3	calculate_abc(t_ray *ray, t_parab *pb, t_vec3 oc,
 		t_vec3 axis_norm)

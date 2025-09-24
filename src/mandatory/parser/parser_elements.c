@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
 // Parser de Esfera (sp)
 void	parse_sphere(t_scene *scene, char **tokens)

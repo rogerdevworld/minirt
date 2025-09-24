@@ -9,9 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
-// Inicializa una esfera.
 t_sphere	sphere_init(t_vec3 center, double radius)
 {
 	t_sphere	s;
@@ -21,8 +20,6 @@ t_sphere	sphere_init(t_vec3 center, double radius)
 	return (s);
 }
 
-// Inicializa un plano.
-// Asegura que la normal esté normalizada.
 t_plane	plane_init(t_vec3 position, t_vec3 normal)
 {
 	t_plane	p;
@@ -32,8 +29,6 @@ t_plane	plane_init(t_vec3 position, t_vec3 normal)
 	return (p);
 }
 
-// Inicializa un cilindro.
-// Asegura que el eje esté normalizado.
 t_cylinder	cylinder_init(t_vec3 position, t_vec3 axis, double radius,
 		double height)
 {
@@ -46,8 +41,6 @@ t_cylinder	cylinder_init(t_vec3 position, t_vec3 axis, double radius,
 	return (cy);
 }
 
-// Inicializa un cono.
-// Asegura que el eje esté normalizado.
 t_cone	cone_init(t_vec3 position, t_vec3 axis, double radius, double height)
 {
 	t_cone	cn;

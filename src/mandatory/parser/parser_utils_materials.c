@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
 int	valid_extension_rt(const char *filename)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
 // Nuevo parser para Hiperboloide (hp)
 void	parse_hyperboloid(t_scene *scene, char **tokens)

@@ -9,10 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "../../../include/minirt.h"
 
-#include "../../include/minirt.h"
-
-// src/render/ft_color.c
 t_color	get_object_color(t_hit_record *rec)
 {
 	t_vec3	local_point;

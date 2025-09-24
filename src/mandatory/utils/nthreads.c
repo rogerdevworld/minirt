@@ -9,8 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
 int	get_num_processors(void)
 {

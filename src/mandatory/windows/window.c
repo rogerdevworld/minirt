@@ -9,7 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
 // moving
 // mlx_key_hook(data->mlx.mlx_ptr, key_hook, data);

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 t_vec3	vec3_mult_vec(t_vec3 v1, t_vec3 v2)
 {

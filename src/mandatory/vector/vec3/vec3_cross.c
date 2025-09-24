@@ -9,8 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "../../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 t_vec3	vec3_cross(t_vec3 v1, t_vec3 v2)
 {

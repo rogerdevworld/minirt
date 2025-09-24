@@ -9,7 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 static double	get_closest_t(t_ray *ray, t_hyperboloid *hp, double t1,
 		double t2)

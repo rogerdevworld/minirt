@@ -9,7 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 // src/assets/ft_uv_mapping.c
 t_vec2	get_uv_cylinder(t_hit_record *rec)

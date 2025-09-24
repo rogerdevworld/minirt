@@ -9,9 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
-// src/render/ft_normal_mapping.c
 t_mat3	create_tbn_matrix(t_vec3 normal)
 {
 	t_vec3	tangent;
@@ -30,7 +29,6 @@ t_mat3	create_tbn_matrix(t_vec3 normal)
 	return (tbn);
 }
 
-// src/render/ft_normal_map.c
 t_vec3	get_normal_from_texture(t_hit_record *rec, mlx_texture_t *normal_map)
 {
 	t_vec2	uv;
@@ -49,7 +47,6 @@ t_vec3	get_normal_from_texture(t_hit_record *rec, mlx_texture_t *normal_map)
 	return (vec3_normalize(new_normal));
 }
 
-// src/render/ft_normal_map.c
 t_vec3	get_normal_from_map(t_hit_record *rec, t_vec3 geom_normal)
 {
 	mlx_texture_t	*normal_map;

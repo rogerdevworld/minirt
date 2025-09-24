@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
-// Validadcion para los valores doubles que deben ser positivos
 double	parse_positive_double(char *str)
 {
 	double	val;
@@ -30,7 +29,6 @@ double	parse_positive_double(char *str)
 	return (val);
 }
 
-// Validacion del valor fov de la camara
 double	parse_fov(char *str)
 {
 	double	fov;
@@ -49,7 +47,6 @@ double	parse_fov(char *str)
 	return (fov);
 }
 
-// Convierte un string "x,y,z" a un t_vec3
 t_vec3	parse_vec3(char *str)
 {
 	t_vec3	vec;
@@ -65,7 +62,6 @@ t_vec3	parse_vec3(char *str)
 	return (vec);
 }
 
-// valida que el vector "x,y,z" se encuentre normalizado entre [-1,1]
 t_vec3	parse_vec3_normalized(char *str)
 {
 	t_vec3	vec;
@@ -83,9 +79,8 @@ t_vec3	parse_vec3_normalized(char *str)
 	vec.y = ft_atod(coords[1]);
 	vec.z = ft_atod(coords[2]);
 	ft_free_str_array(coords);
-	if (vec.x < -1 || vec.x > 1
-		|| vec.y < -1 || vec.y > 1
-		|| vec.z < -1 || vec.z > 1)
+	if (vec.x < -1 || vec.x > 1 || vec.y < -1 || vec.y > 1 || vec.z < -1
+		|| vec.z > 1)
 		ft_error_exit("MiniRT: Error: Vector components\
 			normalized must be between -1 and 1");
 	return (vec);

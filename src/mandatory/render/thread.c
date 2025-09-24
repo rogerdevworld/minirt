@@ -9,7 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
 void	init_thread_data(t_thread_init_data *init_data, t_data *data)
 {

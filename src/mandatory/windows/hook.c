@@ -9,8 +9,29 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
+/**
+ * @brief Handles keyboard events for the program.
+ *
+ * @details This function is a callback that processes key presses and releases.
+ * It's used to detect specific key combinations for controlling the application,
+ * such as closing the window when the Escape key is pressed.
+ *
+ * @param keydata A structure containing information about the key event,
+ * including which key was pressed and the action type (press, release, or repeat).
+ * @param param A void pointer to the main data structure, which is cast to a t_data pointer.
+ *
+ * @return void.
+ */
+void	key_hook(mlx_key_data_t keydata, void *param)
+{
+	t_data	*data;
+
+	data = (t_data *)param;
+	if (keydata.key == MLX_KEY_ESCAPE && keydata.action == MLX_PRESS)
+		mlx_close_window(data->mlx.mlx_ptr);
+}
 // void	key_hook(mlx_key_data_t keydata, void *param)
 // {
 // 	t_data	*data;
@@ -47,16 +68,6 @@
 // 		}
 // 	}
 // }
-
-void	key_hook(mlx_key_data_t keydata, void *param)
-{
-	t_data	*data;
-
-	data = (t_data *)param;
-	if (keydata.key == MLX_KEY_ESCAPE && keydata.action == MLX_PRESS)
-		mlx_close_window(data->mlx.mlx_ptr);
-}
-
 // void	mouse_move_hook(double x, double y, void *param)
 // {
 // 	t_data	*data;

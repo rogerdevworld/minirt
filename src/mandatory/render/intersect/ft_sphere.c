@@ -9,10 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "../../../../include/minirt.h"
 
-#include "../../include/minirt.h"
-
-// src/intersect/ft_sphere.c
 static double	get_discriminant(t_ray *ray, t_vec3 oc, double radius)
 {
 	double	b;

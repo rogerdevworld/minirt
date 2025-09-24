@@ -9,10 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "../../../../include/minirt.h"
 
-#include "../../include/minirt.h"
-
-// src/render/ft_specular.c
 double	get_specular_factor(t_hit_record *rec, t_light *light, t_ray *ray)
 {
 	t_vec3	effective_normal;
@@ -30,7 +28,6 @@ double	get_specular_factor(t_hit_record *rec, t_light *light, t_ray *ray)
 	return (vec3_dot(view_dir, reflect_dir));
 }
 
-// src/render/ft_specular.c
 t_color	calculate_specular_light(t_hit_record *rec, t_light *light, t_ray *ray)
 {
 	double	spec_factor;

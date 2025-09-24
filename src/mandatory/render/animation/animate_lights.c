@@ -9,10 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "../../../../include/minirt.h"
 
-#include "../../include/minirt.h"
-
-// Maneja la animación de la luz en un movimiento circular
 static void	animate_circular(t_light *light, double time)
 {
 	double	radius;
@@ -24,7 +22,6 @@ static void	animate_circular(t_light *light, double time)
 	light->position.z = radius * sin(time * speed);
 }
 
-// Maneja la animación de la luz en un movimiento lineal de un lado a otro
 static void	animate_linear(t_light *light, double time)
 {
 	double	start_pos;
@@ -40,7 +37,6 @@ static void	animate_linear(t_light *light, double time)
 				* speed));
 }
 
-// Maneja la animación de la luz en un movimiento triangular
 static void	animate_triangular(t_light *light, double time)
 {
 	double	side_length;
@@ -65,7 +61,6 @@ static void	animate_triangular(t_light *light, double time)
 					normalized_time - 2.0));
 }
 
-// Función principal de animación de luces
 void	animate_lights(void *param)
 {
 	t_data	*data;

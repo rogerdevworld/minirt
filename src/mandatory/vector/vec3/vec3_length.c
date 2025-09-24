@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 double	vec3_length(t_vec3 v)
 {

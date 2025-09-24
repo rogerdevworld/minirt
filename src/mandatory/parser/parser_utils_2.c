@@ -9,9 +9,8 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../include/minirt.h"
 
-// Nueva versión: esta función devuelve 1 si es un entero válido, 0 si no.
 int	validate_is_integer(char *str)
 {
 	int	i;
@@ -28,7 +27,6 @@ int	validate_is_integer(char *str)
 	return (1);
 }
 
-// Nueva versión: ahora la lógica es lineal y segura
 double	validate_color_component(char *str)
 {
 	char	*trimmed;

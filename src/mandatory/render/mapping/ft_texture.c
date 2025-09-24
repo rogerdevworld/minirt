@@ -9,7 +9,7 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../include/minirt.h"
+#include "../../../../include/minirt.h"
 
 t_vec2	get_texture_uv(t_hit_record *rec)
 {
@@ -28,7 +28,6 @@ t_vec2	get_texture_uv(t_hit_record *rec)
 	return ((t_vec2){0.0, 0.0});
 }
 
-// src/render/ft_texture.c
 t_color	get_texture_color(t_hit_record *rec)
 {
 	t_vec2			uv;
