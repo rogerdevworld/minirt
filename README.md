@@ -11,14 +11,14 @@ To get and run the `minirt` program, follow these steps:
 First, clone the repository using `git`:
 
 ```bash
-git clone [https://github.com/rogerdevworld/minirt.git](https://github.com/rogerdevworld/minirt.git)
+  git clone [https://github.com/rogerdevworld/minirt.git](https://github.com/rogerdevworld/minirt.git)
 ````
 
 Once the repository is downloaded, navigate to the project folder. C projects are typically compiled with the `make` tool.
 
 ```bash
-cd minirt
-make
+  cd minirt
+  make
 ```
 
 After the compilation is successful, you can run the program with the `./miniRT` command followed by the scene file (`.rt`) you want to render. You can find several example scene files in the `scene/` directory.
@@ -51,7 +51,15 @@ These scenes are ideal for testing the rendering of individual shapes with basic
 These scenes focus on testing advanced material properties like mirror (`mir`) and specular (`spc`) reflections.
 
   * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
+  ![rt Image](./scene/views/sphere_mir.png)
+  * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
+  ![rt Image](./scene/views/sphere_mir.png)
+  * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
+  ![rt Image](./scene/views/sphere_mir.png)
+  * **`sphere_mir.rt`**: Contains a sphere with **mirror** properties.
+  ![rt Image](./scene/views/sphere_mir.png)
   * **`sphere_spc.rt`**: Shows a sphere with high **specular reflection**.
+  ![rt Image](./image.png)
 
 ### **Complex and Textured Scenes**
 
