@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
-auto_rotate
-C
-
 /**
  * @brief Animates the camera to automatically rotate around a central point.
  *
