@@ -1,4 +1,3 @@
-````markdown
 # MiniRT Project: A Ray-Tracing Engine
 
 Welcome to the **mini rt** project! This is a compact yet powerful ray-tracing engine developed from scratch in C. Its purpose is to render realistic 3D scenes by simulating the path of light. The project manages geometric shapes, lighting, and advanced rendering techniques to create high-quality images.
