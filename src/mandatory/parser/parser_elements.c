@@ -9,10 +9,22 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../../../include/minirt.h"
 
-// Parser de Esfera (sp)
+/**
+ * @brief Parses a sphere definition and adds it to the scene.
+ *
+ * @details This function validates the number of tokens for a sphere, allocates
+ * memory for its `t_sphere` data, and populates the `center` and `radius`
+ * from the parsed tokens. It then creates a generic object wrapper and applies
+ * any additional modifiers before adding it to the scene's list of objects.
+ *
+ * @param scene A pointer to the main scene structure.
+ * @param tokens A null-terminated array of strings containing 
+ the sphere's properties.
+ *
+ * @return void.
+ */
 void	parse_sphere(t_scene *scene, char **tokens)
 {
 	t_sphere	*sp;
@@ -30,7 +42,22 @@ void	parse_sphere(t_scene *scene, char **tokens)
 	add_object_to_scene(scene, obj);
 }
 
-// Parser de Plano (pl)
+/**
+ * @brief Parses a plane definition and adds it to the scene.
+ *
+ * @details This function checks the token count for a plane, 
+ allocates memory for
+ * its `t_plane` data, and parses the `position` and `normal` vector. It
+ * normalizes the plane's normal vector to ensure accurate lighting and
+ * intersection calculations. The function then creates a generic object and adds
+ * it to the scene.
+ *
+ * @param scene A pointer to the main scene structure.
+ * @param tokens A null-terminated array of strings containing the 
+ plane's properties.
+ *
+ * @return void.
+ */
 void	parse_plane(t_scene *scene, char **tokens)
 {
 	t_plane		*pl;
@@ -48,7 +75,23 @@ void	parse_plane(t_scene *scene, char **tokens)
 	add_object_to_scene(scene, obj);
 }
 
-// Parser de Cilindro (cy)
+/**
+ * @brief Parses a cylinder definition and adds it to the scene.
+ *
+ * @details This function validates the token count, allocates memory for the
+ * `t_cylinder` data, and parses its `position`, `axis`, `radius`, 
+ and `height`.
+ * It normalizes the axis vector and handles memory allocation 
+ failures gracefully
+ * before wrapping the cylinder data in a generic object and 
+ adding it to the scene.
+ *
+ * @param scene A pointer to the main scene structure.
+ * @param tokens A null-terminated array of strings containing the 
+ cylinder's properties.
+ *
+ * @return void.
+ */
 void	parse_cylinder(t_scene *scene, char **tokens)
 {
 	t_cylinder	*cy;
@@ -68,7 +111,20 @@ void	parse_cylinder(t_scene *scene, char **tokens)
 	add_object_to_scene(scene, obj);
 }
 
-// Parser de Cono (cn)
+/**
+ * @brief Parses a cone definition and adds it to the scene.
+ *
+ * @details This function verifies the token count for a cone, allocates memory
+ * for its `t_cone` data, and parses its `position`, `axis`, `radius`, and
+ * `height`. It normalizes the axis vector, then creates a generic object
+ * containing the cone data and adds it to the scene.
+ *
+ * @param scene A pointer to the main scene structure.
+ * @param tokens A null-terminated array of strings containing the 
+ cone's properties.
+ *
+ * @return void.
+ */
 void	parse_cone(t_scene *scene, char **tokens)
 {
 	t_cone		*cn;
@@ -88,7 +144,21 @@ void	parse_cone(t_scene *scene, char **tokens)
 	add_object_to_scene(scene, obj);
 }
 
-// Parser de Paraboloide (pb) ->bonus
+/**
+ * @brief Parses a paraboloid definition and adds it to the scene.
+ *
+ * @details This function validates the token count for a paraboloid, allocates
+ * memory for its `t_parab` data, and parses its `position`, `axis`, 
+ `focal_length`,
+ * and `height`. It normalizes the axis vector and wraps the data in a generic
+ * object before adding it to the scene.
+ *
+ * @param scene A pointer to the main scene structure.
+ * @param tokens A null-terminated array of strings containing the 
+ paraboloid's properties.
+ *
+ * @return void.
+ */
 void	parse_paraboloid(t_scene *scene, char **tokens)
 {
 	t_parab		*pb;
