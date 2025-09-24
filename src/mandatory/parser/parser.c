@@ -9,9 +9,20 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../../../include/minirt.h"
 
+/**
+ * @brief Opens a file for reading and handles errors.
+ *
+ * @details This function attempts to open a file specified by `filename` in
+ * read-only mode (`O_RDONLY`). If the `open()` system call fails, it prints
+ * a descriptive error message using `perror` and terminates the program with
+ * a failure status.
+ *
+ * @param filename The path to the file to be opened.
+ *
+ * @return The file descriptor of the opened file on success.
+ */
 int	open_filename(const char *filename)
 {
 	int	fd;
@@ -25,6 +36,20 @@ int	open_filename(const char *filename)
 	return (fd);
 }
 
+/**
+ * @brief Validates that a file is not a directory and is not empty.
+ *
+ * @details This function performs a basic validation check on an opened file
+ * descriptor (`fd`). It attempts to read one byte to confirm the file is
+ * readable and not empty. It handles specific errors, such as a file
+ * descriptor pointing to a directory (`EISDIR`), and provides descriptive
+ * error messages before exiting the program.
+ *
+ * @param fd The file descriptor of the opened file.
+ * @param file_name The path to the file, used for error messages.
+ *
+ * @return void.
+ */
 void	validate_file(int fd, const char *file_name)
 {
 	char	buffer[1];
@@ -48,6 +73,19 @@ void	validate_file(int fd, const char *file_name)
 	}
 }
 
+/**
+ * @brief Parses a single line from the scene file.
+ *
+ * @details This function tokenizes a line from the scene file, splitting it by
+ * spaces. It then uses the first token as an identifier to dispatch to the
+ * appropriate parsing function for a specific element (e.g., ambient light,
+ * camera, sphere, etc.). After parsing, it frees the allocated tokens array.
+ *
+ * @param scene A pointer to the main scene data structure.
+ * @param line The string representing a single line from the scene file.
+ *
+ * @return void.
+ */
 static void	parse_line(t_scene *scene, char *line)
 {
 	char	**tokens;
@@ -76,6 +114,19 @@ static void	parse_line(t_scene *scene, char *line)
 	ft_free_str_array(tokens);
 }
 
+/**
+ * @brief Performs initial validation on a file and returns its descriptor.
+ *
+ * @details This function is a wrapper that first validates the file's extension
+ * to ensure it is of type "*.rt". It then opens the file, validates that it
+ * is a valid, non-empty file, closes it, and reopens it to reset the file
+ * position for subsequent reading. This ensures that the file is ready for
+ * line-by-line parsing.
+ *
+ * @param file_path The path to the file to be opened and validated.
+ *
+ * @return The file descriptor of the newly opened file.
+ */
 static int	open_and_validate_file(const char *file_path)
 {
 	int	fd;
@@ -89,6 +140,22 @@ static int	open_and_validate_file(const char *file_path)
 	return (fd);
 }
 
+/**
+ * @brief Parses a scene from a ".rt" file.
+ *
+ * @details This is the main parsing function. It first calls
+ * `open_and_validate_file` to ensure the file is valid and ready. It then
+ * reads the file line by line using `get_next_line`, and for each line, it
+ * calls `parse_line` to process the data. After the entire file has been
+ * parsed, it closes the file descriptor and performs a final validation check
+ * to ensure that both a camera and an ambient light have been defined, which
+ * are essential components of the scene.
+ *
+ * @param scene A pointer to the main scene data structure to be populated.
+ * @param file_path The path to the scene file to be parsed.
+ *
+ * @return void.
+ */
 void	parse_rt_file(t_scene *scene, const char *file_path)
 {
 	int		fd;

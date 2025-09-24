@@ -9,9 +9,19 @@
 /*   Updated: 2025/07/23 14:23:20 by rmarrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../../../include/minirt.h"
 
+/**
+ * @brief Validates if a filename has a ".rt" extension.
+ *
+ * @details This function checks if the last three characters of a given filename
+ * are ".rt". It's a simple utility for validating scene file names 
+ in the program.
+ *
+ * @param filename The string representing the file path.
+ *
+ * @return 1 if the filename ends with ".rt", 0 otherwise.
+ */
 int	valid_extension_rt(const char *filename)
 {
 	int	len;
@@ -23,6 +33,19 @@ int	valid_extension_rt(const char *filename)
 		&& filename[len - 1] == 't');
 }
 
+/**
+ * @brief Parses and sets specular properties for an object.
+ *
+ * @details This function takes a string token representing specular properties,
+ * splits it by a comma, and extracts the **intensity** and **shininess**. It
+ * validates the format and exits with a fatal error if the token is invalid.
+ * The parsed values are then stored in the `t_specular` structure.
+ * @param token The string token containing the specular data 
+ (e.g., "spc:0.5,100").
+ * @param spec A pointer to the `t_specular` structure to be populated.
+ *
+ * @return void.
+ */
 void	parse_specular(char *token, t_specular *spec)
 {
 	char	**parts;
@@ -35,11 +58,35 @@ void	parse_specular(char *token, t_specular *spec)
 	ft_free_str_array(parts);
 }
 
+/**
+ * @brief Parses and returns the mirror ratio of an object.
+ *
+ * @details This function extracts the mirror ratio value from a string token,
+ * skipping the initial "mir:" prefix. It assumes the token's format is valid.
+ *
+ * @param token The string token containing the mirror ratio (e.g., "mir:0.8").
+ *
+ * @return The parsed mirror ratio as a double.
+ */
 double	parse_mirror(char *token)
 {
 	return (ft_atod(token + 4));
 }
 
+/**
+ * @brief Parses and applies a checkerboard pattern to a material.
+ *
+ * @details This function processes a checkerboard token, splitting it by a
+ * semicolon to extract two **colors** and a **scale** value. It validates the
+ * format and then populates the material's checkerboard properties, enabling
+ * the checkerboard flag.
+ *
+ * @param token The string token containing the checkerboard data
+ * (e.g., "chk:255,0,0;0,255,0;10").
+ * @param material A pointer to the `t_material` structure to be modified.
+ *
+ * @return void.
+ */
 void	parse_checkboard(char *token, t_material *material)
 {
 	char	**parts;
@@ -54,6 +101,17 @@ void	parse_checkboard(char *token, t_material *material)
 	ft_free_str_array(parts);
 }
 
+/**
+ * @brief Validates if a filename has a supported image extension (.png or .xpm).
+ *
+ * @details This function checks if a given filename ends with a valid extension
+ * for textures. It supports both ".png" and ".xpm" formats, performing a
+ * case-insensitive comparison.
+ *
+ * @param file_name The string representing the file path.
+ *
+ * @return 1 if the extension is valid, 0 otherwise.
+ */
 int	validate_texture_extension(const char *file_name)
 {
 	int	len;

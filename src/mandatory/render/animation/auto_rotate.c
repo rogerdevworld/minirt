@@ -11,6 +11,20 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
+/**
+ * @brief Animates the camera to automatically rotate around a central point.
+ *
+ * @details This function serves as a continuous animation loop for the camera.
+ * It checks if the `auto_rotate_active` flag is set. If so, it incrementally
+ * updates a rotation angle and uses this angle to calculate a new position for
+ * the camera in a circular path. It also recalculates the camera's `forward`,
+ * `right`, and `up` vectors to ensure it always faces the center of the
+ * rotation. Finally, it triggers a re-render of the scene.
+ *
+ * @param param A void pointer to the main data structure (`t_data`).
+ *
+ * @return void.
+ */
 void	auto_rotate(void *param)
 {
 	t_data	*data;

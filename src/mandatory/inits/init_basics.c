@@ -11,6 +11,18 @@
 /* ************************************************************************** */
 #include "../../../include/minirt.h"
 
+/**
+ * @brief Initializes the main scene data structure.
+ *
+ * @details This function sets all members of the `t_scene` struct to their
+ * initial, default values. This is crucial for ensuring a clean state
+ * before parsing a scene file or performing any rendering. It explicitly
+ * sets all pointers to NULL and all numeric values to 0 or 0.0.
+ *
+ * @param scene A pointer to the `t_scene` structure to be initialized.
+ *
+ * @return void.
+ */
 void	init_scene(t_scene *scene)
 {
 	scene->width = 0;
@@ -26,6 +38,17 @@ void	init_scene(t_scene *scene)
 	scene->camera.position = vec3_init(0, 0, 0);
 }
 
+/**
+ * @brief Allocates and initializes a new material structure.
+ *
+ * @details This function allocates memory for a new `t_material` object.
+ * It initializes the material's properties, such as specular intensity,
+ * mirror ratio, and checkerboard/texture flags, to their default values.
+ * It also sets the texture image pointers to NULL. If memory allocation fails,
+ * the program will exit with an error.
+ *
+ * @return A pointer to the newly created and initialized `t_material` structure.
+ */
 t_material	*create_material(void)
 {
 	t_material	*material;
@@ -48,6 +71,20 @@ t_material	*create_material(void)
 	return (material);
 }
 
+/**
+ * @brief Allocates and initializes a new object structure.
+ *
+ * @details This function is a factory for creating a new `t_object`. It
+ * allocates memory for the object, sets its type, geometric data, and color.
+ * It then calls `create_material` to attach a default material to the object.
+ * The function will exit with an error if memory allocation fails.
+ *
+ * @param type The type of the object (e.g., sphere, plane, etc.).
+ * @param data A void pointer to the specific geometric data for the object.
+ * @param color The base color of the object.
+ *
+ * @return A pointer to the newly created and initialized `t_object`.
+ */
 t_object	*create_object(t_object_type type, void *data, t_vec3 color)
 {
 	t_object	*obj;

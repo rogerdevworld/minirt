@@ -15,12 +15,16 @@
  * @brief Handles keyboard events for the program.
  *
  * @details This function is a callback that processes key presses and releases.
- * It's used to detect specific key combinations for controlling the application,
+
+	* It's used to detect specific key combinations for controlling 
+	the application,
  * such as closing the window when the Escape key is pressed.
  *
  * @param keydata A structure containing information about the key event,
- * including which key was pressed and the action type (press, release, or repeat).
- * @param param A void pointer to the main data structure, which is cast to a t_data pointer.
+ * including which key was pressed and the action type (press, release,
+	or repeat).
+ * @param param A void pointer to the main data structure,
+	which is cast to a t_data pointer.
  *
  * @return void.
  */

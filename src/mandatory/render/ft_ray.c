@@ -11,6 +11,40 @@
 /* ************************************************************************** */
 #include "../../../include/minirt.h"
 
+/**
+ * @brief Pre-calculates ray generation data for a specific subpixel.
+ *
+ * @details This function computes all the necessary parameters for 
+ casting a ray
+ * through a single subpixel on the screen. It determines the camera's
+ * orientation and the viewport's dimensions to accurately project a 2D
+ * screen coordinate into a 3D world space. The calculations include:
+ *
+ * - **Field of View (FOV)**: Converts the camera's FOV from degrees to 
+ radians.
+ * - **Aspect Ratio**: Calculates the ratio of the screen's width to height.
+ * - **Camera Basis Vectors**: Creates a local orthonormal basis (right and up
+ * vectors) for the camera, which is essential for correctly orienting the ray
+ * in the scene.
+ * - **Normalized Coordinates**: Computes the subpixel's coordinates 
+ in a
+ * normalized space ranging from -0.5 to 0.5. The `SUBPIXEL_SAMPLES` 
+ macro
+ * ensures that the ray is cast from the center of the subpixel, not 
+ the top-left
+ * corner of the pixel.
+ * - **Viewport Center**: Determines the 3D position of the center 
+ of the virtual
+ * viewport in front of the camera.
+ *
+ * @param sp A `t_subpixel_data` struct containing the pixel and 
+ subpixel coordinates.
+ * @param scene A pointer to the scene structure with camera and 
+ screen data.
+ *
+ * @return A `t_ray_data` struct containing all pre-calculated 
+ values.
+ */
 t_ray_data	calculate_ray_data(t_subpixel_data sp, t_scene *scene)
 {
 	t_ray_data	data;
@@ -30,6 +64,36 @@ t_ray_data	calculate_ray_data(t_subpixel_data sp, t_scene *scene)
 	return (data);
 }
 
+/**
+ * @brief Generates a single ray for antialiasing.
+ *
+ * @details This is the main function for casting a ray from the camera 
+ through a specific
+ * subpixel. It uses the pre-calculated data from `calculate_ray_data` 
+ to construct the
+ * ray's origin and direction.
+ *
+ * The ray's direction is calculated by projecting the normalized 
+ subpixel coordinates
+ * onto the camera's viewport plane. The formula uses the `tan` of 
+ half the FOV to
+ * correctly scale the normalized coordinates based on the camera's 
+ perspective and the
+ * viewport's distance. The direction vector is then calculated by 
+ subtracting the
+ * camera's position from the resulting point on the viewport, and 
+ this vector is
+ * normalized to a unit length.
+ *
+ * By calling this function for each subpixel within a main pixel 
+ and averaging the
+ * resulting colors, the final image achieves a smooth, antialiased look. 
+ *
+ * @param sp A `t_subpixel_data` struct with the subpixel coordinates.
+ * @param scene A pointer to the scene data.
+ *
+ * @return The constructed `t_ray` for the specified subpixel.
+ */
 t_ray	generate_antialiased_ray(t_subpixel_data sp, t_scene *scene)
 {
 	t_ray		ray;

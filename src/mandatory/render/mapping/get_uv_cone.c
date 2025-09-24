@@ -11,7 +11,47 @@
 /* ************************************************************************** */
 #include "../../../../include/minirt.h"
 
-// src/assets/ft_uv_mapping.c
+/**
+ * @brief Calculates the UV coordinates for a hit point on a 
+ cone's lateral surface.
+ *
+ * @details This function maps a 3D point on a cone's surface 
+ to a 2D texture coordinate
+ * system (U, V). The U-coordinate represents the horizontal 
+ position around the cone,
+ * and the V-coordinate represents the vertical position along its height.
+ *
+ * The process works as follows:
+ *
+ * 1. **Normalize the hit point**: The hit point is converted to a 
+ local coordinate system
+ * relative to the cone's base.
+ *
+ * 2. **Calculate the V-coordinate**: The V-coordinate is determined 
+ by the hit point's
+ * vertical position along the cone's axis, normalized by the cone's 
+ total height. A
+ * value of 0 corresponds to the base, and 1 corresponds to the apex.
+ *
+ * 3. **Calculate the U-coordinate**: The U-coordinate is based on 
+ the angle around the
+ * cone's central axis. To find this angle, a temporary reference 
+ axis is created. This
+ * axis is a vector perpendicular to the cone's main axis, allowing 
+ for the calculation
+ * of a horizontal angle using `acos`. This angle is then normalized 
+ to the range [0, 1].
+ * A correction is applied to ensure the texture wraps correctly around the cone
+ * by checking the direction of the cross product between the 
+ temporary axis and the
+ * local point.
+ *
+ * @param rec A pointer to the hit record containing the object 
+ and hit point.
+ *
+ * @return A `t_vec2` structure containing the calculated UV 
+ coordinates (U, V).
+ */
 t_vec2	get_uv_cone(t_hit_record *rec)
 {
 	t_cone	*cn;
